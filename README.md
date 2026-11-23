@@ -49,3 +49,12 @@ Mira `examples/*.json`. Las rutas relativas se buscan junto al archivo del proye
 - El render de cuadros corre en Python (CPU); NVENC acelera solo la codificación final.
 - Fuentes: usa Anton/Montserrat si las pones en `fonts\`; si no, Impact/Arial/Segoe del sistema.
 - Datos de mapas: Natural Earth (dominio público) vía world-atlas.
+
+## Actualizaciones
+
+Al iniciar, el programa compara su versión (`vstudio/__init__.py`) con la de GitHub y, si hay una nueva, muestra un aviso con botón para abrir el repositorio (allí: Code → Download ZIP, o `git pull`).
+Se configura en **Ajustes → Actualizaciones** (activar/desactivar, repositorio, token).
+
+Como el repositorio es **privado**, hace falta un token de solo lectura:
+GitHub → Settings → Developer settings → Fine-grained tokens → *Generate new token* → Repository access: solo `Vertical-Studio` → Permissions: **Contents: Read-only**. Pégalo en Ajustes. Se guarda solo en tu PC (`cache/config.json`, ignorado por git).
+Para publicar una versión nueva, sube `__version__` en `vstudio/__init__.py`.

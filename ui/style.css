@@ -70,3 +70,4 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media(max-width:1180px){.work{grid-template-columns:240px 1fr 330px}}
 [hidden]{display:none!important}
 .fld textarea.code{font:12px/1.4 Consolas,monospace;min-height:220px;white-space:pre}.fld textarea.bad{border-color:var(--err)}
+.upd{position:fixed;right:18px;top:66px;z-index:15;background:#1e2440;border:1px solid var(--acc);border-radius:12px;padding:14px 16px;width:340px;box-shadow:0 14px 50px #000a}.upd b{display:block;margin-bottom:4px}.upd .hint{margin:2px 0 10px}.upd .frow{gap:8px}

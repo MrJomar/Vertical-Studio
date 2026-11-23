@@ -448,6 +448,9 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/ai_prompt":
                 from .vector import ai_prompt
                 return self._json({"prompt": ai_prompt()})
+            if path == "/api/update_check":
+                from . import updater
+                return self._json(updater.check())
             if path == "/api/presets":
                 return self._json(_presets())
             if path == "/api/examples":
@@ -545,6 +548,10 @@ class Handler(BaseHTTPRequestHandler):
                 for sc in scenes:
                     sc["type"] = "vector"
                 return self._json({"scenes": scenes})
+            if path == "/api/update_config":
+                from . import updater
+                updater.save_config({k: d[k] for k in ("check_updates", "update_repo", "update_token") if k in d})
+                return self._json(updater.check())
             if path == "/api/preset_save":
                 pr = _presets()
                 pr[d["name"]] = d["settings"]
@@ -569,6 +576,11 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/example_render":
                 ex_id = d["id"]
                 return self._json({"id": start_job(lambda job: render_example(job, ex_id)).id})
+            if path == "/api/open_url":
+                u = d.get("url", "")
+                if u.startswith("https://github.com/"):
+                    webbrowser.open(u)
+                return self._json({"ok": True})
             if path == "/api/reveal":
                 p = d.get("path", "")
                 if os.name == "nt":
