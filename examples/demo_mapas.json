@@ -1,0 +1,14 @@
+{
+  "settings": {"theme": "oscuro", "tts_engine": "silencio"},
+  "scenes": [
+    {"type": "map", "title": "México", "mode": "zoom", "highlight": "México", "narration": "Empezamos en México.", "duration": 6},
+    {"type": "map", "title": "Gira por México", "mode": "tour", "duration": 11, "place_zoom": 0.012,
+     "places": [{"name": "Ciudad de México", "lat": 19.4326, "lon": -99.1332},
+                {"name": "Guadalajara", "lat": 20.6597, "lon": -103.3496},
+                {"name": "Monterrey", "lat": 25.6866, "lon": -100.3161}]},
+    {"type": "map", "title": "Ruta transatlántica", "mode": "route", "marker": "arrow", "duration": 8,
+     "places": [{"name": "Lima", "lat": -12.05, "lon": -77.04}, {"name": "Bogotá", "lat": 4.71, "lon": -74.07},
+                {"name": "Madrid", "lat": 40.42, "lon": -3.70}]},
+    {"type": "map", "title": "Barrios (GeoJSON propio)", "geojson": "assets/barrios_demo.geojson", "duration": 7}
+  ]
+}

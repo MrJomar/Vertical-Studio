@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Vertical Studio</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="/style.css">
+<script>window.VS_TOKEN="__TOKEN__";</script>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand"><span class="logo"></span><b>Vertical Studio</b></div>
+    <input id="pname" class="pname" value="Proyecto sin título" spellcheck="false">
+    <span id="dirty" class="dirty" hidden>● sin guardar</span>
+    <div class="sp"></div>
+    <button class="btn ghost" data-act="new">Nuevo</button>
+    <button class="btn ghost" data-act="open">Abrir</button>
+    <button class="btn ghost" data-act="save">Guardar</button>
+    <span class="vr"></span>
+    <button class="btn ghost" data-act="examples">✨ Ejemplos</button>
+    <button class="btn ghost" data-act="settings">⚙ Ajustes</button>
+    <button class="btn primary" data-act="export">Exportar video</button>
+  </header>
+  <main class="work">
+    <aside class="side">
+      <div class="side-h"><span>Escenas</span><span id="count" class="muted"></span></div>
+      <div id="list" class="list"></div>
+      <div class="side-f">
+        <button class="btn block" data-act="add">＋ Añadir escena</button>
+        <button class="btn small block" data-act="ai">🎨 Animación con IA</button>
+        <button class="btn small block" data-act="script">📝 Guion → escenas</button>
+        <button class="btn small block" data-act="autoclip">Auto-clips</button>
+      </div>
+    </aside>
+    <section class="stage">
+      <div id="empty" class="empty" hidden></div>
+      <div id="player" class="player">
+        <div class="phone"><img id="frame" alt=""><div id="spin" class="spin" hidden></div><div id="warn" class="warn" hidden></div></div>
+        <div class="ctl">
+          <button id="play" class="btn icon" title="Reproducir">▶</button>
+          <input id="seek" type="range" min="0" max="1000" value="0">
+          <span id="time" class="time">0.0 / 0.0 s</span>
+        </div>
+      </div>
+    </section>
+    <aside class="insp">
+      <div id="insp-head" class="insp-h"></div>
+      <div id="form" class="form"></div>
+    </aside>
+  </main>
+</div>
+<div id="modal" class="modal" hidden><div class="card" id="card"></div></div>
+<div id="toast" class="toast" hidden></div>
+<script src="/app.js"></script>
+</body>
+</html>
