@@ -551,7 +551,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"scenes": scenes})
             if path == "/api/update_config":
                 from . import updater
-                updater.save_config({k: d[k] for k in ("check_updates", "update_repo", "update_token") if k in d})
+                updater.save_config({k: d[k] for k in ("check_updates", "auto_update", "update_repo", "update_token") if k in d})
                 return self._json(updater.check())
             if path == "/api/preset_save":
                 pr = _presets()
@@ -577,6 +577,23 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/example_render":
                 ex_id = d["id"]
                 return self._json({"id": start_job(lambda job: render_example(job, ex_id)).id})
+            if path == "/api/update_apply":
+                from . import updater
+                return self._json(updater.apply())
+            if path == "/api/restart":
+                def _restart():
+                    time.sleep(0.8)
+                    exe = sys.executable
+                    kw = {}
+                    if os.name == "nt":
+                        pw = exe.replace("python.exe", "pythonw.exe")
+                        exe = pw if os.path.exists(pw) else exe
+                        kw["creationflags"] = 0x00000008 | 0x00000200  # DETACHED_PROCESS | NEW_PROCESS_GROUP
+                    subprocess.Popen([exe, str(APP_DIR / "app.py")], cwd=str(APP_DIR), **kw)
+                    time.sleep(0.4)
+                    os._exit(0)
+                threading.Thread(target=_restart, daemon=True).start()
+                return self._json({"ok": True})
             if path == "/api/open_url":
                 u = d.get("url", "")
                 if u.startswith("https://github.com/"):

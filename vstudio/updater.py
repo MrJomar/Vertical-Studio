@@ -7,10 +7,10 @@ import urllib.error
 import urllib.request
 
 from . import __version__
-from .core import CACHE_DIR
+from .core import APP_DIR, CACHE_DIR
 
 CONFIG_FILE = CACHE_DIR / "config.json"
-DEFAULTS = {"check_updates": True, "update_repo": "MrJomar/Vertical-Studio", "update_token": ""}
+DEFAULTS = {"check_updates": True, "auto_update": True, "update_repo": "MrJomar/Vertical-Studio", "update_token": ""}
 
 
 def load_config() -> dict:
@@ -47,7 +47,7 @@ def check(fetch=_get) -> dict:
     cfg = load_config()
     out = {"enabled": bool(cfg["check_updates"]), "current": __version__, "latest": None, "newer": False,
            "url": f"https://github.com/{cfg['update_repo']}", "notes": "", "error": None,
-           "has_token": bool(cfg["update_token"]), "repo": cfg["update_repo"]}
+           "has_token": bool(cfg["update_token"]), "repo": cfg["update_repo"], "auto": bool(cfg["auto_update"])}
     if not out["enabled"]:
         return out
     repo, tok = cfg["update_repo"], cfg["update_token"]
@@ -70,3 +70,57 @@ def check(fetch=_get) -> dict:
     except Exception as e:
         out["error"] = f"No se pudo comprobar ({e.__class__.__name__})."
     return out
+
+
+SKIP_TOP = {"cache", ".git", ".github", "__pycache__"}
+
+
+def apply(dest=APP_DIR, fetch=None) -> dict:
+    """Descarga la última versión del repositorio y copia sus archivos sobre la carpeta del programa.
+
+    No toca `cache/` (ajustes, mapas, plantillas) ni archivos que no estén en el repositorio (tus proyectos).
+    Antes guarda una copia de seguridad en cache/backup/.
+    """
+    import io
+    import shutil
+    import time
+    import zipfile
+    from pathlib import Path
+
+    cfg = load_config()
+    if fetch is None:
+        def fetch(url, tok):
+            return _get(url, tok, "application/vnd.github+json")
+    raw = fetch(f"https://api.github.com/repos/{cfg['update_repo']}/zipball/main", cfg["update_token"])
+    dest = Path(dest)
+    zf = zipfile.ZipFile(io.BytesIO(raw))
+    names = [n for n in zf.namelist() if not n.endswith("/")]
+    root = names[0].split("/")[0] + "/"
+    if not any(n == root + "vstudio/__init__.py" for n in names):
+        raise ValueError("El paquete descargado no parece ser Vertical Studio.")
+    stamp = time.strftime("%Y%m%d_%H%M%S")
+    bak = Path(CACHE_DIR) / "backup" / f"{__version__}_{stamp}"
+    n_copied = 0
+    for n in names:
+        rel = n[len(root):]
+        if not rel or rel.split("/")[0] in SKIP_TOP:
+            continue
+        target = (dest / rel).resolve()
+        if dest.resolve() not in target.parents:       # protección contra rutas maliciosas
+            continue
+        if target.exists() and not rel.startswith("ui/examples/"):
+            b = bak / rel
+            b.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(target, b)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with zf.open(n) as src, open(target, "wb") as out:
+            shutil.copyfileobj(src, out)
+        n_copied += 1
+    # conserva solo las 3 copias de seguridad más recientes
+    try:
+        old = sorted((Path(CACHE_DIR) / "backup").iterdir())[:-3]
+        for d in old:
+            shutil.rmtree(d, ignore_errors=True)
+    except OSError:
+        pass
+    return {"files": n_copied, "backup": str(bak)}

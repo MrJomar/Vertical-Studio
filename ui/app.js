@@ -151,12 +151,13 @@ function settingsModal(){
     g.fields.forEach(f=>{const ff={...f};if(f.kind==="file"&&f.key==="music"){}b.appendChild(fieldEl(ff,st,()=>{markDirty();S.durs={};clearTimeout(settingsModal.t);settingsModal.t=setTimeout(refresh,300)},true))})});
   (async()=>{const u=await jget("/api/update_check");const h=document.createElement("div");h.className="sec";h.textContent="Actualizaciones";b.appendChild(h);
     const w=document.createElement("div");w.innerHTML=`<label class="chk"><input type="checkbox" id="uc" ${u.enabled?"checked":""}><span>Buscar actualizaciones al iniciar</span></label>
+    <label class="chk"><input type="checkbox" id="ua" ${u.auto?"checked":""}><span>Instalarlas automáticamente (si no tienes un proyecto abierto)</span></label>
     <div class="fld"><label>Repositorio de GitHub</label><input type="text" id="ur" value="${esc(u.repo)}"></div>
     <div class="fld"><label>Token de solo lectura (solo si el repositorio es privado; se guarda en este equipo)</label><input type="text" id="ut" placeholder="${u.has_token?"(guardado)":"github_pat_…"}"></div>
     <div class="frow"><button class="btn small" id="ub">Buscar ahora</button><span class="hint" id="us" style="align-self:center">Versión instalada: ${esc(u.current)}</span></div>`;b.appendChild(w);
-    const save=async()=>{const body={check_updates:w.querySelector("#uc").checked,update_repo:w.querySelector("#ur").value.trim()};const t=w.querySelector("#ut").value.trim();if(t)body.update_token=t;return jpost("/api/update_config",body)};
-    w.querySelector("#ub").onclick=async()=>{const r=await save();w.querySelector("#us").textContent=r.error?r.error:(r.newer?"Hay una versión nueva: "+r.latest:"Estás al día ("+r.current+")")};
-    w.querySelector("#uc").onchange=save})();
+    const save=async()=>{const body={check_updates:w.querySelector("#uc").checked,auto_update:w.querySelector("#ua").checked,update_repo:w.querySelector("#ur").value.trim()};const t=w.querySelector("#ut").value.trim();if(t)body.update_token=t;return jpost("/api/update_config",body)};
+    w.querySelector("#ub").onclick=async()=>{const r=await save();w.querySelector("#us").textContent=r.error?r.error:(r.newer?"Hay una versión nueva: "+r.latest+" (usa «⟳ Actualizar» arriba)":"Estás al día ("+r.current+")")};
+    w.querySelector("#uc").onchange=save;w.querySelector("#ua").onchange=save})();
   const sel=c.querySelector("#pre");let presets={};
   const fill=async()=>{presets=await jget("/api/presets");sel.innerHTML='<option value="">Plantillas…</option>'+Object.keys(presets).map(k=>`<option>${esc(k)}</option>`).join("")};fill();
   c.querySelector("#pl").onclick=()=>{const p=presets[sel.value];if(!p)return;Object.assign(S.project.settings,p);markDirty();closeModal();settingsModal();refresh()};
@@ -199,10 +200,18 @@ function scriptModal(){
       if(!r.scenes.length)return toast("No encontré contenido",1);
       const first=S.project.scenes.length;S.project.scenes.push(...r.scenes);S.durs={};S.sel=first;markDirty();closeModal();renderList();renderForm();refresh();toast(r.scenes.length+" escenas creadas")}catch(e){toast(e.message,1)}}}
 
+async function applyUpdate(u){
+  const box=$("#upd");box.innerHTML=`<b>Instalando la versión ${esc(u.latest)}…</b><div class="hint">No cierres la ventana. Se reiniciará sola.</div>`;box.hidden=false;
+  try{const r=await jpost("/api/update_apply",{});box.innerHTML=`<b>✔ Actualizado (${r.files} archivos)</b><div class="hint">Reiniciando el programa…</div>`;
+    await jpost("/api/restart",{});setTimeout(()=>{try{window.close()}catch(e){}box.innerHTML=`<b>Listo</b><div class="hint">Ya se abrió la versión nueva. Puedes cerrar esta ventana.</div>`},2500)}
+  catch(e){box.innerHTML=`<b>No se pudo actualizar</b><div class="hint">${esc(e.message)}</div><div class="frow"><button class="btn small" id="ux">Cerrar</button></div>`;$("#ux").onclick=()=>box.hidden=true}}
+
 async function checkUpdates(manual){
   try{const u=await jget("/api/update_check");const box=$("#upd");
-    if(u.newer){box.innerHTML=`<b>🔔 Hay una versión nueva: ${esc(u.latest)}</b><div class="hint">Tienes la ${esc(u.current)}.${u.notes?" Novedad: "+esc(u.notes):""}</div><div class="frow"><button class="btn small primary" id="uo">Abrir repositorio</button><button class="btn small" id="ux">Luego</button></div>`;box.hidden=false;
-      $("#uo").onclick=()=>{jpost("/api/open_url",{url:u.url});box.hidden=true};$("#ux").onclick=()=>box.hidden=true}
+    if(u.newer){
+      if(u.auto&&!manual&&!S.dirty&&!S.project.scenes.length){applyUpdate(u);return u}
+      box.innerHTML=`<b>🔔 Hay una versión nueva: ${esc(u.latest)}</b><div class="hint">Tienes la ${esc(u.current)}.${u.notes?" Novedad: "+esc(u.notes):""}</div><div class="frow"><button class="btn small primary" id="uo">Actualizar ahora</button><button class="btn small" id="ux">Luego</button></div>`;box.hidden=false;
+      $("#uo").onclick=()=>{if(S.dirty&&!confirm("Hay cambios sin guardar; se perderán al reiniciar. ¿Actualizar ahora?"))return;applyUpdate(u)};$("#ux").onclick=()=>box.hidden=true}
     else if(manual){toast(u.error?u.error:"Ya tienes la última versión ("+u.current+")",!!u.error)}
     return u}catch(e){if(manual)toast("No se pudo comprobar: "+e.message,1)}}
 
