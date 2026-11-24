@@ -151,6 +151,37 @@ def review(data):
         nz = [s.get("follow") for _, s in maps]
         if len(maps) >= 4 and not any(nz) and all((s.get("mode") or "") == "route" for _, s in maps):
             add("aviso", "Ninguna escena de ruta usa «follow» (cámara que sigue la ruta); el video puede verse estático.")
+    # efectos de sonido
+    st = (data.get("settings") if isinstance(data, dict) else {}) or {}
+    try:
+        from . import sfx as SX
+        tags = {i["tag"] for i in SX.build_catalog().values()}
+        tags |= set(SX.ALIAS)
+        total_sfx = 0
+        for n, sc in enumerate(scenes, 1):
+            raw = sc.get("sfx")
+            if raw in (None, "", False):
+                continue
+            lst = raw if isinstance(raw, list) else [raw]
+            total_sfx += len(lst)
+            dur = float(sc.get("duration") or max(2.0, est[n - 1]))
+            for e in lst:
+                p = SX._parse(e, dur)
+                if not p or not p[0]:
+                    add("error", f"Escena {n}: efecto de sonido no entendido: {e!r} (usa \"etiqueta\" o \"etiqueta@segundos\").")
+                    continue
+                if p[0] not in tags:
+                    add("aviso", f"Escena {n}: no existe el efecto «{p[0]}» (disponibles: {', '.join(sorted(tags - set(SX.ALIAS)))}).")
+                if p[1] > dur + 0.2:
+                    add("aviso", f"Escena {n}: el efecto «{p[0]}» va en {p[1]:.1f} s, después de que acaba la escena ({dur:.1f} s).")
+            if len(lst) > 3:
+                add("aviso", f"Escena {n}: {len(lst)} efectos de sonido; con más de 3 por escena suena saturado.")
+        if scenes and total_sfx / len(scenes) > 1.6:
+            add("aviso", "Demasiados efectos de sonido manuales: apunta a ~1 por escena y solo en los momentos clave.")
+        if str(st.get("sfx", "manual")).lower() == "off" and total_sfx:
+            add("aviso", "Hay efectos en las escenas, pero el ajuste «sfx» está en off: no sonarán.")
+    except Exception:
+        pass
     return res
 
 

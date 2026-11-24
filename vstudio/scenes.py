@@ -159,6 +159,10 @@ class Scene:
             lay = text_layer(wm, "bold", 38, fill=self.ctx.theme["text"], stroke=3, max_w=int(self.ctx.w * 0.8))
             paste_layer(img, lay, self.ctx.w / 2, self.ctx.h * 0.955, alpha=0.7)
 
+    def sfx_events(self) -> list:
+        """Eventos de sonido automáticos (t_en_escena, etiqueta). Las subclases lo sobrescriben."""
+        return []
+
     def close(self) -> None:
         if self.bg:
             self.bg.close()
@@ -767,6 +771,12 @@ class MapScene(Scene):
             if t < ta:
                 return _travel(c0, c1, ease("in_out_cubic", (t - td) / max(ta - td, 1e-6)))
         return kfs[-1][1]
+
+    def sfx_events(self) -> list:
+        ev = [(t + 0.05, "pop") for t in self.hl_t] + [(t + 0.05, "click") for t in getattr(self, "pin_t", [])]
+        if self.mode == "route":
+            ev.append((getattr(self, "r0", 1.0), "whoosh_corto"))
+        return ev
 
     def _base_vector(self, t: float, cam, hlc) -> np.ndarray:
         c, th, s = self.ctx, self.ctx.theme, self.spec

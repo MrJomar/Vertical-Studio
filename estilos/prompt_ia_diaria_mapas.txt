@@ -26,3 +26,6 @@ Reglas:
 - Cierra con el total (distancia, tiempo) y una frase que cambie cómo se ve la ruta.
 Recursos visuales a usar: ruta animada, avatar en la punta, foto en hexágono, íconos de transporte, flecha punteada a destino, rótulo rojo de cifra, inset de zoom, marca de agua del canal.
 Tono de voz: documental, sereno, con peso en las cifras.
+
+
+EFECTOS DE SONIDO (opcional): en los ajustes pon "sfx":"auto" y el programa añade solo whoosh en los cambios de escena y pop/click cuando aparecen piezas, pines o países. Si quieres un momento clave, añade a la escena "sfx": ["impacto@0.8"] (etiqueta@segundos desde el inicio de la escena); máximo 1-2 por escena y solo en sustos, datos fuertes o revelaciones. Etiquetas disponibles: whoosh (transición), whoosh_corto (plano rápido), pop (aparece algo), click (texto/pin), splash (agua), impacto (susto/dato fuerte), tic (reloj/cuenta atrás), ding (acierto/dato clave), subida (tensión antes de revelar). No uses otras.

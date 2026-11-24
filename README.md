@@ -121,3 +121,10 @@ En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (
 - **Mapas sin pixelado**: el estilo `natural` (NASA, máx. zoom 8) cambia solo a Esri satélite al acercarse más.
 - **Estilo Geo Chris**: el entorno del país resaltado se ve en grises (`desat_outside`, 0.7), zooms más rápidos.
 - **Cámara**: empuje lento continuo (`push`, 0.07 por defecto, 0 = apagado) y sombreado más suave.
+
+## Efectos de sonido (v2.12)
+- Banco incluido en `assets/sfx/` (se genera solo): whoosh, whoosh_corto, pop, click, splash, impacto, tic, ding, subida. **Agrega los tuyos** (wav/mp3/ogg/m4a/flac): la etiqueta sale del nombre (`whoosh_2.mp3` → whoosh) o de la subcarpeta.
+- Cada archivo se analiza solo (duración, volumen, instante del golpe, brillo): se nivela el volumen y el golpe cae justo en el momento de la animación.
+- Ajustes: `sfx` = `off` | `manual` (solo los que pones en las escenas) | `auto` (además whoosh en transiciones, pop/click al aparecer piezas, pines y países); `sfx_volume` 0-1.
+- En una escena: `"sfx": ["impacto@0.8", "click@2.1"]` (etiqueta@segundos). Los automáticos nunca se amontonan; los manuales siempre suenan.
+- `python cli.py kit` regenera `assets/sfx/catalogo.json` y `CATALOGO.md`; `revisar` avisa de etiquetas inexistentes o saturación. Los prompts de la IA diaria ya conocen las etiquetas.

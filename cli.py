@@ -83,6 +83,11 @@ def main(argv=None):
             fh.write(svgkit.markdown())
         items = svgkit.scan()
         print(f"{len(items)} piezas en el kit  ->  {md}")
+        from vstudio import sfx as SX
+        sx = SX.build_catalog()
+        with open(os.path.join(str(SX.SFX_DIR), "CATALOGO.md"), "w", encoding="utf-8") as fh:
+            fh.write(SX.catalog_md())
+        print(f"{len(sx)} efectos de sonido  ->  assets/sfx/CATALOGO.md")
         for i in items:
             print(" ", i["id"], "ERROR " + i["error"] if "error" in i else ("(sin descripción)" if i["sin_descripcion"] else ""))
         if a.prompt:

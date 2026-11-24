@@ -2,7 +2,9 @@
  "settings": {
   "theme": "oscuro",
   "tts_engine": "edge",
-  "caption_style": "suave"
+  "caption_style": "suave",
+  "sfx": "auto",
+  "sfx_volume": 0.5
  },
  "scenes": [
   {

@@ -450,6 +450,8 @@ def mix_audio(tracks: list[tuple[str, float, float]], total: float, music: str |
             final = "[mus]"
     if final is None:
         return None
+    chains.append(f"{final}apad[fin]")      # rellena con silencio hasta la duración del video
+    final = "[fin]"
     cmd += ["-filter_complex", ";".join(chains), "-map", final, "-t", f"{total:.3f}",
             "-c:a", "aac", "-b:a", "192k", out_path]
     r = run_quiet(cmd)

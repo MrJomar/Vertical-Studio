@@ -1,0 +1,101 @@
+{
+ "click.wav": {
+  "tag": "click",
+  "uso": "aparece un texto, un pin o un detalle pequeño",
+  "mtime": 1795501502,
+  "dur": 0.021,
+  "hit": 0.002,
+  "rms_db": -15.5,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.0
+ },
+ "ding.wav": {
+  "tag": "ding",
+  "uso": "acierto, dato clave, aviso",
+  "mtime": 1795501502,
+  "dur": 1.0,
+  "hit": 0.004,
+  "rms_db": -13.7,
+  "peak_db": -0.9,
+  "brillo": "medio",
+  "trim": 0.0
+ },
+ "impacto.wav": {
+  "tag": "impacto",
+  "uso": "susto, dato fuerte, golpe dramático",
+  "mtime": 1795501502,
+  "dur": 1.1,
+  "hit": 0.043,
+  "rms_db": -9.2,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "pop.wav": {
+  "tag": "pop",
+  "uso": "aparece una pieza o elemento",
+  "mtime": 1795501502,
+  "dur": 0.122,
+  "hit": 0.003,
+  "rms_db": -15.3,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "splash.wav": {
+  "tag": "splash",
+  "uso": "agua, líquido, golpe de color",
+  "mtime": 1795501502,
+  "dur": 0.578,
+  "hit": 0.017,
+  "rms_db": -21.3,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.0
+ },
+ "subida.wav": {
+  "tag": "subida",
+  "uso": "tensión que crece antes de una revelación",
+  "mtime": 1795501502,
+  "dur": 1.108,
+  "hit": 1.065,
+  "rms_db": -19.6,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.491
+ },
+ "tic.wav": {
+  "tag": "tic",
+  "uso": "reloj, cuenta atrás, tensión",
+  "mtime": 1795501502,
+  "dur": 0.045,
+  "hit": 0.002,
+  "rms_db": -13.8,
+  "peak_db": -0.9,
+  "brillo": "medio",
+  "trim": 0.0
+ },
+ "whoosh.wav": {
+  "tag": "whoosh",
+  "uso": "transición entre escenas, cámara que se mueve rápido",
+  "mtime": 1795501502,
+  "dur": 0.567,
+  "hit": 0.35,
+  "rms_db": -17.0,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.162
+ },
+ "whoosh_corto.wav": {
+  "tag": "whoosh_corto",
+  "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
+  "mtime": 1795501502,
+  "dur": 0.29,
+  "hit": 0.191,
+  "rms_db": -16.6,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.081
+ }
+}

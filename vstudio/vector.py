@@ -467,6 +467,14 @@ class VectorScene(Scene):
     def default_duration(self) -> float:
         return 6.0
 
+    def sfx_events(self) -> list:
+        tags = {"reloj": "tic", "chispas": "ding"}
+        ev = []
+        for L in self.layers:
+            if L["start"] > 0.12:
+                ev.append((L["start"], tags.get(str(L.get("file") or L.get("asset")), "pop")))
+        return ev
+
     def prepare(self) -> None:
         super().prepare()
         if self.captions:

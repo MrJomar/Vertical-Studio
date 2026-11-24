@@ -21,7 +21,7 @@ DEFAULT_SETTINGS = {
     "tts_engine": "edge", "voice": "es-MX-JorgeNeural", "tts_rate": 0, "scene_pad": 0.5,
     "transition": "fade", "transition_seconds": 0.3,
     "map_style": "satelite", "map_tile_url": "", "map_attribution": True,
-    "music": "", "music_volume": 0.12, "duck_music": True,
+    "sfx": "manual", "sfx_volume": 0.5, "music": "", "music_volume": 0.12, "duck_music": True,
     "caption_size": 78, "caption_y": 0.80, "caption_font": "display", "caption_upper": True,
     "watermark": "", "whisper_model": "small", "language": "", "align_voice": "whisper",
 }
@@ -215,6 +215,19 @@ class Project:
                 cursor += nf
             enc.close()
             prog("Mezclando audio…", 0.995)
+            try:
+                from . import sfx as SX
+                starts, cur2 = [], 0
+                for nf_ in frames:
+                    starts.append(cur2 / fps)
+                    cur2 += nf_
+                evs, w1 = SX.plan_events(scenes, starts, ctx.settings, tlen / fps)
+                sx_tracks, w2 = SX.resolve_tracks(evs, ctx.settings, total_dur)
+                tracks.extend(sx_tracks)
+                for w_ in w1 + w2:
+                    ctx.warnings.append(w_)
+            except Exception as e_:
+                print("Efectos de sonido omitidos:", e_)
             music = ctx.resolve(ctx.settings.get("music")) if ctx.settings.get("music") else None
             audio = mix_audio(tracks, total_dur, music, float(ctx.settings["music_volume"]),
                               str(tmpdir / "audio.m4a"), bool(ctx.settings.get("duck_music", True)))
