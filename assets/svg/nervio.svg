@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 900" width="360" height="900">
+  <defs>
+    <linearGradient id="vaina" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b8860b"/><stop offset=".35" stop-color="{{nervio|#ffd84a}}"/><stop offset=".7" stop-color="#ffe98a"/><stop offset="1" stop-color="#c9930f"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-10%" width="220%" height="120%"><feGaussianBlur stdDeviation="14" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="g2" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
+  </defs>
+  <g id="aura" opacity=".55">
+    <path d="M180 -20 C110 120 250 220 180 330 C110 440 250 560 180 670 C140 760 195 830 180 920" fill="none" stroke="{{nervio|#ffd84a}}" stroke-width="90" stroke-linecap="round" filter="url(#glow)"/>
+  </g>
+  <g id="cable">
+    <path d="M180 -20 C110 120 250 220 180 330 C110 440 250 560 180 670 C140 760 195 830 180 920" fill="none" stroke="#7a5200" stroke-width="72" stroke-linecap="round"/>
+    <path d="M180 -20 C110 120 250 220 180 330 C110 440 250 560 180 670 C140 760 195 830 180 920" fill="none" stroke="url(#vaina)" stroke-width="62" stroke-linecap="round"/>
+    <path d="M180 -20 C110 120 250 220 180 330 C110 440 250 560 180 670 C140 760 195 830 180 920" fill="none" stroke="#8a5d00" stroke-opacity=".55" stroke-width="64" stroke-dasharray="5 55" stroke-dashoffset="20"/>
+    <path d="M166 -20 C98 120 238 220 168 330 C98 440 238 560 168 670 C128 760 181 830 166 920" fill="none" stroke="#fffbe0" stroke-opacity=".7" stroke-width="9" stroke-linecap="round"/>
+    <path d="M180 -20 C110 120 250 220 180 330 C110 440 250 560 180 670 C140 760 195 830 180 920" fill="none" stroke="#fff7c2" stroke-width="12" stroke-linecap="round" stroke-opacity=".9"/>
+  </g>
+  <g id="pulso" filter="url(#glow)">
+    <path d="M180 -20 C110 120 250 220 180 330 C110 440 250 560 180 670 C140 760 195 830 180 920" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-dasharray="1 210" stroke-dashoffset="-60"/>
+  </g>
+</svg>

@@ -97,3 +97,6 @@ Elementos nuevos (cuerpo/ciencia): `pierna`, `pie`, `nervio` (con `pinch` y `glo
 
 ## Dibujos SVG (v2.6)
 Elemento `svg`: `{"asset":"svg","file":"pie","x":.5,"y":.6,"w":.8}` carga `assets/svg/pie.svg` (o `cache/svg_privados/`, o texto en `"svg"`). Partes con `id` en un `<g>` se animan por separado: `"only":"nervio"` dibuja solo esa parte y `"hide":"huesos"` la oculta (todas comparten posición y tamaño). Variables en el SVG: `{{nervio|#ffd23f}}` se cambia con `"nervio":"#ff4d5e"` en la capa. Usa `resvg-py` (se instala solo la primera vez). Kit inicial: `pie.svg`, `pierna.svg`.
+
+## Kit SVG (v2.7)
+`assets/svg/` ahora incluye: pie, pierna, nervio, cerebro, compresion, vena, corazon, reloj, chispas y persona_sentada. Se usan con el asset `svg` (`file`, `only`, `hide`). El proyecto `prueba_vectorial_pie_dormido.json` está recompuesto solo con piezas del kit.

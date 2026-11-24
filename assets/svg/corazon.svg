@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 600" width="520" height="600">
+  <defs>
+    <radialGradient id="mus" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#ff7a86"/><stop offset=".5" stop-color="#d8283f"/><stop offset="1" stop-color="#7a0f24"/></radialGradient>
+    <linearGradient id="aorta" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a8182e"/><stop offset=".5" stop-color="#ff6577"/><stop offset="1" stop-color="#a8182e"/></linearGradient>
+    <linearGradient id="cava" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1f4fc9"/><stop offset=".5" stop-color="#6fa0ff"/><stop offset="1" stop-color="#1f4fc9"/></linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="suave"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <g id="aura" opacity=".55"><ellipse cx="260" cy="360" rx="210" ry="210" fill="#ff4d5e" filter="url(#glow)"/></g>
+  <g id="vasos">
+    <path d="M150 190 C130 120 130 60 168 36 C196 20 216 34 214 60" fill="none" stroke="url(#cava)" stroke-width="46" stroke-linecap="round"/>
+    <path d="M250 170 C250 90 300 40 360 44 C420 50 440 110 430 190" fill="none" stroke="url(#aorta)" stroke-width="54" stroke-linecap="round"/>
+    <path d="M310 190 C320 130 340 110 380 112" fill="none" stroke="url(#cava)" stroke-width="30" stroke-linecap="round"/>
+  </g>
+  <g id="corazon">
+    <path d="M250 180 C150 150 60 220 60 340 C60 470 170 560 250 590 C340 550 450 460 450 330 C450 230 360 150 250 180 Z" fill="url(#mus)" stroke="#6a0c20" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M110 300 C120 230 180 200 230 214" fill="none" stroke="#ffd0d6" stroke-opacity=".7" stroke-width="16" stroke-linecap="round" filter="url(#suave)"/>
+    <g fill="none" stroke="#ffd266" stroke-width="7" stroke-linecap="round" stroke-opacity=".9"><path d="M250 200 C240 300 250 400 280 500"/><path d="M262 260 C320 300 370 360 380 430"/><path d="M240 300 C190 340 150 400 150 450"/></g>
+  </g>
+</svg>

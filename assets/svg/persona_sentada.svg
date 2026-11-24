@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="cristal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfeeff" stop-opacity=".85"/><stop offset=".5" stop-color="#6aaef0" stop-opacity=".82"/><stop offset="1" stop-color="#2a60bd" stop-opacity=".9"/>
+    </linearGradient>
+    <linearGradient id="madera" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3b27a"/><stop offset="1" stop-color="#9a6a3a"/></linearGradient>
+    <linearGradient id="gsilla" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2d3550"/><stop offset="1" stop-color="#4a5578"/></linearGradient>
+    <radialGradient id="corazon" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff5a6e"/><stop offset="1" stop-color="#ff5a6e" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="suave"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <g id="silla">
+    <rect x="40" y="380" width="46" height="300" rx="20" fill="url(#gsilla)" stroke="#1b2138" stroke-width="4"/>
+    <rect x="40" y="680" width="360" height="30" rx="14" fill="url(#gsilla)" stroke="#1b2138" stroke-width="4"/>
+    <rect x="200" y="710" width="26" height="170" fill="#2a3148"/>
+    <path d="M90 900 L340 900 M215 880 L90 900 M215 880 L340 900" stroke="#2a3148" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="90" cy="916" r="16" fill="#1b2138"/><circle cx="215" cy="922" r="16" fill="#1b2138"/><circle cx="340" cy="916" r="16" fill="#1b2138"/>
+  </g>
+  <g id="escritorio">
+    <rect x="480" y="540" width="320" height="26" rx="8" fill="url(#madera)" stroke="#6a4522" stroke-width="4"/>
+    <rect x="750" y="566" width="24" height="380" fill="#8a5a30"/>
+    <path d="M520 540 L560 440 L720 420 L690 540 Z" fill="#2b324a" stroke="#161b2e" stroke-width="4"/>
+    <path d="M526 534 L562 450 L706 432 L682 534 Z" fill="#5b8cff" fill-opacity=".55"/>
+  </g>
+  <g id="cuerpo">
+    <path d="M205 330 C260 440 300 500 336 524 L520 524" fill="none" stroke="#d9f3ff" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M205 330 C260 440 300 500 336 524 L520 524" fill="none" stroke="url(#cristal)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M178 266 C132 326 108 430 120 560 C124 612 120 652 152 692 L522 694 C522 760 506 840 510 900 C506 926 522 944 548 944 L696 944 C722 944 730 918 706 906 C664 888 630 882 616 862 C608 800 610 704 604 654 C602 620 574 602 542 602 L384 606 C332 608 322 562 324 502 C332 432 320 362 294 314 C270 286 232 270 178 266 Z"
+          fill="url(#cristal)" stroke="#d9f3ff" stroke-width="7" stroke-linejoin="round"/>
+    <circle cx="236" cy="196" r="66" fill="url(#cristal)" stroke="#d9f3ff" stroke-width="7"/>
+    <path d="M178 170 C176 116 232 100 276 124 C262 138 220 134 196 166 Z" fill="#2a2f48"/>
+    <path d="M286 196 L304 214 L286 222" fill="url(#cristal)" stroke="#d9f3ff" stroke-width="5" stroke-linejoin="round"/>
+    <ellipse cx="256" cy="190" rx="6" ry="8" fill="#17203a"/>
+    <path d="M120 330 C140 330 160 300 178 266" fill="none" stroke="#ffffff" stroke-opacity=".6" stroke-width="12" stroke-linecap="round" filter="url(#suave)"/>
+    <path d="M130 600 C250 636 420 634 530 628" fill="none" stroke="#ffffff" stroke-opacity=".5" stroke-width="12" stroke-linecap="round" filter="url(#suave)"/>
+    <circle cx="238" cy="430" r="70" fill="url(#corazon)" fill-opacity=".8"/>
+    <path d="M238 452 C214 432 212 408 228 402 C236 398 240 404 238 408 C242 402 252 400 258 408 C266 420 256 436 238 452 Z" fill="#ff4d5e" stroke="#ffd0d6" stroke-width="3"/>
+  </g>
+  <g id="vasos">
+    <path d="M150 650 C250 646 400 650 540 648 C570 650 574 700 572 760 C570 820 580 880 600 912 C640 926 690 928 706 928" fill="none" stroke="#ff4d5e" stroke-width="7" stroke-linecap="round"/>
+    <path d="M150 668 C250 664 400 668 530 668 C552 672 556 720 554 776 C552 836 562 886 584 922 C630 944 688 944 700 940" fill="none" stroke="#4d86ff" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <g id="nervio" filter="url(#glow)">
+    <path d="M150 658 C250 654 400 658 536 658 C560 660 564 710 562 768 C560 828 570 884 592 918 C634 936 688 936 703 934" fill="none" stroke="{{nervio|#ffd23f}}" stroke-width="7" stroke-linecap="round"/>
+  </g>
+</svg>

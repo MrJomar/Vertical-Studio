@@ -15,12 +15,12 @@
    "layers": [
     {
      "asset": "svg",
-     "file": "pierna",
+     "file": "persona_sentada",
      "x": 0.5,
-     "y": 0.6,
-     "w": 0.95,
-     "z": 2,
-     "anim": "slide_up+float"
+     "y": 0.58,
+     "w": 0.98,
+     "anim": "slide_up+float",
+     "z": 2
     },
     {
      "asset": "texto",
@@ -34,21 +34,14 @@
      "z": 5
     },
     {
-     "asset": "rayo",
-     "count": 3,
-     "spread": [
-      0.55,
-      0.6,
-      0.95,
-      0.95
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.07,
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.74,
+     "y": 0.8,
+     "w": 0.3,
+     "at": "pie",
      "anim": "pop+shake",
-     "z": 4,
-     "at": "pie"
+     "z": 4
     }
    ]
   },
@@ -61,11 +54,11 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "nervio",
+     "asset": "svg",
+     "file": "nervio",
      "x": 0.5,
      "y": 0.58,
-     "w": 0.5,
-     "glow": 1,
+     "w": 0.42,
      "at": "nervio",
      "anim": "pop+shake",
      "z": 3
@@ -74,45 +67,17 @@
      "asset": "cartel",
      "text": "¡AUXILIO!",
      "x": 0.5,
-     "y": 0.3,
-     "w": 0.65,
+     "y": 0.27,
+     "w": 0.66,
      "at": "auxilio",
      "anim": "drop",
      "z": 6
-    },
-    {
-     "asset": "globulo",
-     "count": 10,
-     "spread": [
-      0.1,
-      0.25,
-      0.9,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.1,
-     "anim": "float",
-     "z": 4,
-     "alpha": 0.8
-    },
-    {
-     "asset": "gota",
-     "count": 6,
-     "spread": [
-      0.1,
-      0.3,
-      0.9,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.07,
-     "anim": "fall",
-     "z": 4
     }
+   ],
+   "bg_colors": [
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
    ]
   },
   {
@@ -127,47 +92,29 @@
      "asset": "svg",
      "file": "pierna",
      "x": 0.5,
-     "y": 0.66,
-     "w": 0.95,
-     "z": 2,
-     "anim": "fade"
+     "y": 0.68,
+     "w": 0.92,
+     "anim": "fade",
+     "z": 2
     },
     {
-     "asset": "cerebro",
+     "asset": "svg",
+     "file": "cerebro",
      "x": 0.5,
-     "y": 0.26,
-     "w": 0.36,
+     "y": 0.28,
+     "w": 0.55,
      "at": "cerebro",
      "anim": "pop+float",
-     "glow": "#ff9ab0",
      "z": 4
     },
     {
-     "asset": "rayo",
-     "count": 3,
-     "spread": [
-      0.58,
-      0.35,
-      0.72,
-      0.8
-     ],
-     "layout": "random",
-     "x": 0.5,
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.74,
      "y": 0.5,
-     "w": 0.06,
-     "anim": "rise",
-     "z": 4,
-     "at": "mensajes"
-    },
-    {
-     "asset": "flecha",
-     "x": 0.7,
-     "y": 0.52,
-     "w": 0.16,
-     "rot": -90,
+     "w": 0.22,
      "at": "mensajes",
-     "anim": "slide_up",
-     "color": "#ffd23f",
+     "anim": "rise",
      "z": 5
     }
    ]
@@ -175,67 +122,31 @@
   {
    "type": "vector",
    "bg": "cuerpo",
-   "camera": "push",
+   "camera": "push_fuerte",
    "fx": "polvo_luz,bokeh",
    "narration": "Al cruzar las piernas, lo aplastas contra el hueso.",
    "duration": 1.5,
    "layers": [
     {
      "asset": "svg",
-     "file": "pierna",
+     "file": "compresion",
      "x": 0.5,
-     "y": 0.58,
-     "w": 0.95,
-     "z": 2,
-     "anim": "fade"
-    },
-    {
-     "asset": "hueso",
-     "x": 0.4,
-     "y": 0.5,
-     "w": 0.5,
-     "at": "hueso",
-     "anim": "slide_left",
-     "z": 3
-    },
-    {
-     "asset": "nervio",
-     "x": 0.4,
-     "y": 0.44,
-     "w": 0.2,
-     "rot": 90,
-     "pinch": 0.5,
-     "at": "aplastas",
+     "y": 0.55,
+     "w": 0.98,
+     "at": "cruzar",
      "anim": "pop",
-     "z": 4
+     "z": 2
     },
     {
      "asset": "flecha",
-     "x": 0.4,
-     "y": 0.3,
-     "w": 0.2,
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.22,
      "rot": 90,
      "color": "#ff4d5e",
      "at": "aplastas",
      "anim": "drop+bounce",
      "z": 6
-    },
-    {
-     "asset": "rayo",
-     "count": 3,
-     "spread": [
-      0.2,
-      0.38,
-      0.6,
-      0.46
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.05,
-     "anim": "pop+shake",
-     "z": 4,
-     "at": "aplastas"
     }
    ]
   },
@@ -248,57 +159,32 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "nervio",
+     "asset": "svg",
+     "file": "vena",
      "x": 0.5,
-     "y": 0.62,
-     "w": 0.42,
-     "pinch": 0.5,
+     "y": 0.38,
+     "w": 1.15,
+     "only": "tubo",
+     "anim": "slide_down",
+     "z": 1
+    },
+    {
+     "asset": "svg",
+     "file": "nervio",
+     "x": 0.5,
+     "y": 0.74,
+     "w": 0.3,
+     "nervio": "#ff9a8a",
      "anim": "pop+shake",
      "z": 3
-    },
-    {
-     "asset": "globulo",
-     "count": 12,
-     "spread": [
-      0.1,
-      0.2,
-      0.9,
-      0.5
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.1,
-     "anim": "fall",
-     "z": 4,
-     "out": "oxígeno",
-     "at": "sangre"
-    },
-    {
-     "asset": "gota",
-     "count": 8,
-     "spread": [
-      0.1,
-      0.2,
-      0.9,
-      0.5
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.06,
-     "anim": "fall",
-     "z": 4,
-     "out": "oxígeno",
-     "at": "sangre"
     },
     {
      "asset": "texto",
      "text": "?",
      "color": "#ffffff",
      "x": 0.5,
-     "y": 0.34,
-     "w": 0.28,
+     "y": 0.54,
+     "w": 0.26,
      "at": "desconcierta",
      "anim": "pop+pulse",
      "z": 6
@@ -319,37 +205,30 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "nervio",
-     "x": 0.5,
+     "asset": "svg",
+     "file": "nervio",
+     "x": 0.3,
      "y": 0.6,
-     "w": 0.4,
-     "glow": 1,
+     "w": 0.36,
      "anim": "shake",
      "z": 2
     },
     {
-     "asset": "rayo",
-     "count": 9,
-     "spread": [
-      0.08,
-      0.28,
-      0.92,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.08,
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.68,
+     "y": 0.58,
+     "w": 0.62,
+     "at": "señales",
      "anim": "pop+shake",
-     "z": 4,
-     "at": "señales"
+     "z": 4
     },
     {
      "asset": "texto",
      "text": "FALSO",
      "color": "#ff4d5e",
      "x": 0.5,
-     "y": 0.5,
+     "y": 0.3,
      "w": 0.72,
      "at": "falsas",
      "anim": "pop+pulse",
@@ -359,8 +238,8 @@
      "asset": "marca",
      "kind": "no",
      "x": 0.5,
-     "y": 0.8,
-     "w": 0.26,
+     "y": 0.84,
+     "w": 0.24,
      "at": "real",
      "anim": "pop",
      "z": 7
@@ -376,50 +255,43 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "cerebro",
+     "asset": "svg",
+     "file": "cerebro",
      "x": 0.5,
-     "y": 0.54,
-     "w": 0.8,
+     "y": 0.52,
+     "w": 0.95,
      "anim": "pop+pulse",
-     "glow": "#ff9ab0",
      "z": 2
     },
     {
-     "asset": "rayo",
-     "count": 10,
-     "spread": [
-      0.04,
-      0.28,
-      0.96,
-      0.82
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.08,
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.26,
+     "y": 0.78,
+     "w": 0.5,
+     "chispa": "#ff7a7a",
+     "at": "ruido",
      "anim": "pop+shake",
-     "z": 4,
-     "at": "ruido"
+     "z": 4
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.78,
+     "y": 0.28,
+     "w": 0.42,
+     "at": "ruido",
+     "anim": "pop+shake",
+     "z": 4
     },
     {
      "asset": "texto",
      "text": "?",
      "color": "#ffd23f",
      "x": 0.84,
-     "y": 0.3,
-     "w": 0.26,
-     "at": "sabe",
-     "anim": "pop+float",
-     "z": 6
-    },
-    {
-     "asset": "texto",
-     "text": "?",
-     "color": "#ffd23f",
-     "x": 0.16,
-     "y": 0.34,
+     "y": 0.62,
      "w": 0.2,
-     "at": "sentir",
+     "at": "sabe",
      "anim": "pop+float",
      "z": 6
     }
@@ -438,7 +310,7 @@
      "file": "pie",
      "x": 0.5,
      "y": 0.56,
-     "w": 0.88,
+     "w": 0.95,
      "anim": "slide_left+float",
      "z": 2
     },
@@ -446,37 +318,11 @@
      "asset": "cartel",
      "text": "PESADO",
      "x": 0.5,
-     "y": 0.2,
+     "y": 0.24,
      "w": 0.5,
      "at": "pesado",
      "anim": "drop",
      "z": 6
-    },
-    {
-     "asset": "nervio",
-     "x": 0.2,
-     "y": 0.74,
-     "w": 0.12,
-     "glow": 1,
-     "anim": "float",
-     "z": 3
-    },
-    {
-     "asset": "rayo",
-     "count": 3,
-     "spread": [
-      0.2,
-      0.4,
-      0.85,
-      0.8
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.06,
-     "anim": "pop+shake",
-     "z": 4,
-     "at": "pie"
     }
    ]
   },
@@ -489,12 +335,11 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "reloj",
+     "asset": "svg",
+     "file": "reloj",
      "x": 0.5,
-     "y": 0.42,
-     "w": 0.6,
-     "hour": 3,
-     "min": 10,
+     "y": 0.44,
+     "w": 0.62,
      "at": "diez",
      "anim": "pop+wobble",
      "z": 3
@@ -503,7 +348,7 @@
      "asset": "etiqueta",
      "text": "10 min",
      "x": 0.5,
-     "y": 0.7,
+     "y": 0.74,
      "w": 0.55,
      "at": "diez",
      "anim": "pop",
@@ -513,28 +358,11 @@
      "asset": "marca",
      "kind": "ok",
      "x": 0.5,
-     "y": 0.86,
+     "y": 0.88,
      "w": 0.2,
      "at": "normal",
      "anim": "pop",
      "z": 6
-    },
-    {
-     "asset": "estrella",
-     "count": 4,
-     "spread": [
-      0.05,
-      0.25,
-      0.95,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.05,
-     "anim": "float",
-     "z": 4,
-     "at": "diez"
     }
    ]
   },
@@ -547,59 +375,34 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "corazon",
-     "color": "#ff4d5e",
+     "asset": "svg",
+     "file": "vena",
      "x": 0.5,
-     "y": 0.3,
-     "w": 0.4,
-     "at": "regresa",
-     "anim": "pop+pulse",
-     "glow": "#ff4d5e",
-     "z": 4
-    },
-    {
-     "asset": "globulo",
-     "count": 14,
-     "spread": [
-      0.1,
-      0.5,
-      0.9,
-      0.95
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.11,
-     "anim": "rise",
-     "z": 4,
-     "at": "sangre"
-    },
-    {
-     "asset": "gota",
-     "count": 8,
-     "spread": [
-      0.1,
-      0.5,
-      0.9,
-      0.95
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.07,
-     "anim": "rise",
-     "z": 4,
-     "at": "sangre"
+     "y": 0.62,
+     "w": 1.25,
+     "only": "tubo",
+     "z": 1
     },
     {
      "asset": "svg",
-     "file": "pierna",
+     "file": "vena",
      "x": 0.5,
-     "y": 0.76,
-     "w": 0.7,
-     "alpha": 0.9,
-     "z": 3,
-     "anim": "slide_up"
+     "y": 0.62,
+     "w": 1.25,
+     "only": "globulos",
+     "at": "sangre",
+     "anim": "slide_left",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.5,
+     "y": 0.3,
+     "w": 0.42,
+     "at": "regresa",
+     "anim": "pop+pulse",
+     "z": 4
     }
    ],
    "bg_colors": [
@@ -617,23 +420,36 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "esfera",
-     "color": "#ffd23f",
-     "mood": "scared",
-     "count": 8,
-     "spread": [
-      0.15,
-      0.38,
-      0.85,
-      0.88
-     ],
-     "layout": "grid",
-     "x": 0.5,
-     "y": 0.6,
-     "w": 0.2,
+     "asset": "svg",
+     "file": "nervio",
+     "x": 0.2,
+     "y": 0.62,
+     "w": 0.26,
      "at": "despiertan",
      "anim": "pop+shake",
-     "z": 3
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "nervio",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.26,
+     "nervio": "#ffb347",
+     "at": "despiertan",
+     "anim": "pop+shake",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "nervio",
+     "x": 0.8,
+     "y": 0.62,
+     "w": 0.26,
+     "nervio": "#ffe98a",
+     "at": "despiertan",
+     "anim": "pop+shake",
+     "z": 2
     },
     {
      "asset": "texto",
@@ -641,27 +457,10 @@
      "color": "#ffd23f",
      "x": 0.5,
      "y": 0.26,
-     "w": 0.7,
+     "w": 0.72,
      "at": "gritan",
      "anim": "pop+shake",
      "z": 6
-    },
-    {
-     "asset": "rayo",
-     "count": 6,
-     "spread": [
-      0.05,
-      0.3,
-      0.95,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.07,
-     "anim": "pop+shake",
-     "z": 4,
-     "at": "gritan"
     }
    ]
   },
@@ -678,27 +477,19 @@
      "file": "pie",
      "x": 0.5,
      "y": 0.58,
-     "w": 0.84,
-     "glow": "#ffd23f",
+     "w": 0.9,
      "anim": "float",
      "z": 2
     },
     {
-     "asset": "rayo",
-     "count": 15,
-     "spread": [
-      0.04,
-      0.3,
-      0.96,
-      0.9
-     ],
-     "layout": "random",
+     "asset": "svg",
+     "file": "chispas",
      "x": 0.5,
-     "y": 0.5,
-     "w": 0.075,
+     "y": 0.6,
+     "w": 0.95,
+     "at": "cosquilleo",
      "anim": "pop+shake",
-     "z": 4,
-     "at": "cosquilleo"
+     "z": 4
     },
     {
      "asset": "texto",
@@ -726,7 +517,7 @@
      "kind": "ok",
      "x": 0.5,
      "y": 0.3,
-     "w": 0.28,
+     "w": 0.26,
      "at": "daño",
      "anim": "pop",
      "z": 5
@@ -736,7 +527,7 @@
      "month": "NOV",
      "day": "23",
      "x": 0.5,
-     "y": 0.58,
+     "y": 0.56,
      "w": 0.45,
      "at": "días",
      "anim": "pop+wobble",
@@ -752,39 +543,23 @@
      "at": "días",
      "anim": "pop",
      "z": 5
-    },
-    {
-     "asset": "estrella",
-     "count": 3,
-     "spread": [
-      0.05,
-      0.3,
-      0.95,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.05,
-     "anim": "float",
-     "z": 4
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "azulejos",
+   "bg": "cuerpo",
    "camera": "push",
    "fx": "bokeh",
    "narration": "Si duele o es frecuente, consulta a tu médico.",
    "duration": 1.5,
    "layers": [
     {
-     "asset": "persona",
-     "var": 2,
+     "asset": "svg",
+     "file": "pierna",
      "x": 0.5,
-     "y": 0.66,
-     "w": 0.6,
+     "y": 0.62,
+     "w": 0.8,
      "anim": "slide_up",
      "z": 2
     },
@@ -792,27 +567,17 @@
      "asset": "etiqueta",
      "text": "CONSULTA",
      "x": 0.5,
-     "y": 0.34,
-     "w": 0.6,
+     "y": 0.3,
+     "w": 0.7,
      "at": "médico",
      "anim": "pop+float",
      "z": 5
     },
     {
-     "asset": "corazon",
-     "color": "#ff4d5e",
-     "x": 0.8,
-     "y": 0.5,
-     "w": 0.14,
-     "at": "duele",
-     "anim": "pop+pulse",
-     "z": 4
-    },
-    {
      "asset": "marca",
      "kind": "ok",
-     "x": 0.2,
-     "y": 0.48,
+     "x": 0.84,
+     "y": 0.46,
      "w": 0.14,
      "at": "consulta",
      "anim": "pop",
@@ -829,21 +594,20 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "persona",
-     "var": 3,
-     "x": 0.35,
-     "y": 0.72,
-     "w": 0.55,
+     "asset": "svg",
+     "file": "persona_sentada",
+     "x": 0.42,
+     "y": 0.62,
+     "w": 0.82,
      "anim": "slide_left+float",
      "z": 2
     },
     {
-     "asset": "reloj",
-     "x": 0.74,
-     "y": 0.38,
-     "w": 0.34,
-     "hour": 2,
-     "min": 0,
+     "asset": "svg",
+     "file": "reloj",
+     "x": 0.8,
+     "y": 0.3,
+     "w": 0.3,
      "at": "cambia",
      "anim": "pop+wobble",
      "z": 4
@@ -857,17 +621,6 @@
      "at": "veinte",
      "anim": "pop",
      "z": 5
-    },
-    {
-     "asset": "flecha",
-     "x": 0.62,
-     "y": 0.58,
-     "w": 0.18,
-     "rot": -45,
-     "color": "#ffd23f",
-     "at": "postura",
-     "anim": "slide_up",
-     "z": 4
     }
    ]
   },
@@ -880,57 +633,31 @@
    "duration": 1.5,
    "layers": [
     {
-     "asset": "esfera",
-     "color": "#ffd23f",
-     "mood": "happy",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.55,
-     "anim": "pop+bounce",
-     "z": 3
-    },
-    {
      "asset": "svg",
      "file": "pie",
      "x": 0.5,
-     "y": 0.84,
-     "w": 0.5,
-     "glow": "#ffd23f",
+     "y": 0.56,
+     "w": 0.9,
+     "nervio": "#7dff9c",
      "at": "pie",
-     "anim": "pop",
-     "z": 4
+     "anim": "pop+float",
+     "z": 3
     },
     {
      "asset": "corazon",
      "color": "#ff4d5e",
      "x": 0.82,
      "y": 0.28,
-     "w": 0.18,
+     "w": 0.16,
      "at": "auxilio",
      "anim": "pop+float",
      "z": 5
-    },
-    {
-     "asset": "estrella",
-     "count": 5,
-     "spread": [
-      0.05,
-      0.2,
-      0.95,
-      0.9
-     ],
-     "layout": "random",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.05,
-     "anim": "float",
-     "z": 4
     }
    ],
    "bg_colors": [
     "#1b4a3a",
     "#0b2018",
-    "#ffd23f"
+    "#7dff9c"
    ]
   }
  ]

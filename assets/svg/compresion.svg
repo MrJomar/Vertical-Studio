@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" width="800" height="640">
+  <defs>
+    <linearGradient id="hgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6dc"/><stop offset=".6" stop-color="#ead6a8"/><stop offset="1" stop-color="#b79a62"/></linearGradient>
+    <linearGradient id="carne" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe6ff" stop-opacity=".85"/><stop offset=".6" stop-color="#5aa7ee" stop-opacity=".85"/><stop offset="1" stop-color="#2459b8" stop-opacity=".9"/></linearGradient>
+    <linearGradient id="nerv" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{{nervio|#ffd84a}}"/><stop offset=".38" stop-color="{{nervio|#ffd84a}}"/><stop offset=".5" stop-color="#ff5a5a"/><stop offset=".62" stop-color="{{nervio|#ffd84a}}"/><stop offset="1" stop-color="{{nervio|#ffd84a}}"/></linearGradient>
+    <filter id="glow" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g id="hueso">
+    <path d="M30 470 C30 420 70 410 110 430 L690 430 C730 410 770 420 770 470 C770 520 730 530 700 520 C720 570 690 610 650 600 C620 592 610 570 614 548 L186 548 C190 570 180 592 150 600 C110 610 80 570 100 520 C70 530 30 520 30 470 Z" fill="url(#hgrad)" stroke="#8a7140" stroke-width="6"/>
+    <g fill="#c9ae74" fill-opacity=".7"><circle cx="220" cy="486" r="7"/><circle cx="330" cy="500" r="5"/><circle cx="440" cy="480" r="8"/><circle cx="560" cy="496" r="6"/><circle cx="640" cy="476" r="5"/></g>
+    <path d="M120 446 L680 446" stroke="#ffffff" stroke-opacity=".7" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g id="musculo">
+    <path d="M160 40 L640 40 C660 40 670 52 670 72 L670 270 C670 350 600 396 520 408 L460 412 L340 412 L280 408 C200 396 130 350 130 270 L130 72 C130 52 140 40 160 40 Z" fill="url(#carne)" stroke="#d9f3ff" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M170 70 L630 70" stroke="#ffffff" stroke-opacity=".65" stroke-width="12" stroke-linecap="round"/>
+    <g fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="5"><path d="M220 120 C230 220 250 300 280 360"/><path d="M400 100 C400 200 400 300 400 380"/><path d="M580 120 C570 220 550 300 520 360"/></g>
+  </g>
+  <g id="nervio" filter="url(#glow)">
+    <path d="M10 380 C120 372 240 372 320 392 C360 402 372 410 400 410 C428 410 440 402 480 392 C560 372 680 372 790 380 L790 424 C680 432 580 432 490 428 C450 426 430 418 400 418 C370 418 350 426 310 428 C220 432 120 432 10 424 Z" fill="url(#nerv)" stroke="#8a5d00" stroke-width="4"/>
+  </g>
+  <g id="presion" fill="#ff4d5e">
+    <path d="M400 -10 L400 -10 Z"/>
+  </g>
+  <g id="chispas" stroke="#ff7a7a" stroke-width="6" stroke-linecap="round" fill="none"><path d="M380 360 l-24 -26 l16 0 l-18 -22"/><path d="M420 360 l24 -26 l-16 0 l18 -22"/></g>
+</svg>
