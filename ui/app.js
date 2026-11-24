@@ -254,6 +254,8 @@ async function openProject(){try{const r=await jpost("/api/open_project",{});if(
 
 function act(a){
   if(a==="new"){if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Empezar un proyecto nuevo?"))return;loadProject({settings:{theme:"oscuro"},scenes:[]},null)}
+  else if(a==="home"){if(S.dirty&&!confirm("Volver al menú principal. Los cambios sin guardar se perderán. ¿Continuar?"))return;loadProject({settings:{...S.project.settings},scenes:[]},null)}
+  else if(a==="update")checkUpdates(true);
   else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();
   else if(a==="settings")settingsModal();else if(a==="export")exportModal();else if(a==="add")addModal();
   else if(a==="script")scriptModal();else if(a==="ai")aiModal();else if(a==="autoclip")autoclipModal()}
