@@ -122,7 +122,7 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
         return None, estimate_words(text, d), d
     tdir = CACHE_DIR / "tts"
     tdir.mkdir(parents=True, exist_ok=True)
-    key = hash_key("p3" if engine == "gemini" else "", engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
+    key = hash_key("p2" if engine == "gemini" else "", engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
     ext = ".mp3" if engine == "edge" else ".wav"
     audio, meta = tdir / (key + ext), tdir / (key + ".json")
     if audio.exists() and meta.exists():
@@ -130,6 +130,10 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
             words = [tuple(w) for w in json.loads(meta.read_text("utf-8"))]
             dur0 = probe_duration(audio)
             mark = tdir / (key + ".al")
+            if engine == "gemini" and not (tdir / (key + ".tt")).exists():       # audio viejo: quitar el ruido final una sola vez
+                if trim_tail(str(audio)):
+                    dur0 = probe_duration(audio)
+                (tdir / (key + ".tt")).write_text("1")
             if engine == "gemini" and ALIGN_CFG.get("on") and not mark.exists():   # audio ya pagado: solo se mejoran los tiempos
                 aw = aligned_words(audio, text, dur0)
                 if aw:

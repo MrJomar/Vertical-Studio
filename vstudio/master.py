@@ -166,6 +166,10 @@ def plan(specs, settings, types, warn=None):
             dst = tdir / (hash_key("master", os.path.basename(path), k, round(edges[k], 2), round(edges[k + 1], 2)) + ".wav")
             if not dst.exists():
                 _slice(path, edges[k], edges[k + 1], dst)
+            tt = dst.with_suffix(".tt")
+            if not tt.exists():                       # quita el ruido final (una sola vez, también en audios ya guardados)
+                A.trim_tail(str(dst))
+                tt.write_text("1")
             d = probe_duration(dst)
             ntok = len(re.findall(r"\S+", narr))
             if aw:
