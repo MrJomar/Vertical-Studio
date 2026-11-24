@@ -106,3 +106,6 @@ Elemento `svg`: `{"asset":"svg","file":"pie","x":.5,"y":.6,"w":.8}` carga `asset
 - `python cli.py kit --prompt estilos/prompt_ia_diaria.txt` guarda el prompt completo para una IA programada (Claude/ChatGPT): con el tema del día devuelve el proyecto JSON usando solo piezas del kit. También está en el botón «Copiar prompt de IA diaria (kit SVG)».
 - `python cli.py kit --check proyecto.json` revisa un proyecto: piezas que no existen, partes `only`/`hide` inválidas, piezas fuera de pantalla y `piezas_nuevas` pedidas.
 - Para añadir una pieza: guarda el `.svg` en `assets/svg/` y añade su entrada en `catalogo.json`.
+
+## API de imágenes y piezas (v2.9)
+En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (opcional; si está vacía usa la de Gemini), modelo (por defecto `gemini-2.5-pro`) y botón «Probar conexión». Se guarda en `cache/voices.json`, nunca dentro de los proyectos. Es la base del generador automático de piezas.

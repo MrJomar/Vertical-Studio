@@ -622,8 +622,8 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/voice_save":
                 from . import voices as V
                 upd = {}
-                for k in ("gemini_key", "gemini_model", "type_defaults"):
-                    if k in d and not (k == "gemini_key" and not d[k]):
+                for k in ("gemini_key", "gemini_model", "type_defaults", "img_key", "img_model"):
+                    if k in d and not (k in ("gemini_key", "img_key") and not d[k]):
                         upd[k] = d[k]
                 V.save(upd)
                 if d.get("delete_profile"):
@@ -631,6 +631,31 @@ class Handler(BaseHTTPRequestHandler):
                 if d.get("profile_name"):
                     V.save_profile(d["profile_name"], d.get("profile") or {})
                 return self._json(V.public())
+            if path == "/api/img_clear_key":
+                from . import voices as V
+                V.save({"img_key": ""})
+                return self._json(V.public())
+            if path == "/api/img_test":
+                from . import voices as V
+                import urllib.request as ur
+                import urllib.error as ue
+                key = d.get("key") or V.get_img_key()
+                model = d.get("model") or V.load().get("img_model") or V.IMG_MODEL_DEFAULT
+                if not key:
+                    return self._json({"ok": False, "error": "No hay API key: pega una aquí o guarda la de Gemini."})
+                body = json.dumps({"contents": [{"parts": [{"text": "Responde solo: ok"}]}]}).encode()
+                req = ur.Request(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}",
+                                 data=body, headers={"Content-Type": "application/json"})
+                try:
+                    with ur.urlopen(req, timeout=60) as r:
+                        json.loads(r.read().decode())
+                    return self._json({"ok": True, "model": model})
+                except ue.HTTPError as e:
+                    msg = {400: "La clave no es válida.", 403: "La clave no tiene permiso para ese modelo.", 404: "Ese modelo no existe o no está disponible para tu clave.",
+                           429: "Se acabó el cupo por ahora (límite de la API)."}.get(e.code, f"Error {e.code} de Google.")
+                    return self._json({"ok": False, "error": msg})
+                except Exception as e:
+                    return self._json({"ok": False, "error": f"No se pudo conectar: {e}"})
             if path == "/api/voice_clear_key":
                 from . import voices as V
                 V.save({"gemini_key": ""})

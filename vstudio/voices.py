@@ -27,7 +27,8 @@ GEMINI_VOICES = [
     ("Sadaltager", "Experta"), ("Sulafat", "Cálida")]
 
 TYPES = ["map", "vector", "broll", "clip"]
-_DEFAULT = {"gemini_key": "", "gemini_model": DEFAULT_GEMINI_MODEL, "profiles": {}, "type_defaults": {}}
+IMG_MODEL_DEFAULT = "gemini-2.5-pro"
+_DEFAULT = {"gemini_key": "", "gemini_model": DEFAULT_GEMINI_MODEL, "img_key": "", "img_model": IMG_MODEL_DEFAULT, "profiles": {}, "type_defaults": {}}
 
 
 def load() -> dict:
@@ -52,11 +53,21 @@ def public() -> dict:
     key = d.pop("gemini_key", "")
     d["has_key"] = bool(key)
     d["key_hint"] = ("…" + key[-4:]) if key else ""
+    ik = d.pop("img_key", "")
+    d["has_img_key"] = bool(ik)
+    d["img_key_hint"] = ("…" + ik[-4:]) if ik else ""
+    d["img_model"] = d.get("img_model") or IMG_MODEL_DEFAULT
     return d
 
 
 def get_key() -> str:
     return load().get("gemini_key", "")
+
+
+def get_img_key() -> str:
+    """Clave para generar piezas/imágenes; si no hay una propia se usa la de la voz."""
+    d = load()
+    return d.get("img_key") or d.get("gemini_key", "")
 
 
 def save_profile(name: str, prof: dict) -> dict:
