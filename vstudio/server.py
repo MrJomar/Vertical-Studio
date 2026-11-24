@@ -360,6 +360,31 @@ def render_example(job: Job, ex_id: str):
     return {"video": f"/media/cache_examples/{ex_id}.mp4", "warnings": info["warnings"]}
 
 
+# ----------------------------------------------------------------------------- proyectos diarios
+DAILY_DIR = APP_DIR / "proyectos_diarios"
+
+
+def daily_projects() -> list[dict]:
+    """Proyectos generados por la tarea diaria: proyectos_diarios/AAAA-MM-DD/*.json (el campo opcional «meta» trae título, tema y fuentes)."""
+    out = []
+    if not DAILY_DIR.is_dir():
+        return out
+    for day in sorted((d for d in DAILY_DIR.iterdir() if d.is_dir()), reverse=True):
+        for f in sorted(day.glob("*.json")):
+            try:
+                data = json.loads(f.read_text("utf-8"))
+            except Exception:
+                continue
+            scenes = data.get("scenes") or []
+            meta = data.get("meta") or {}
+            words = sum(len(str(s.get("narration", "")).split()) for s in scenes)
+            title = meta.get("titulo") or (str(scenes[0].get("narration", ""))[:70] if scenes else f.stem)
+            out.append({"id": f"{day.name}/{f.name}", "fecha": day.name, "titulo": title, "tema": meta.get("tema", ""),
+                        "fuentes": meta.get("fuentes", []), "escenas": len(scenes), "palabras": words,
+                        "segundos_aprox": round(words / 2.9), "project": {"settings": data.get("settings", {}), "scenes": scenes}})
+    return out
+
+
 PRESETS_FILE = CACHE_DIR / "presets.json"
 
 
@@ -535,6 +560,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(_presets())
             if path == "/api/examples":
                 return self._json(examples_catalog())
+            if path == "/api/proyectos_nuevos":
+                return self._json(daily_projects())
             if path == "/api/thumb":
                 p = (q.get("path") or [""])[0]
                 if not os.path.isfile(p) or Path(p).suffix.lower() not in (IMAGE_EXT | VIDEO_EXT):

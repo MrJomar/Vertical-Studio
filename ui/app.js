@@ -55,11 +55,12 @@ function renderEmpty(){
   const E=$("#empty");const ty=S.schema.types;
   E.innerHTML=`<h1>¿Qué video vamos a hacer hoy?</h1><p>Elige un tipo para empezar desde cero, o abre un ejemplo ya armado para ver cómo queda.</p>
   <div class="grid">${S.schema.order.map(k=>`<div class="tcard" data-add="${k}"><div class="ic">${icon(ty[k].icon,22)}</div><b>${esc(ty[k].label)}</b><span>${esc(ty[k].desc)}</span></div>`).join("")}</div>
-  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button><button class="btn" data-act="pieces">🧩 Piezas SVG</button></div>
+  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button><button class="btn" data-act="pieces">🧩 Piezas SVG</button><button class="btn" data-act="daily" id="dailyb">🆕 Proyectos nuevos</button></div>
   <div id="dash" style="margin-top:8px"></div>`;
   E.querySelectorAll("[data-add]").forEach(e=>e.onclick=()=>addScene(e.dataset.add));
   E.querySelectorAll("[data-act]").forEach(e=>e.onclick=()=>act(e.dataset.act));
   startDash();
+  jget("/api/proyectos_nuevos").then(l=>{let seen=[];try{seen=JSON.parse(localStorage.getItem("vs_seen")||"[]")}catch(e){}const n=l.filter(x=>!seen.includes(x.id)).length;const b=$("#dailyb");if(b&&n)b.textContent="🆕 Proyectos nuevos ("+n+")"}).catch(()=>{});
 }
 
 // ------------------------------------------------------------------ formulario
@@ -141,6 +142,21 @@ async function examplesModal(){
           if(j.state==="done"){e.video=j.result.video+"?t="+Date.now();draw()}else{toast(j.error||"No se pudo generar",1);gb.disabled=false}}catch(x){toast(x.message,1);gb.disabled=false}};
       const v=el.querySelector("video");if(v){el.onmouseenter=()=>v.play().catch(()=>{});el.onmouseleave=()=>v.pause()}})};
   draw()}
+
+async function dailyModal(){
+  const c=modal(`<div class="mh">Proyectos nuevos<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb"><div id="dl" style="display:flex;flex-direction:column;gap:12px"></div></div>`);
+  const list=await jget("/api/proyectos_nuevos");const box=c.querySelector("#dl");
+  let seen=[];try{seen=JSON.parse(localStorage.getItem("vs_seen")||"[]")}catch(e){}
+  if(!list.length){box.innerHTML=`<p class="hint">Todavía no hay proyectos nuevos. Cuando la tarea diaria suba proyectos a GitHub y actualices el programa, aparecerán aquí.</p>`;return}
+  let day="";
+  box.innerHTML=list.map(e=>{const h=e.fecha!==day?`<div class="sec" style="margin-top:6px">${esc(e.fecha)}</div>`:"";day=e.fecha;
+    const nuevo=!seen.includes(e.id);
+    return h+`<div class="ex" data-id="${esc(e.id)}" style="display:block;padding:12px"><b>${nuevo?"🆕 ":""}${esc(e.titulo)}</b><br><span>${esc(e.tema||"")}</span>
+      <div class="hint" style="margin:6px 0">${e.escenas} escenas · ${e.palabras} palabras · ~${e.segundos_aprox} s</div>
+      ${(e.fuentes||[]).length?`<div class="hint">Fuentes: ${e.fuentes.map(u=>/^https?:/.test(u)?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,38))}</a>`:esc(u)).join(" · ")}</div>`:""}
+      <div style="margin-top:8px"><button class="btn small primary" data-use>Abrir</button></div></div>`}).join("");
+  box.querySelectorAll(".ex").forEach(el=>{const e=list.find(x=>x.id===el.dataset.id);
+    el.querySelector("[data-use]").onclick=()=>{try{localStorage.setItem("vs_seen",JSON.stringify([...new Set([...seen,...list.map(x=>x.id)])]))}catch(x){}loadProject(e.project,null,e.titulo);closeModal()}})}
 
 function loadProject(p,path,name){
   S.project={settings:p.settings||{},scenes:p.scenes||[]};S.path=path;S.durs={};S.sel=S.project.scenes.length?0:-1;S.t=1.6;
@@ -446,7 +462,7 @@ function act(a){
   if(a==="new"){if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Empezar un proyecto nuevo?"))return;loadProject({settings:{theme:"oscuro"},scenes:[]},null)}
   else if(a==="home"){if(S.dirty&&!confirm("Volver al menú principal. Los cambios sin guardar se perderán. ¿Continuar?"))return;loadProject({settings:{...S.project.settings},scenes:[]},null)}
   else if(a==="update")checkUpdates(true);else if(a==="voices")voicesModal();else if(a==="pieces")piecesModal();
-  else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();
+  else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();else if(a==="daily")dailyModal();
   else if(a==="settings")settingsModal();else if(a==="export")exportModal();else if(a==="add")addModal();
   else if(a==="script")scriptModal();else if(a==="ai")aiModal();else if(a==="autoclip")autoclipModal()}
 $$("[data-act]").forEach(b=>b.onclick=()=>act(b.dataset.act));
