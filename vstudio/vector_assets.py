@@ -472,7 +472,12 @@ def a_etiqueta(w, p):
     col = _c(p.get("color"), (214, 30, 40))
     fg = _c(p.get("fg"), (255, 255, 255))
     size = int(w * 0.28) if len(txt) < 12 else int(w * 0.2)
-    t = text_layer(txt, "display", size, fill=fg, max_w=int(w * 0.95), upper=bool(p.get("upper", True)))
+    up = bool(p.get("upper", True))
+    if "\n" not in txt and p.get("fit", True):      # ajusta el tamaño para que quepa en UNA línea (nunca se parte ni se sale)
+        t0 = text_layer(txt, "display", size, fill=fg, max_w=int(w * 6), upper=up)
+        if t0.width > w * 0.9:
+            size = max(8, int(size * w * 0.9 / t0.width))
+    t = text_layer(txt, "display", size, fill=fg, max_w=int(w * 0.95), upper=up)
     padx, pady = int(size * 0.35), int(size * 0.18)
     W, H = t.width + padx * 2, t.height + pady * 2
     big = _canvas(W, H)
@@ -487,8 +492,14 @@ def a_etiqueta(w, p):
 
 def a_texto(w, p):
     txt = str(p.get("text", "Texto"))
-    return text_layer(txt, p.get("font", "display"), int(p.get("size", w * 0.2)), fill=_c(p.get("color"), (255, 255, 255)),
-                      stroke=int(p.get("stroke", 6)), max_w=int(w), upper=bool(p.get("upper", True)), shadow=4)
+    size = int(p.get("size", w * 0.2))
+    col, up = _c(p.get("color"), (255, 255, 255)), bool(p.get("upper", True))
+    if p.get("fit") and "\n" not in txt:            # fit:true → una sola línea, reduciendo el tamaño si hace falta
+        t0 = text_layer(txt, p.get("font", "display"), size, fill=col, stroke=int(p.get("stroke", 6)), max_w=int(w * 6), upper=up, shadow=4)
+        if t0.width > w * 0.96:
+            size = max(8, int(size * w * 0.96 / t0.width))
+    return text_layer(txt, p.get("font", "display"), size, fill=col,
+                      stroke=int(p.get("stroke", 6)), max_w=int(w), upper=up, shadow=4)
 
 
 def a_banda(w, p):
@@ -600,7 +611,21 @@ def a_gato(w, p):
     dr = ImageDraw.Draw(big)
     s = SS
     cx = W * s / 2
-    dr.arc([cx + W * s * 0.1, H * s * 0.55, cx + W * s * 0.75, H * s * 0.98], 300, 120, fill=fur + (255,), width=int(W * 0.09 * s))
+    er = p.get("mood") == "scared" or float(p.get("erizado", 0) or 0) > 0.5
+    if er:       # pelo de punta alrededor de la cabeza, el cuerpo y la cola
+        rr = random.Random(4)
+        for (ccx, ccy, rx, ry, n, ln) in ((cx, H * s * 0.4, W * s * 0.4, H * s * 0.285, 34, 0.075),
+                                          (cx, H * s * 0.76, W * s * 0.35, H * s * 0.245, 26, 0.07)):
+            for i in range(n):
+                a = 2 * math.pi * i / n + rr.uniform(-0.04, 0.04)
+                if math.sin(a) > 0.2 and ccy < H * s * 0.5 and abs(math.cos(a)) < 0.55:
+                    pass
+                bx, by = ccx + rx * 0.94 * math.cos(a), ccy + ry * 0.94 * math.sin(a)
+                tx, ty = ccx + (rx + W * s * ln * rr.uniform(0.8, 1.2)) * math.cos(a), ccy + (ry + W * s * ln * rr.uniform(0.8, 1.2)) * math.sin(a)
+                hw = W * s * 0.018
+                nx, ny = -math.sin(a) * hw, math.cos(a) * hw
+                dr.polygon([(bx - nx, by - ny), (tx, ty), (bx + nx, by + ny)], fill=_shade(fur, 1.05) + (255,), outline=_shade(fur, 0.6) + (255,))
+    dr.arc([cx + W * s * 0.04, H * s * 0.55, cx + W * s * 0.4, H * s * 0.98], 300, 120, fill=fur + (255,), width=int(W * (0.14 if er else 0.09) * s))
     dr.ellipse([cx - W * s * 0.34, H * s * 0.5, cx + W * s * 0.34, H * s * 0.99], fill=fur + (255,))
     dr.ellipse([cx - W * s * 0.2, H * s * 0.65, cx + W * s * 0.2, H * s * 1.0], fill=(255, 236, 210, 255))
     for sx in (-1, 1):
@@ -615,13 +640,22 @@ def a_gato(w, p):
         x = cx + sx * W * s * 0.17
         dr.ellipse([x - W * s * 0.09, H * s * 0.27, x + W * s * 0.09, H * s * 0.46], fill=(255, 255, 255, 255), outline=(60, 40, 20, 255), width=4)
         dr.ellipse([x - W * s * 0.065, H * s * 0.29, x + W * s * 0.065, H * s * 0.45], fill=(70, 170, 70, 255))
-        dr.ellipse([x - W * s * 0.03, H * s * 0.31, x + W * s * 0.03, H * s * 0.43], fill=(10, 10, 10, 255))
+        pw = 0.012 if er else 0.03
+        dr.ellipse([x - W * s * pw, H * s * 0.31, x + W * s * pw, H * s * 0.43], fill=(10, 10, 10, 255))
         dr.ellipse([x - W * s * 0.04, H * s * 0.32, x - W * s * 0.01, H * s * 0.36], fill=(255, 255, 255, 255))
         for k in (-1, 0, 1):
             dr.line([cx + sx * W * s * 0.1, H * s * 0.52 + k * 8, cx + sx * W * s * 0.5, H * s * 0.5 + k * 24], fill=(255, 255, 255, 230), width=4)
     dr.polygon([(cx - 12, H * s * 0.455), (cx + 12, H * s * 0.455), (cx, H * s * 0.485)], fill=(240, 120, 130, 255))
-    dr.arc([cx - 20, H * s * 0.48, cx, H * s * 0.52], 0, 180, fill=(120, 60, 40, 255), width=3)
-    dr.arc([cx, H * s * 0.48, cx + 20, H * s * 0.52], 0, 180, fill=(120, 60, 40, 255), width=3)
+    if er:       # bufido: boca abierta con colmillos
+        dr.ellipse([cx - W * s * 0.07, H * s * 0.49, cx + W * s * 0.07, H * s * 0.6], fill=(120, 24, 40, 255))
+        for sx in (-1, 1):
+            dr.polygon([(cx + sx * W * s * 0.045 - 8, H * s * 0.495), (cx + sx * W * s * 0.045 + 8, H * s * 0.495), (cx + sx * W * s * 0.045, H * s * 0.54)], fill=(255, 255, 255, 255))
+        for sx in (-1, 1):
+            xx = cx + sx * W * s * 0.17
+            dr.polygon([(xx - sx * W * s * 0.1, H * s * 0.2), (xx + sx * W * s * 0.12, H * s * 0.27), (xx + sx * W * s * 0.12, H * s * 0.3), (xx - sx * W * s * 0.1, H * s * 0.25)], fill=_shade(fur, 0.45) + (255,))
+    else:
+        dr.arc([cx - 20, H * s * 0.48, cx, H * s * 0.52], 0, 180, fill=(120, 60, 40, 255), width=3)
+        dr.arc([cx, H * s * 0.48, cx + 20, H * s * 0.52], 0, 180, fill=(120, 60, 40, 255), width=3)
     return _fin(big, W, H)
 
 
@@ -1270,6 +1304,265 @@ def a_svg(w, p):
     return Image.open(io.BytesIO(bytes(png))).convert("RGBA")
 
 
+# ---------------------------------------------------------------- piezas nuevas: piel de gallina
+def _grad(mask, top, bot, y0=0.0, y1=1.0):
+    """RGBA con degradado vertical (top→bot entre las alturas relativas y0..y1), recortado por la máscara L."""
+    w, h = mask.size
+    t = np.clip((np.linspace(0, 1, h, dtype=np.float32) - y0) / max(1e-4, y1 - y0), 0, 1)[:, None, None]
+    c0 = np.array(top[:3], np.float32)[None, None, :]
+    c1 = np.array(bot[:3], np.float32)[None, None, :]
+    rgb = np.broadcast_to(c0 * (1 - t) + c1 * t, (h, w, 3))
+    return Image.fromarray(np.dstack([rgb, np.asarray(mask, np.float32)]).astype(np.uint8), "RGBA")
+
+
+def _bez(p0, p1, p2, n=40):
+    t = np.linspace(0, 1, n)[:, None]
+    return ((1 - t) ** 2) * np.array(p0) + 2 * (1 - t) * t * np.array(p1) + (t ** 2) * np.array(p2)
+
+
+def a_piel(w, p):
+    """Corte de piel: epidermis, dermis, grasa, folículo con pelo y músculo erector. value 0 (relajada) → 1 (erizada)."""
+    from PIL import ImageFilter
+    W, H = int(w), int(w * 1.1)
+    v = max(0.0, min(1.0, float(p.get("value", 0))))
+    s = SS
+    BW, BH = W * s, H * s
+    rnd = random.Random(7)
+
+    def P(x, y):
+        return (x * BW, y * BH)
+
+    X0, X1, YB, HX = 0.04, 0.96, 0.33, 0.50
+    xs = np.linspace(X0, X1, 300)
+    ys = YB - v * 0.07 * np.exp(-((xs - HX) / 0.10) ** 2) + 0.004 * np.sin(xs * 38)
+
+    def band(top, bot):
+        pts = [P(x, y) for x, y in zip(xs, top)] + [P(x, y) for x, y in zip(xs[::-1], bot[::-1])]
+        m = Image.new("L", (BW, BH), 0)
+        ImageDraw.Draw(m).polygon(pts, fill=255)
+        return m
+
+    y_epi = ys + 0.05
+    y_der = np.full_like(xs, 0.76)
+    y_fat = np.full_like(xs, 0.96)
+    tissue = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
+    tissue.alpha_composite(_grad(band(y_der, y_fat), (255, 220, 120), (240, 168, 56), 0.76, 0.96))
+    tissue.alpha_composite(_grad(band(y_epi, y_der), (255, 156, 150), (214, 88, 108), YB, 0.76))
+    tissue.alpha_composite(_grad(band(ys, y_epi), (255, 232, 206), (238, 180, 142), YB - 0.05, YB + 0.06))
+    tex = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
+    td = ImageDraw.Draw(tex)
+    for _ in range(46):                                    # textura de la dermis
+        x, y, r = rnd.uniform(0.07, 0.93), rnd.uniform(0.42, 0.74), rnd.uniform(0.004, 0.011)
+        td.ellipse([(x - r) * BW, (y - r) * BH, (x + r) * BW, (y + r) * BH], fill=(150, 40, 70, 30))
+    for k in range(13):                                    # células de grasa
+        x, y, r = 0.09 + k * 0.067 + rnd.uniform(-0.01, 0.01), rnd.uniform(0.83, 0.9), rnd.uniform(0.026, 0.036)
+        td.ellipse([(x - r) * BW, (y - r) * BH, (x + r) * BW, (y + r) * BH], fill=(255, 244, 190, 150), outline=(236, 160, 40, 190), width=max(2, int(BW * 0.004)))
+    for yy, col in ((0.60, (210, 50, 70, 235)), (0.66, (70, 110, 220, 235))):   # vasos
+        td.line([P(0.07, yy), P(0.24, yy)], fill=col, width=int(BW * 0.022))
+        for xx in (0.07, 0.24):
+            r = BW * 0.011
+            td.ellipse([xx * BW - r, yy * BH - r, xx * BW + r, yy * BH + r], fill=col)
+    tissue.alpha_composite(tex)
+    clip = Image.new("L", (BW, BH), 0)
+    ImageDraw.Draw(clip).rounded_rectangle([X0 * BW, (YB - 0.1) * BH, X1 * BW, 0.96 * BH], radius=int(0.045 * BW), fill=255)
+    tissue.putalpha(Image.fromarray((np.asarray(tissue.getchannel("A"), np.float32) * np.asarray(clip, np.float32) / 255).astype(np.uint8)))
+    big = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
+    big.alpha_composite(tissue)
+    d = ImageDraw.Draw(big)
+    d.line([P(x, y) for x, y in zip(xs, ys)], fill=(255, 246, 232, 210), width=max(2, int(BW * 0.007)), joint="curve")   # brillo de la superficie
+
+    # folículo: se endereza cuando el músculo se contrae
+    ex, ey = HX, YB - v * 0.07 + 0.004 * math.sin(HX * 38)
+    bulb = (0.28 + 0.17 * v, 0.62 + 0.06 * v)
+    ctrl = ((ex + bulb[0]) / 2 + 0.035 * (1 - v), (ey + bulb[1]) / 2)
+    fol = _bez((ex, ey + 0.02), ctrl, bulb, 50)
+    d.line([P(x, y) for x, y in fol], fill=(255, 232, 214, 235), width=int(BW * 0.052), joint="curve")
+    d.line([P(x, y) for x, y in fol], fill=(214, 150, 120, 255), width=int(BW * 0.006), joint="curve")
+    br = BW * 0.05
+    bx, by = P(*bulb)
+    d.ellipse([bx - br, by - br, bx + br, by + br], fill=(255, 232, 214, 255), outline=(214, 150, 120, 255), width=max(2, int(BW * 0.005)))
+    d.ellipse([bx - br * 0.45, by - br * 0.1, bx + br * 0.45, by + br * 0.7], fill=(230, 70, 90, 255))
+    inner = fol[: int(len(fol) * 0.86)]
+    d.line([P(x, y) for x, y in inner], fill=(70, 44, 30, 255), width=int(BW * 0.018), joint="curve")
+
+    # pelo fuera de la piel
+    a = math.radians(24 + 60 * v)
+    L = 0.27 * BH
+    e0 = P(ex, ey)
+    tip = (e0[0] + L * math.cos(a), e0[1] - L * math.sin(a))
+    ctl = (e0[0] + L * 0.55 * math.cos(a) - 0.05 * BW * (1 - v), e0[1] - L * 0.55 * math.sin(a) - 0.05 * BW * (1 - v) * 0.2)
+    hair = _bez(e0, ctl, tip, 40)
+    for i in range(len(hair) - 1):
+        wd = int(BW * (0.03 - 0.018 * i / len(hair)))
+        d.line([tuple(hair[i]), tuple(hair[i + 1])], fill=(64, 40, 30, 255), width=max(2, wd))
+        d.line([tuple(hair[i] + (-wd * 0.18, 0)), tuple(hair[i + 1] + (-wd * 0.18, 0))], fill=(140, 96, 66, 200), width=max(1, wd // 4))
+
+    # músculo erector: flojo y ondulado en reposo, tenso, grueso y rojo al contraerse
+    t = 0.55
+    A = tuple(np.array(_bez((ex, ey + 0.02), ctrl, bulb, 2)[0]) * 0 + _bez((ex, ey + 0.02), ctrl, bulb, 101)[int(t * 100)])
+    B = (0.80, YB + 0.075)
+    mid = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2 + 0.11 * (1 - v))
+    mus = _bez(A, mid, B, 50)
+    thick = BW * (0.020 + 0.016 * v)
+    col_m = (int(200 + 55 * v), int(70 - 10 * v), int(92 - 28 * v), 255)
+    if v > 0.45:
+        glow = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
+        ImageDraw.Draw(glow).line([P(x, y) for x, y in mus], fill=(255, 90, 90, int(150 * v)), width=int(thick * 2.6), joint="curve")
+        big.alpha_composite(glow.filter(ImageFilter.GaussianBlur(BW * 0.012)))
+        d = ImageDraw.Draw(big)
+    d.line([P(x, y) for x, y in mus], fill=col_m, width=int(thick), joint="curve")
+    d.line([P(x, y - 0.004) for x, y in mus], fill=(255, 190, 190, 150), width=max(2, int(thick * 0.28)), joint="curve")
+    for pt in (A, B):
+        r = thick * 0.62
+        cxp, cyp = P(*pt)
+        d.ellipse([cxp - r, cyp - r, cxp + r, cyp + r], fill=col_m)
+
+    # nervio simpático con señal viajando hacia el músculo
+    nerve = _bez((0.92, 0.95), (0.96, 0.58), (B[0] + 0.01, B[1] + 0.02), 60)
+    d.line([P(x, y) for x, y in nerve], fill=(255, 214, 60, 255), width=int(BW * 0.011), joint="curve")
+    if 0.0 < v < 0.97:
+        f = min(1.0, v * 1.6)
+        bx2, by2 = P(*nerve[int(f * (len(nerve) - 1))])
+        gl = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))
+        r = BW * 0.03
+        ImageDraw.Draw(gl).ellipse([bx2 - r, by2 - r, bx2 + r, by2 + r], fill=(255, 240, 120, 230))
+        big.alpha_composite(gl.filter(ImageFilter.GaussianBlur(BW * 0.012)))
+        d = ImageDraw.Draw(big)
+        r = BW * 0.014
+        d.ellipse([bx2 - r, by2 - r, bx2 + r, by2 + r], fill=(255, 255, 255, 255))
+    return _fin(big, W, H)
+
+
+def a_peludo(w, p):
+    """Ancestro peludo: bola de pelaje con cara. erizado 0 (pelo caído) → 1 (pelo de punta, se ve más grande)."""
+    d = int(w)
+    er = max(0.0, min(1.0, float(p.get("erizado", 0))))
+    fur = _c(p.get("color"), (128, 80, 44))
+    S = SS
+    big = _canvas(d, d)
+    dr = ImageDraw.Draw(big)
+    c = d * S / 2
+    r0 = c * (0.62 - 0.07 * er)
+    rnd = random.Random(int(p.get("var", 0)) + 11)
+    for ring, (n, grow, shade_k) in enumerate(((34, 1.18, 0.72), (38, 1.0, 1.0))):     # dos capas de mechones: fondo oscuro y frente claro
+        for i in range(n):
+            a = 2 * math.pi * (i + 0.5 * ring) / n + rnd.uniform(-0.05, 0.05)
+            L = r0 + c * (0.17 + 0.22 * er) * grow * rnd.uniform(0.8, 1.0)
+            ta = a + (1 - er) * (0.34 if ring else -0.3)
+            hw = 0.16 + 0.06 * (1 - er)
+            k = rnd.uniform(0.9, 1.15) * shade_k
+            mid = (c + (r0 + (L - r0) * 0.55) * math.cos((a + ta) / 2 + (0.12 if i % 2 else -0.12) * (1 - er)),
+                   c + (r0 + (L - r0) * 0.55) * math.sin((a + ta) / 2 + (0.12 if i % 2 else -0.12) * (1 - er)))
+            dr.polygon([(c + r0 * 0.78 * math.cos(a - hw), c + r0 * 0.78 * math.sin(a - hw)),
+                        (mid[0] + 0.02 * c * math.cos(a + 1.57), mid[1] + 0.02 * c * math.sin(a + 1.57)),
+                        (c + L * math.cos(ta), c + L * math.sin(ta)),
+                        (mid[0] - 0.02 * c * math.cos(a + 1.57), mid[1] - 0.02 * c * math.sin(a + 1.57)),
+                        (c + r0 * 0.78 * math.cos(a + hw), c + r0 * 0.78 * math.sin(a + hw))],
+                       fill=_shade(fur, k) + (255,), outline=_shade(fur, 0.5) + (255,))
+    for sx in (-1, 1):                                           # orejas
+        ex_, ey_, er_ = c + sx * r0 * 0.93, c + r0 * 0.1, r0 * 0.2
+        dr.ellipse([ex_ - er_, ey_ - er_, ex_ + er_, ey_ + er_], fill=(238, 196, 156, 255), outline=_shade(fur, 0.55) + (255,), width=max(2, int(r0 * 0.03)))
+        dr.ellipse([ex_ - er_ * 0.55, ey_ - er_ * 0.55, ex_ + er_ * 0.55, ey_ + er_ * 0.55], fill=(205, 150, 120, 255))
+    im = _fin(big, d, d)
+    bd = int(r0 * 2 / S)
+    body = sphere(bd, fur, spec=0.1, dark=0.5, light=(-0.4, -0.45))
+    b2 = _canvas(bd, bd)
+    d2 = ImageDraw.Draw(b2)
+    r = bd * S / 2
+    for _ in range(60):                                          # trazos de pelo sobre el cuerpo
+        x, y = rnd.uniform(0.1, 1.9) * r, rnd.uniform(0.1, 1.9) * r
+        if (x - r) ** 2 + (y - r) ** 2 > (r * 0.92) ** 2:
+            continue
+        d2.line([x, y, x + rnd.uniform(-0.1, 0.1) * r, y + 0.16 * r], fill=_shade(fur, rnd.choice((0.7, 1.3))) + (150,), width=max(2, int(r * 0.03)))
+    d2.ellipse([r * 0.36, r * 0.5, r * 1.64, r * 1.66], fill=(238, 196, 156, 255), outline=_shade((238, 196, 156), 0.7) + (255,), width=max(2, int(r * 0.02)))
+    _face(d2, r, r * 1.12, r * 0.6, p.get("mood", "neutral"))
+    body.alpha_composite(_fin(b2, bd, bd))
+    im.alpha_composite(body, (int((d - bd) / 2), int((d - bd) / 2)))
+    return im
+
+
+def a_termometro(w, p):
+    """Termómetro vertical con líquido que sube de azul (frío) a rojo (calor). value 0-1."""
+    W, H = int(w), int(w * 2.3)
+    v = max(0.0, min(1.0, float(p.get("value", 0.5))))
+    s = SS
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    cx = W * s / 2
+    tw = W * s * 0.26
+    top, bcy, br = H * s * 0.03, H * s * 0.84, W * s * 0.27
+    dr.rounded_rectangle([cx - tw, top, cx + tw, bcy], radius=tw, fill=(236, 246, 255, 215), outline=(255, 255, 255, 255), width=int(W * 0.02 * s))
+    dr.ellipse([cx - br * 1.25, bcy - br * 1.0, cx + br * 1.25, bcy + br * 1.5], fill=(236, 246, 255, 215), outline=(255, 255, 255, 255), width=int(W * 0.02 * s))
+    cold, hot = np.array((70, 160, 255)), np.array((255, 70, 56))
+    col = tuple(int(x) for x in cold * (1 - v) + hot * v)
+    ytop = (H * s * 0.78) * (1 - v) + (H * s * 0.12) * v
+    cw = tw * 0.46
+    dr.rounded_rectangle([cx - cw, ytop, cx + cw, bcy], radius=cw, fill=col + (255,))
+    dr.ellipse([cx - br, bcy - br * 0.75, cx + br, bcy + br * 1.25], fill=col + (255,))
+    dr.ellipse([cx - br * 0.55, bcy - br * 0.45, cx - br * 0.1, bcy], fill=(255, 255, 255, 150))
+    dr.rounded_rectangle([cx - tw * 0.72, top + tw, cx - tw * 0.52, bcy - br * 0.4], radius=tw * 0.1, fill=(255, 255, 255, 130))
+    for k in range(13):
+        y = H * s * (0.14 + k * 0.05)
+        ln = tw * (0.7 if k % 3 == 0 else 0.4)
+        dr.line([cx + tw * 1.25, y, cx + tw * 1.25 + ln, y], fill=(235, 240, 250, 230), width=max(2, int(W * 0.012 * s)))
+    return _fin(big, W, H)
+
+
+def a_audifonos(w, p):
+    """Audífonos de diadema."""
+    W, H = int(w), int(w * 0.98)
+    col = _c(p.get("color"), (236, 70, 112))
+    s = SS
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    bw = int(W * 0.075 * s)
+    dr.arc([W * s * 0.1, H * s * 0.02, W * s * 0.9, H * s * 1.0], 180, 360, fill=(46, 50, 70, 255), width=bw)
+    dr.arc([W * s * 0.1, H * s * 0.02, W * s * 0.9, H * s * 1.0], 205, 335, fill=(120, 130, 170, 255), width=max(3, bw // 4))
+    for sx in (0, 1):
+        x0 = W * s * (0.02 if sx == 0 else 0.7)
+        x1 = x0 + W * s * 0.28
+        dr.rounded_rectangle([x0, H * s * 0.44, x1, H * s * 0.97], radius=W * s * 0.1, fill=_shade(col, 0.62) + (255,))
+        dr.rounded_rectangle([x0 + W * s * 0.02, H * s * 0.46, x1 - W * s * 0.02, H * s * 0.9], radius=W * s * 0.09, fill=col + (255,))
+        dr.rounded_rectangle([x0 + W * s * 0.05, H * s * 0.5, x0 + W * s * 0.11, H * s * 0.8], radius=W * s * 0.03, fill=_shade(col, 1.45) + (200,))
+        cxm = (x0 + x1) / 2
+        dr.ellipse([cxm - W * s * 0.06, H * s * 0.62, cxm + W * s * 0.06, H * s * 0.74], fill=_shade(col, 0.55) + (255,))
+    return _fin(big, W, H)
+
+
+def a_nota(w, p):
+    """Nota musical brillante (double=true: dos notas unidas)."""
+    W, H = int(w), int(w * 1.3)
+    col = _c(p.get("color"), (255, 214, 70))
+    s = SS
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    dark = _shade(col, 0.78) + (255,)
+    edge = _shade(col, 0.5) + (255,)
+
+    def head(cx, cy):
+        im = Image.new("RGBA", (int(W * s * 0.5), int(W * s * 0.5)), (0, 0, 0, 0))
+        ImageDraw.Draw(im).ellipse([W * s * 0.02, W * s * 0.1, W * s * 0.48, W * s * 0.38], fill=col + (255,), outline=edge, width=max(3, int(W * 0.02 * s)))
+        ImageDraw.Draw(im).ellipse([W * s * 0.1, W * s * 0.15, W * s * 0.26, W * s * 0.23], fill=_shade(col, 1.5) + (190,))
+        im = im.rotate(22, Image.BICUBIC)
+        big.alpha_composite(im, (int(cx - im.width / 2), int(cy - im.height / 2)))
+
+    if p.get("double"):
+        pts = ((W * s * 0.28, H * s * 0.78), (W * s * 0.72, H * s * 0.68))
+        for (x, y) in pts:
+            head(x, y)
+            dr.rectangle([x + W * s * 0.1, H * s * 0.2 + (y - pts[0][1]), x + W * s * 0.15, y], fill=dark)
+        dr.polygon([(pts[0][0] + W * s * 0.1, H * s * 0.2), (pts[1][0] + W * s * 0.15, H * s * 0.1), (pts[1][0] + W * s * 0.15, H * s * 0.22), (pts[0][0] + W * s * 0.1, H * s * 0.32)], fill=dark)
+    else:
+        x, y = W * s * 0.34, H * s * 0.8
+        head(x, y)
+        dr.rectangle([x + W * s * 0.1, H * s * 0.1, x + W * s * 0.15, y], fill=dark)
+        sx0, ty = x + W * s * 0.15, H * s * 0.1
+        outer = _bez((sx0, ty), (sx0 + W * s * 0.5, ty + H * s * 0.12), (sx0 + W * s * 0.3, ty + H * s * 0.4), 24)
+        inner = _bez((sx0 + W * s * 0.3, ty + H * s * 0.4), (sx0 + W * s * 0.34, ty + H * s * 0.2), (sx0, ty + H * s * 0.22), 24)
+        dr.polygon([tuple(q) for q in outer] + [tuple(q) for q in inner], fill=dark)
+    return _fin(big, W, H)
+
+
 ASSETS = {
     "esfera": (a_esfera, 1.0, "Bola con carita (personaje base)", "color, mood: neutral|happy|angry|sad|scared|none"),
     "villano": (a_villano, 1.0, "Bolita azul enmascarada con capa y brazos", "color, cape"),
@@ -1281,11 +1574,11 @@ ASSETS = {
     "puerta": (a_puerta, 1.6, "Puerta de madera", "color"),
     "cartel": (a_cartel, 0.78, "Cartel colgante rojo con texto", "text, color"),
     "etiqueta": (a_etiqueta, 0.4, "Caja roja con texto grande para datos (28 años, 300 km)", "text, color, fg"),
-    "texto": (a_texto, 0.3, "Texto con contorno", "text, color, size, stroke"),
+    "texto": (a_texto, 0.3, "Texto con contorno", "text, color, size, stroke, fit (true = una sola línea, ajusta el tamaño)"),
     "banda": (a_banda, 0.3, "Rótulo ancho de local", "text, color"),
     "pastilla": (a_pastilla, 0.42, "Pastilla roja y blanca", ""),
     "pez": (a_pez, 0.5, "Pescado plateado", "color"),
-    "gato": (a_gato, 1.15, "Gato naranja sentado", "color"),
+    "gato": (a_gato, 1.15, "Gato naranja sentado (mood scared: pelo erizado, bufido)", "color, mood: scared|normal"),
     "hielo": (a_hielo, 0.3, "Cama de hielo (poner al borde inferior)", ""),
     "olor": (a_nube_olor, 1.3, "Ondas verdes de olor", "color"),
     "corazon": (a_corazon, 1.0, "Corazón", "color"),
@@ -1312,6 +1605,11 @@ ASSETS = {
     "cerebro": (a_cerebro, 0.85, "Cerebro rosa con circunvoluciones", "color, seed"),
     "nervio": (a_nervio, 1.6, "Nervio amarillo vertical con vainas", "color, pinch (0-1: punto aplastado), glow"),
     "pierna": (a_pierna, 1.05, "Pierna sentada translúcida con arteria, vena y nervio", "color, nerve (0-1)"),
+    "piel": (a_piel, 1.1, "Corte de piel con pelo, folículo, músculo erector y nervio. value 0 (relajada) → 1 (piel de gallina): el pelo se levanta y sale el bultito", "value (0-1); anima con value_from/value_to y value_step 0.02"),
+    "peludo": (a_peludo, 1.0, "Ancestro peludo: bola de pelaje con cara", "erizado (0-1, pelo de punta), mood: neutral|happy|angry|sad|scared, color"),
+    "termometro": (a_termometro, 2.3, "Termómetro vertical de azul (frío) a rojo (calor)", "value (0-1)"),
+    "audifonos": (a_audifonos, 0.98, "Audífonos de diadema", "color"),
+    "nota": (a_nota, 1.3, "Nota musical brillante", "color, double (true = dos notas unidas)"),
     "pie": (a_pie, 0.6, "Pie translúcido con nervio dorado", "color, spark"),
 }
 

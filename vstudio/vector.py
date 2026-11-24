@@ -749,7 +749,8 @@ class VectorScene(Scene):
             if "value_from" in L:
                 vd = float(L.get("value_dur", 1.5))
                 v = lerp(float(L["value_from"]), float(L.get("value_to", L["value_from"])), ease("in_out_cubic", clamp(lt / vd)))
-                params["value"] = round(v * 4) / 4
+                vs = float(L.get("value_step", 0.25))
+                params["value"] = round(round(v / vs) * vs, 4)
             wpx = int(round(base_w / 6.0) * 6)
             spr = sprite(L["asset"], wpx, params, L.get("shadow", L["asset"] not in ("texto", "hielo", "banda", "olor", "agua", "svg")))
             if L.get("flip"):
@@ -820,7 +821,7 @@ Cada capa: {{"asset":"nombre","x":0-1,"y":0-1 (centro, fracción del alto/ancho)
  "anim":"pop+float" (entradas: pop, fade, grow, slide_left, slide_right, slide_up, slide_down, drop; movimiento continuo: float, bob (respirar), bounce, shake, pulse, latido (corazón: con "bpm" y "bpm_fin"; suena solo con sfx auto), spin, wobble, drift, fall, rise, blink),
  "count":N con "spread":[x0,y0,x1,y1] y "layout":"random|grid|line|crowd" (crowd = multitud en filas con profundidad; "rows":N) para enjambres/multitudes, "rot":grados,"flip":true,"z":orden (mayor = encima),
  más los parámetros propios del elemento}}.
-Para el medidor puedes animar la aguja con "value_from", "value_to" y "value_dur".
+Para el medidor puedes animar la aguja con "value_from", "value_to" y "value_dur" ("value_step" para pasos más finos: 0.02 en piezas de 0 a 1 como "piel").
 
 Funciones para dar riqueza visual (úsalas con criterio, 1-3 por escena):
 - Escena: "fx":"humo,bokeh,bokeh_frente,corazones,brillos,nieve,burbujas,polvo_luz" (ambiente; bokeh_frente son manchas grandes desenfocadas por delante), "fx_color":"#hex".

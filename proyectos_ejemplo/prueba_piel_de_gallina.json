@@ -1,0 +1,802 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave",
+  "sfx": "auto",
+  "sfx_volume": 0.5
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "narration": "¿Por qué se te enchina la piel?",
+   "layers": [
+    {
+     "asset": "persona",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.6,
+     "var": 3,
+     "style": "corto",
+     "mood": "neutral",
+     "anim": "pop+bob",
+     "z": 2
+    },
+    {
+     "asset": "termometro",
+     "x": 0.84,
+     "y": 0.56,
+     "w": 0.15,
+     "value": 0.08,
+     "anim": "pop+float",
+     "at": 0.3,
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "¡BRRR!",
+     "color": "#d8f1ff",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.5,
+     "anim": "pop+shake",
+     "at": "enchina",
+     "z": 4
+    }
+   ],
+   "fx": "nieve",
+   "bg_colors": [
+    "#8fd0ff",
+    "#0b2a5e",
+    "#d8f1ff"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Y lo raro: a veces pasa aunque no tengas frío.",
+   "layers": [
+    {
+     "asset": "persona",
+     "x": 0.27,
+     "y": 0.7,
+     "w": 0.4,
+     "var": 3,
+     "style": "corto",
+     "mood": "happy",
+     "anim": "pop+bob",
+     "z": 2
+    },
+    {
+     "asset": "termometro",
+     "x": 0.66,
+     "y": 0.56,
+     "w": 0.24,
+     "value": 0.88,
+     "anim": "pop+float",
+     "at": "raro",
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "¡SIN FRÍO!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.62,
+     "anim": "pop+shake",
+     "at": "aunque",
+     "z": 4
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#ffd27a",
+    "#7a2b12",
+    "#fff1c2"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "push",
+   "narration": "Debajo de tu piel hay un músculo diminuto.",
+   "layers": [
+    {
+     "asset": "piel",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.84,
+     "value": 0,
+     "anim": "pop",
+     "at": 0.1,
+     "z": 2
+    },
+    {
+     "asset": "flecha",
+     "x": 0.62,
+     "y": 0.6,
+     "w": 0.11,
+     "rot": -90,
+     "color": "#ffd23f",
+     "anim": "pop+bounce",
+     "at": "músculo",
+     "z": 6
+    },
+    {
+     "asset": "etiqueta",
+     "text": "MÚSCULO ERECTOR",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "músculo",
+     "z": 5
+    }
+   ],
+   "fx": "polvo_luz"
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "pan_left",
+   "narration": "Tienes uno por cada pelo de tu cuerpo.",
+   "layers": [
+    {
+     "asset": "piel",
+     "x": 0.3,
+     "y": 0.38,
+     "w": 0.46,
+     "value": 0,
+     "anim": "pop",
+     "at": 0.1,
+     "z": 2
+    },
+    {
+     "asset": "piel",
+     "x": 0.7,
+     "y": 0.52,
+     "w": 0.46,
+     "value": 0,
+     "anim": "pop",
+     "at": 0.5,
+     "z": 3
+    },
+    {
+     "asset": "piel",
+     "x": 0.3,
+     "y": 0.66,
+     "w": 0.46,
+     "value": 0,
+     "anim": "pop",
+     "at": 0.9,
+     "z": 4
+    },
+    {
+     "asset": "etiqueta",
+     "text": "UNO POR PELO",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.6,
+     "anim": "pop",
+     "at": "cada",
+     "z": 5
+    }
+   ],
+   "fx": "bokeh"
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "push",
+   "narration": "Cuando recibe una señal, se contrae…",
+   "layers": [
+    {
+     "asset": "piel",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.84,
+     "value_from": 0,
+     "value_to": 1,
+     "value_dur": 2.2,
+     "value_step": 0.02,
+     "anim": "fade",
+     "at": 0.0,
+     "z": 2
+    },
+    {
+     "asset": "rayo",
+     "x": 0.82,
+     "y": 0.84,
+     "w": 0.14,
+     "anim": "pop+blink",
+     "at": "señal",
+     "z": 6
+    }
+   ],
+   "fx": "brillos"
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "push_fuerte",
+   "narration": "y jala el pelo hacia arriba.",
+   "layers": [
+    {
+     "asset": "piel",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.84,
+     "value": 1,
+     "anim": "fade",
+     "z": 2
+    },
+    {
+     "asset": "flecha",
+     "x": 0.66,
+     "y": 0.4,
+     "w": 0.13,
+     "rot": -90,
+     "color": "#ffd23f",
+     "anim": "pop+bounce",
+     "at": "arriba",
+     "z": 6
+    },
+    {
+     "asset": "texto",
+     "text": "¡PIEL DE GALLINA!",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 0.84,
+     "anim": "pop+shake",
+     "at": "jala",
+     "z": 7
+    }
+   ],
+   "fx": "polvo_luz"
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pull",
+   "narration": "La orden viene del sistema nervioso simpático: el de lucha o huida.",
+   "layers": [
+    {
+     "asset": "cerebro",
+     "x": 0.5,
+     "y": 0.4,
+     "w": 0.6,
+     "anim": "pop+pulse",
+     "at": "orden",
+     "z": 2,
+     "glow": "#ff9ad5"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.5,
+     "y": 0.68,
+     "w": 0.2,
+     "anim": "pop+blink",
+     "at": "viene",
+     "z": 3
+    },
+    {
+     "asset": "etiqueta",
+     "text": "LUCHA O HUIDA",
+     "x": 0.5,
+     "y": 0.84,
+     "w": 0.75,
+     "anim": "pop",
+     "at": "lucha",
+     "z": 5
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#7a63ff",
+    "#0a0a2a",
+    "#ffe08a"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "narration": "Mira a un gato asustado.",
+   "layers": [
+    {
+     "asset": "gato",
+     "mood": "scared",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.8,
+     "anim": "pop+wobble",
+     "at": "gato",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "¡SSSSS!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.55,
+     "anim": "pop+shake",
+     "at": "asustado",
+     "z": 4
+    }
+   ],
+   "fx": "polvo_luz",
+   "bg_colors": [
+    "#c08cff",
+    "#1a0b33",
+    "#ffb3ff"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push_fuerte",
+   "narration": "Se esponja para verse más grande y asustar.",
+   "layers": [
+    {
+     "asset": "gato",
+     "mood": "scared",
+     "x": 0.5,
+     "y": 0.54,
+     "w": 0.7,
+     "anim": "grow+shake",
+     "at": "esponja",
+     "z": 2
+    },
+    {
+     "asset": "flecha",
+     "x": 0.14,
+     "y": 0.6,
+     "w": 0.1,
+     "rot": 180,
+     "color": "#ffd23f",
+     "anim": "pop+bounce",
+     "at": "grande",
+     "z": 5
+    },
+    {
+     "asset": "flecha",
+     "x": 0.86,
+     "y": 0.6,
+     "w": 0.1,
+     "rot": 0,
+     "color": "#ffd23f",
+     "anim": "pop+bounce",
+     "at": "grande",
+     "z": 5
+    },
+    {
+     "asset": "texto",
+     "text": "¡MÁS GRANDE!",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.85,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "grande",
+     "z": 6
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#c08cff",
+    "#1a0b33",
+    "#ffb3ff"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Y atrapa aire entre el pelo, como un abrigo.",
+   "layers": [
+    {
+     "asset": "peludo",
+     "erizado": 1,
+     "mood": "happy",
+     "x": 0.5,
+     "y": 0.58,
+     "w": 0.66,
+     "anim": "pop+bob",
+     "z": 2
+    },
+    {
+     "asset": "burbuja",
+     "count": 9,
+     "spread": [
+      0.12,
+      0.32,
+      0.88,
+      0.84
+     ],
+     "w": 0.12,
+     "anim": "pop+drift",
+     "at": "aire",
+     "stagger": 0.1,
+     "z": 4
+    },
+    {
+     "asset": "etiqueta",
+     "text": "AIRE = ABRIGO",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "abrigo",
+     "z": 6
+    }
+   ],
+   "fx": "nieve",
+   "bg_colors": [
+    "#8fd0ff",
+    "#0b2a5e",
+    "#d8f1ff"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "drift",
+   "narration": "Nuestros ancestros peludos hacían exactamente lo mismo.",
+   "layers": [
+    {
+     "asset": "peludo",
+     "erizado": 0,
+     "mood": "neutral",
+     "x": 0.33,
+     "y": 0.62,
+     "w": 0.58,
+     "var": 1,
+     "anim": "pop+bob",
+     "z": 2
+    },
+    {
+     "asset": "peludo",
+     "erizado": 1,
+     "mood": "angry",
+     "x": 0.72,
+     "y": 0.5,
+     "w": 0.46,
+     "var": 2,
+     "anim": "pop+shake",
+     "at": "hacían",
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "ANCESTROS",
+     "color": "#fff0b0",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "ancestros",
+     "z": 5
+    }
+   ],
+   "fx": "polvo_luz",
+   "bg_colors": [
+    "#f0c987",
+    "#3b2410",
+    "#fff0b0"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Perdimos el pelo, pero se quedó el reflejo.",
+   "layers": [
+    {
+     "asset": "peludo",
+     "erizado": 1,
+     "mood": "neutral",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.62,
+     "anim": "pop",
+     "out": "pelo",
+     "z": 2
+    },
+    {
+     "asset": "persona",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.46,
+     "var": 3,
+     "style": "corto",
+     "mood": "happy",
+     "anim": "pop+bob",
+     "at": "pero",
+     "z": 3
+    },
+    {
+     "asset": "piel",
+     "x": 0.5,
+     "y": 0.77,
+     "w": 0.5,
+     "value": 1,
+     "anim": "pop",
+     "at": "reflejo",
+     "z": 5
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#f0c987",
+    "#3b2410",
+    "#fff0b0"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push_fuerte",
+   "narration": "¿Y por qué pasa con una canción?",
+   "layers": [
+    {
+     "asset": "audifonos",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.6,
+     "anim": "pop+bob",
+     "z": 2,
+     "glow": "#ff7ab0"
+    },
+    {
+     "asset": "nota",
+     "count": 5,
+     "spread": [
+      0.1,
+      0.3,
+      0.9,
+      0.8
+     ],
+     "w": 0.16,
+     "anim": "pop+drift",
+     "stagger": 0.12,
+     "at": "canción",
+     "z": 3,
+     "glow": "#ffe07a"
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#7a63ff",
+    "#0a0a2a",
+    "#ffe08a"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pull",
+   "narration": "Cuando la música te emociona, tu cerebro libera dopamina.",
+   "layers": [
+    {
+     "asset": "cerebro",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.62,
+     "anim": "pop+pulse",
+     "at": "cerebro",
+     "z": 2,
+     "glow": "#ff9ad5"
+    },
+    {
+     "asset": "nota",
+     "count": 6,
+     "spread": [
+      0.08,
+      0.25,
+      0.92,
+      0.85
+     ],
+     "w": 0.14,
+     "anim": "pop+drift",
+     "stagger": 0.15,
+     "at": "música",
+     "z": 3
+    },
+    {
+     "asset": "etiqueta",
+     "text": "DOPAMINA",
+     "x": 0.5,
+     "y": 0.84,
+     "w": 0.55,
+     "anim": "pop",
+     "at": "dopamina",
+     "z": 6
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#7a63ff",
+    "#0a0a2a",
+    "#ffe08a"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push",
+   "narration": "Incluso un instante antes de lo mejor de la canción.",
+   "layers": [
+    {
+     "asset": "reloj",
+     "x": 0.5,
+     "y": 0.48,
+     "w": 0.52,
+     "anim": "pop+pulse",
+     "at": "instante",
+     "z": 2
+    },
+    {
+     "asset": "nota",
+     "double": true,
+     "x": 0.78,
+     "y": 0.72,
+     "w": 0.2,
+     "anim": "pop+float",
+     "at": "mejor",
+     "z": 3,
+     "glow": "#ffe07a"
+    },
+    {
+     "asset": "texto",
+     "text": "¡ANTES!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.45,
+     "anim": "pop+shake",
+     "at": "antes",
+     "z": 5
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#7a63ff",
+    "#0a0a2a",
+    "#ffe08a"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "push_fuerte",
+   "narration": "No es frío ni magia:",
+   "layers": [
+    {
+     "asset": "termometro",
+     "x": 0.28,
+     "y": 0.58,
+     "w": 0.2,
+     "value": 0.15,
+     "anim": "pop",
+     "z": 2
+    },
+    {
+     "asset": "estrella",
+     "x": 0.7,
+     "y": 0.58,
+     "w": 0.3,
+     "color": "#ffd23f",
+     "anim": "pop+spin",
+     "at": "magia",
+     "z": 2
+    },
+    {
+     "asset": "marca",
+     "kind": "no",
+     "x": 0.42,
+     "y": 0.42,
+     "w": 0.15,
+     "anim": "pop",
+     "at": "frío",
+     "z": 6
+    },
+    {
+     "asset": "marca",
+     "kind": "no",
+     "x": 0.84,
+     "y": 0.4,
+     "w": 0.15,
+     "anim": "pop",
+     "at": "magia",
+     "z": 6
+    }
+   ],
+   "fx": "bokeh"
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "push",
+   "narration": "es un músculo diminuto heredado de ancestros peludos.",
+   "layers": [
+    {
+     "asset": "piel",
+     "x": 0.5,
+     "y": 0.56,
+     "w": 0.84,
+     "value": 1,
+     "anim": "pop",
+     "at": "músculo",
+     "z": 2
+    },
+    {
+     "asset": "peludo",
+     "erizado": 1,
+     "mood": "happy",
+     "x": 0.82,
+     "y": 0.28,
+     "w": 0.28,
+     "var": 2,
+     "anim": "pop+bob",
+     "at": "ancestros",
+     "z": 5
+    }
+   ],
+   "fx": "polvo_luz"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "narration": "Y por eso… se te enchina la piel.",
+   "layers": [
+    {
+     "asset": "persona",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.6,
+     "var": 3,
+     "style": "corto",
+     "mood": "happy",
+     "anim": "pop+bob",
+     "z": 2
+    },
+    {
+     "asset": "termometro",
+     "x": 0.84,
+     "y": 0.56,
+     "w": 0.15,
+     "value": 0.08,
+     "anim": "pop+float",
+     "at": 0.3,
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "¡BRRR!",
+     "color": "#d8f1ff",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.5,
+     "anim": "pop+shake",
+     "at": "enchina",
+     "z": 4
+    }
+   ],
+   "fx": "nieve",
+   "bg_colors": [
+    "#8fd0ff",
+    "#0b2a5e",
+    "#d8f1ff"
+   ]
+  }
+ ]
+}
