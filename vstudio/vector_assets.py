@@ -245,7 +245,7 @@ def a_burbuja(w, p):
     dr.ellipse([2, 2, d * s - 2, d * s - 2], fill=col + (38,), outline=col + (210,), width=max(2, int(d * 0.025 * s)))
     dr.arc([d * s * 0.1, d * s * 0.1, d * s * 0.9, d * s * 0.9], 190, 260, fill=(255, 255, 255, 255), width=max(2, int(d * 0.035 * s)))
     dr.arc([d * s * 0.1, d * s * 0.1, d * s * 0.9, d * s * 0.9], 10, 50, fill=(255, 255, 255, 170), width=max(2, int(d * 0.02 * s)))
-    dr.ellipse([d * s * 0.22, d * s * 0.16, d * s * 0.42, d * s * 0.28], fill=(255, 255, 255, 200))
+    dr.ellipse([d * s * 0.22, d * s * 0.16, d * s * 0.42, d * s * 0.28], fill=(255, 255, 255, 110))
     return _fin(big, d, d)
 
 
@@ -688,6 +688,83 @@ def a_agua(w, p):
 
 # ---------------------------------------------------------------- registro
 # nombre: (función, alto/ancho aproximado, descripción, parámetros)
+def a_molecula(w, p):
+    """Molécula de bolas y palitos (trimetilamina): N azul con cara enojada, 3 carbonos grises, 9 hidrógenos."""
+    from PIL import ImageFilter
+    W, H = int(w), int(w * 0.92)
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    N = (0.5, 0.3)
+    Cs = [(0.25, 0.62), (0.75, 0.62), (0.5, 0.76)]
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    s = SS
+    rn = W * 0.17
+    rc = W * 0.115
+    rh = W * 0.075
+    Hs = []
+    for cx, cy in Cs:
+        dr.line([(N[0] * W * s, N[1] * H * s), (cx * W * s, cy * H * s)], fill=(190, 190, 200, 255), width=int(W * 0.028 * s))
+        for k, ang in enumerate((-2.5, -0.65, 1.55)):
+            hx, hy = cx * W + math.cos(ang) * W * 0.125, cy * H + math.sin(ang) * W * 0.125
+            dr.line([(cx * W * s, cy * H * s), (hx * s, hy * s)], fill=(190, 190, 200, 255), width=int(W * 0.02 * s))
+            Hs.append((hx, hy))
+    im.alpha_composite(_fin(big, W, H))
+    for hx, hy in sorted(Hs, key=lambda q: q[1]):
+        sp = sphere(int(rh * 2), (240, 240, 248), spec=0.8)
+        im.alpha_composite(sp, (int(hx - rh), int(hy - rh)))
+    for cx, cy in Cs:
+        sp = sphere(int(rc * 2), (95, 98, 108), spec=0.7)
+        im.alpha_composite(sp, (int(cx * W - rc), int(cy * H - rc)))
+    nb = sphere(int(rn * 2), _c(p.get("color"), (45, 85, 235)))
+    d = nb.width
+    fb = _canvas(d, d)
+    _face(ImageDraw.Draw(fb), d * s / 2, d * s / 2, d * s / 2, p.get("mood", "angry"))
+    nb.alpha_composite(_fin(fb, d, d))
+    im.alpha_composite(nb, (int(N[0] * W - rn), int(N[1] * H - rn)))
+    return im
+
+
+def a_burbuja_villano(w, p):
+    d = int(w)
+    im = Image.new("RGBA", (d, d), (0, 0, 0, 0))
+    v = a_villano(int(d * 0.66), {})
+    im.alpha_composite(v, ((d - v.width) // 2, int(d * 0.2)))
+    im.alpha_composite(a_burbuja(d, p))
+    return im
+
+
+def a_luz(w, p):
+    """Resplandor suave (luz bajo una puerta, foco, aura). Usa color y h (relación alto/ancho)."""
+    W = int(w)
+    H = max(4, int(w * float(p.get("h", 0.35))))
+    col = np.array(_c(p.get("color"), (255, 120, 170)), np.float32)
+    y, x = np.mgrid[0:H, 0:W].astype(np.float32)
+    r2 = ((x - W / 2) / (W / 2)) ** 2 + ((y - H / 2) / (H / 2)) ** 2
+    a = np.exp(-r2 * 3.2) * np.clip(1.15 - np.sqrt(r2), 0, 1) * 235
+    out = np.dstack([np.broadcast_to(col, (H, W, 3)), a]).astype(np.uint8)
+    return Image.fromarray(out, "RGBA")
+
+
+def a_humo(w, p):
+    """Nubes de humo o niebla translúcida (color: verde para olores, gris para vapor)."""
+    from PIL import ImageFilter
+    W, H = int(w), int(w * 0.6)
+    col = _c(p.get("color"), (140, 230, 90))
+    m = Image.new("L", (W, H), 0)
+    dr = ImageDraw.Draw(m)
+    rnd = random.Random(7)
+    for _ in range(9):
+        cx, cy, r = rnd.uniform(0.2, 0.8) * W, rnd.uniform(0.3, 0.7) * H, rnd.uniform(0.14, 0.27) * W
+        dr.ellipse([cx - r, cy - r * 0.8, cx + r, cy + r * 0.8], fill=rnd.randint(90, 170))
+    m = m.filter(ImageFilter.GaussianBlur(W * 0.07))
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    fade = np.clip(1.2 - np.sqrt(((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2), 0, 1)
+    m = Image.fromarray((np.asarray(m, np.float32) * fade).astype(np.uint8), "L")
+    im = Image.new("RGBA", (W, H), col + (0,))
+    im.putalpha(m)
+    return im
+
+
 ASSETS = {
     "esfera": (a_esfera, 1.0, "Bola con carita (personaje base)", "color, mood: neutral|happy|angry|sad|scared|none"),
     "villano": (a_villano, 1.0, "Bolita azul enmascarada con capa y brazos", "color, cape"),
@@ -717,6 +794,10 @@ ASSETS = {
     "regadera": (a_regadera, 0.8, "Cabezal de regadera", ""),
     "agua": (a_agua, 1.6, "Chorros de agua (anim fall)", ""),
     "emoji": (a_emoji, 1.0, "Emoji a color", "char"),
+    "molecula": (a_molecula, 0.92, "Molécula de bolas y palitos con cara (trimetilamina)", "color, mood"),
+    "burbuja_villano": (a_burbuja_villano, 1.0, "Burbuja con un villano diminuto adentro", "color"),
+    "luz": (a_luz, 0.35, "Resplandor suave (luz bajo la puerta, foco)", "color, h"),
+    "humo": (a_humo, 0.6, "Humo o niebla translúcida", "color"),
 }
 
 _cache: dict = {}

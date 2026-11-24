@@ -434,6 +434,11 @@ def _travel(a, b, p):
     return (lerp(a[0], b[0], p), lerp(a[1], b[1], p), math.exp(ls))
 
 
+def vsprite_label(text: str, w: int):
+    from .vector import sprite as _sp
+    return _sp("etiqueta", w, {"text": text})
+
+
 class MapScene(Scene):
     type = "map"
 
@@ -448,13 +453,21 @@ class MapScene(Scene):
             names = [n.strip() for n in names.replace(";", ",").replace("\n", ",").split(",") if n.strip()]
         self.hl: list[geo.Feature] = []
         self.hl_labels: dict[str, str] = {}
+        self.hl_colors: dict[str, tuple] = {}
         for n in names:
+            own = None
+            if ":" in n:
+                n, _, cc = n.partition(":")
+                own = tuple(parse_color(cc.strip(), None) or ()) or None
+                n = n.strip()
             f = geo.find_country(n)
             if f is None:
                 self.warnings.append(f"Mapa: no reconozco el país '{n}'.")
             else:
                 self.hl.append(f)
                 self.hl_labels[f.name] = n.strip()
+                if own:
+                    self.hl_colors[f.name] = own
         self.custom: list[geo.Feature] = []
         gj = c.resolve(s.get("geojson"))
         if gj and os.path.isfile(gj):
@@ -645,7 +658,7 @@ class MapScene(Scene):
             fit = (float((rb[0] + rb[2]) / 2), float((rb[1] + rb[3]) / 2),
                    geo.fit_span(rb, W, H, float(s.get("margin", 0.5))))
             start = (pts[0][0], pts[0][1], max(fit[2] * 0.55, 0.01))
-            self.follow = bool(s.get("follow", False))
+            self.follow = bool(s.get("follow", len(pts) > 2))
             self.kfs = [(0.0, start, 0.0), (1.4, fit, 0.2)]
             self.fit_cam = fit
         else:  # zoom
@@ -732,7 +745,7 @@ class MapScene(Scene):
         if self.mode == "route" and getattr(self, "follow", False) and t > 1.4:
             p = ease("in_out", (t - self.r0) / (self.r1 - self.r0))
             _, tip, _ = geo.polyline_partial(self.route_pts, p)
-            span = float(self.spec.get("place_zoom", 0.02))
+            span = float(self.spec.get("follow_zoom", self.fit_cam[2] * 0.35))
             q = clamp((t - 1.4) / 1.2)
             q = q * q * (3 - 2 * q)
             f = self.fit_cam
@@ -760,8 +773,9 @@ class MapScene(Scene):
         for f, t0 in zip(self.hl, self.hl_t):
             p = seg(t, t0, t0 + 0.55, "out_cubic")
             if p > 0:
-                fills[f.name] = mix_color(land, hlc, p)
-                outl[f.name] = mix_color(border, tuple(min(255, v + 40) for v in hlc), p)
+                fc = self.hl_colors.get(f.name, hlc)
+                fills[f.name] = mix_color(land, fc, p)
+                outl[f.name] = mix_color(border, tuple(min(255, v + 40) for v in fc), p)
         skip = () if any(f.name == "Antarctica" for f in self.hl) or cam[2] < 0.06 else ("Antarctica",)
         geo.draw_features(img, feats, cam, fills, land, outline=border, line_w=1, skip=skip, outline_map=outl)
         if self.custom:
@@ -774,14 +788,30 @@ class MapScene(Scene):
             geo.draw_features(img, self.custom, cam, cf, base, outline=border, line_w=2, outline_map=co)
         return img
 
+    def _grade(self, img: np.ndarray) -> np.ndarray:
+        g = self.spec.get("grade") or self.ctx.settings.get("map_grade", "")
+        if g not in ("vivo", "cine"):
+            return img
+        u8 = np.clip(img, 0, 255).astype(np.uint8)
+        hsv = cv2.cvtColor(u8, cv2.COLOR_RGB2HSV).astype(np.float32)
+        if g == "vivo":
+            hsv[..., 1] = np.clip(hsv[..., 1] * 1.32, 0, 255)
+            hsv[..., 2] = np.clip(255 * (hsv[..., 2] / 255.0) ** 0.86 * 1.06, 0, 255)
+        else:
+            hsv[..., 1] = np.clip(hsv[..., 1] * 1.12, 0, 255)
+            hsv[..., 2] = np.clip(hsv[..., 2] * 0.92, 0, 255)
+        return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2RGB).astype(np.float32)
+
     def _base_tiles(self, t: float, cam, hlc) -> np.ndarray:
         c, s = self.ctx, self.spec
         W, H = c.w, c.h
         img = self.tiles.render(cam, W, H).astype(np.float32)
+        img = self._grade(img)
         layers = []
         if self.hl:
+            ha = float(s.get("hl_alpha", 0.8 if self.hl_colors else 0.38))
             layers.append((geo.load_countries(geo.resolution_for(cam[2])),
-                           {f.name: seg(t, t0, t0 + 0.55, "out_cubic") for f, t0 in zip(self.hl, self.hl_t)}, 0.38))
+                           {f.name: seg(t, t0, t0 + 0.55, "out_cubic") for f, t0 in zip(self.hl, self.hl_t)}, ha))
         if self.custom:
             layers.append((self.custom, {f.name: seg(t, t0, t0 + 0.5, "out_cubic")
                                          for f, t0 in zip(self.custom, self.custom_t)}, 0.34))
@@ -795,7 +825,17 @@ class MapScene(Scene):
             mask = np.zeros((H, W), np.uint8)
             geo.draw_features(mask, feats, cam, {n: int(255 * p) for n, p in act.items()}, 0, only=set(act))
             a = mask.astype(np.float32) / 255.0
-            img = img * (1 - a[..., None] * alpha) + hl_col * (a[..., None] * alpha)
+            if any(n in self.hl_colors for n in act):
+                colimg = np.empty((H, W, 3), np.float32)
+                colimg[:] = hl_col
+                for n in act:
+                    if n in self.hl_colors:
+                        m1 = np.zeros((H, W), np.uint8)
+                        geo.draw_features(m1, feats, cam, {n: 255}, 0, only={n})
+                        colimg[m1 > 0] = self.hl_colors[n]
+                img = img * (1 - a[..., None] * alpha) + colimg * (a[..., None] * alpha)
+            else:
+                img = img * (1 - a[..., None] * alpha) + hl_col * (a[..., None] * alpha)
             union = np.maximum(union, a)
             maxp = max(maxp, max(act.values()))
         if union.any() and s.get("dim_outside", True):
@@ -832,10 +872,14 @@ class MapScene(Scene):
             part, tip, ang = geo.polyline_partial(self.route_pts, p)
             if len(part) >= 2:
                 pp = geo._px16(geo.project(part, cam, W, H))
-                glow = mix_color(th["ocean"], hlc, 0.4)
-                cv2.polylines(img, [pp], False, glow, 13, cv2.LINE_AA, 4)
-                cv2.polylines(img, [pp], False, hlc, 6, cv2.LINE_AA, 4)
+                rw = int(s.get("route_width", 6))
+                rcol = tuple(parse_color(s.get("route_color"), hlc)) if s.get("route_color") else hlc
+                glow = mix_color(th["ocean"], rcol, 0.4)
+                cv2.polylines(img, [pp], False, glow, rw * 2 + 1, cv2.LINE_AA, 4)
+                cv2.polylines(img, [pp], False, (0, 0, 0), rw + 4, cv2.LINE_AA, 4) if s.get("route_outline", False) else None
+                cv2.polylines(img, [pp], False, rcol, rw, cv2.LINE_AA, 4)
             marker = (geo.project(np.array([tip]), cam, W, H)[0], ang)
+            self._route_p = p
         # pines
         pins = []
         for i, pl in enumerate(self.places):
@@ -856,6 +900,9 @@ class MapScene(Scene):
             cv2.circle(img, (int(sx * 16), int(sy * 16)), int(rr * 16), ringc, 3, cv2.LINE_AA, 4)
             cv2.circle(img, (int(sx * 16), int(sy * 16)), int(18 * pr * 16), (255, 255, 255), -1, cv2.LINE_AA, 4)
             cv2.circle(img, (int(sx * 16), int(sy * 16)), int(12 * pr * 16), hlc, -1, cv2.LINE_AA, 4)
+        tip_xy = marker[0] if marker is not None else None
+        if marker is not None and s.get("marker", "dot") == "none":
+            marker = None
         if marker is not None:
             (mx, my), ang = marker
             if s.get("marker", "dot") == "arrow":
@@ -867,8 +914,10 @@ class MapScene(Scene):
             else:
                 cv2.circle(img, (int(mx * 16), int(my * 16)), 20 * 16, (255, 255, 255), -1, cv2.LINE_AA, 4)
                 cv2.circle(img, (int(mx * 16), int(my * 16)), 13 * 16, hlc, -1, cv2.LINE_AA, 4)
+        self._draw_arrows(img, cam, t)
         out = Image.fromarray(img, "RGB")
-        out.paste(self.shade, (0, 0), self.shade)
+        if s.get("shade", True):
+            out.paste(self.shade, (0, 0), self.shade)
         if self.tiles is not None and self.tiles.attr and c.settings.get("map_attribution", True):
             at = text_layer(self.tiles.attr, "regular", 26, fill=(255, 255, 255), stroke=3, max_w=int(W * 0.85))
             paste_layer(out, at, 18, H * 0.915, alpha=0.75, anchor="left")
@@ -902,15 +951,197 @@ class MapScene(Scene):
                                      max_w=int(wpx * 0.9), upper=False)
                     paste_layer(out, lay, sx, sy, alpha=p)
         self._draw_overlays(out, cam, t)
+        if tip_xy is not None and (s.get("tip_photo") or s.get("tip_name")):
+            self._draw_tip(out, tip_xy, t)
+        self._draw_route_labels(out, cam, t)
         for i_, (label, sx, sy, pr, _) in enumerate(pins):
             if label:
                 lay = text_layer(label, "bold", 54, fill=(255, 255, 255), stroke=7, max_w=int(W * 0.6))
                 paste_layer(out, lay, sx, sy - 70 - (1 - pr) * 20, alpha=clamp(pr), anchor="bottom")
+        out = self._post(out, t)
         if s.get("title"):
             lay = fit_text_layer(s["title"], "display", 110, 56, int(W * 0.88), int(H * 0.16), fill=th["text"],
                                  stroke=8, shadow=7, upper=True, spacing=0.02)
             q = seg(t, 0.1, 0.6, "out_back")
             paste_layer(out, lay, W / 2, H * 0.085 + (1 - q) * 40, alpha=clamp(q * 1.5), anchor="top")
+        return out
+
+
+    # ---- extras de estilo «documental» ------------------------------------
+    def _draw_tip(self, out: Image.Image, pos, t: float) -> None:
+        """Avatar (foto en hexágono) y nombre pegados a la punta de la ruta."""
+        c, s = self.ctx, self.spec
+        q = seg(t, self.r0 - 0.1, self.r0 + 0.5, "out_back")
+        if q <= 0:
+            return
+        sx, sy = float(pos[0]), float(pos[1])
+        wpx = int(float(s.get("tip_size", 0.15)) * c.w)
+        path = c.resolve(s.get("tip_photo")) if s.get("tip_photo") else None
+        top = sy
+        if path and os.path.isfile(path):
+            spr = self._avatar(path, wpx, s.get("tip_shape", "hexagono"))
+            spr = spr.resize((max(2, int(spr.width * q)), max(2, int(spr.height * q))), Image.BILINEAR)
+            out.paste(spr, (int(sx - spr.width / 2), int(sy + wpx * 0.12 - spr.height / 2)), spr)
+            top = sy - spr.height / 2
+        if s.get("tip_name"):
+            lay = text_layer(s["tip_name"], "bold", 46, fill=(255, 255, 255), stroke=6, max_w=int(c.w * 0.6))
+            paste_layer(out, lay, sx, top - 8, alpha=clamp(q), anchor="bottom")
+
+    def _draw_route_labels(self, out: Image.Image, cam, t: float) -> None:
+        """Rótulos pegados a la ruta, girados según su dirección («2 años», «300 km»)."""
+        if self.route_pts is None:
+            return
+        rl = self.spec.get("route_labels") or []
+        if isinstance(rl, str):
+            try:
+                rl = json.loads(rl) if rl.strip() else []
+            except ValueError:
+                rl = []
+        c = self.ctx
+        for d in rl:
+            if not isinstance(d, dict) or not d.get("text"):
+                continue
+            frac = float(d.get("frac", 0.5))
+            t0 = self.r0 + (self.r1 - self.r0) * self._inv(frac)
+            q = seg(t, t0, t0 + 0.4, "out_back")
+            if q <= 0:
+                continue
+            _, pt, ang = geo.polyline_partial(self.route_pts, frac)
+            sx, sy = geo.project(np.array([pt]), cam, c.w, c.h)[0]
+            if not (-200 < sx < c.w + 200 and -200 < sy < c.h + 200):
+                continue
+            kind = d.get("style", "rotado")
+            if kind == "etiqueta":
+                lay = vsprite_label(d["text"], int(d.get("size", 0.2) * c.w))
+            else:
+                lay = text_layer(str(d["text"]), "bold", int(d.get("size", 54)), fill=(255, 255, 255), stroke=7, max_w=int(c.w * 0.7))
+                deg = -math.degrees(ang)
+                if deg < -90 or deg > 90:
+                    deg += 180
+                steep = abs(deg) > 62
+                lay = lay.rotate(0 if (steep or kind != "rotado") else deg, Image.BICUBIC, expand=True)
+            off = float(d.get("offset", 46))
+            nx, ny = -math.sin(ang), math.cos(ang)
+            if kind != "etiqueta" and steep:
+                nx, ny, off = 1.0, 0.0, off + lay.width / 2 * 0.9
+            lay = lay.resize((max(2, int(lay.width * q)), max(2, int(lay.height * q))), Image.BILINEAR) if q < 0.99 else lay
+            out.paste(lay, (int(sx + nx * off - lay.width / 2), int(sy + ny * off - lay.height / 2)), lay)
+
+    def _draw_arrows(self, img: np.ndarray, cam, t: float) -> None:
+        """Flechas punteadas en arco entre dos puntos, con punta y rótulo de destino."""
+        ar = self.spec.get("arrows") or []
+        if isinstance(ar, str):
+            try:
+                ar = json.loads(ar) if ar.strip() else []
+            except ValueError:
+                ar = []
+        if not ar:
+            return
+        c = self.ctx
+        by_name = {geo.norm(pl["label"]): pl["xy"] for pl in self.places}
+        if not hasattr(self, "_arrow_cache"):
+            self._arrow_cache = {}
+        for i, d in enumerate(ar):
+            if not isinstance(d, dict):
+                continue
+            key = i
+            if key not in self._arrow_cache:
+                pts = []
+                for k in ("from", "to"):
+                    v = d.get(k)
+                    if isinstance(v, (list, tuple)) and len(v) == 2:
+                        pts.append(geo.to_world(float(v[1]), float(v[0])))
+                    elif isinstance(v, str) and geo.norm(v) in by_name:
+                        pts.append(by_name[geo.norm(v)])
+                    elif isinstance(v, str):
+                        la, lo = geo.geocode(v)
+                        pts.append(geo.to_world(lo, la))
+                if len(pts) != 2:
+                    self._arrow_cache[key] = None
+                    continue
+                self._arrow_cache[key] = (geo.bezier_arc(pts[0], pts[1], float(d.get("bend", 0.16)), 60),
+                                          self._cue(d.get("at"), 0.5) or 0.0)
+            ent = self._arrow_cache[key]
+            if ent is None:
+                continue
+            arc, t0 = ent
+            p = seg(t, t0, t0 + float(d.get("dur", 1.2)), "in_out_cubic")
+            if p <= 0:
+                continue
+            part, tip, ang = geo.polyline_partial(arc, p)
+            scr = geo.project(part, cam, c.w, c.h)
+            col = tuple(parse_color(d.get("color"), (255, 255, 255)))
+            wd = int(d.get("width", 9))
+            seglen = np.hypot(*np.diff(scr, axis=0).T)
+            cum = np.concatenate([[0], np.cumsum(seglen)])
+            on, off = wd * 2.6, wd * 1.7
+            pos = 0.0
+            if d.get("dash", True):
+                while pos < cum[-1]:
+                    a0, a1 = pos, min(pos + on, cum[-1])
+                    xs = np.interp([a0, a1], cum, scr[:, 0])
+                    ys = np.interp([a0, a1], cum, scr[:, 1])
+                    cv2.line(img, (int(xs[0]), int(ys[0])), (int(xs[1]), int(ys[1])), (20, 20, 20), wd + 4, cv2.LINE_AA)
+                    cv2.line(img, (int(xs[0]), int(ys[0])), (int(xs[1]), int(ys[1])), col, wd, cv2.LINE_AA)
+                    pos += on + off
+            else:
+                cv2.polylines(img, [geo._px16(scr)], False, col, wd, cv2.LINE_AA, 4)
+            if len(scr) >= 2:
+                tx, ty = scr[-1]
+                v = scr[-1] - scr[max(0, len(scr) - 4)]
+                a_ = math.atan2(v[1], v[0])
+                L = wd * 3.4
+                tri = np.array([[tx + math.cos(a_) * L, ty + math.sin(a_) * L],
+                                [tx + math.cos(a_ + 2.5) * L * 0.9, ty + math.sin(a_ + 2.5) * L * 0.9],
+                                [tx + math.cos(a_ - 2.5) * L * 0.9, ty + math.sin(a_ - 2.5) * L * 0.9]])
+                cv2.fillPoly(img, [geo._px16(tri)], col, cv2.LINE_AA, 4)
+        self._arrow_labels = [(d, self._arrow_cache.get(i)) for i, d in enumerate(ar) if isinstance(d, dict) and d.get("label")]
+
+    def _post(self, out: Image.Image, t: float) -> Image.Image:
+        """Efectos de acabado: inclinación 3D, partículas (nieve…), fundido a blanco/negro, rótulos de flechas."""
+        c, s = self.ctx, self.spec
+        W, H = c.w, c.h
+        cam = self.camera(t)
+        for d, ent in getattr(self, "_arrow_labels", []):
+            if not ent:
+                continue
+            arc, t0 = ent
+            q = seg(t, t0 + float(d.get("dur", 1.2)) * 0.8, t0 + float(d.get("dur", 1.2)) + 0.3, "out_back")
+            if q <= 0:
+                continue
+            sx, sy = geo.project(arc[-1:].copy(), cam, W, H)[0]
+            lay = text_layer(str(d["label"]), "bold", int(d.get("size", 44)), fill=(255, 255, 255), stroke=6, max_w=int(W * 0.5))
+            paste_layer(out, lay, sx, sy - 48, alpha=clamp(q), anchor="bottom")
+        tilt = float(s.get("tilt", 0) or 0)
+        if tilt > 0:
+            k = clamp(tilt / 40.0) * ease("in_out_cubic", clamp((t - float(s.get("tilt_start", 0.2))) / 1.6))
+            if k > 0.01:
+                arr = np.asarray(out)
+                inset, top = k * 0.2 * W, k * 0.1 * H
+                src = np.float32([[0, 0], [W, 0], [W, H], [0, H]])
+                dst = np.float32([[inset, top], [W - inset, top], [W, H], [0, H]])
+                z = 1 + k * 0.28  # acerca para que no se vea el borde superior
+                dst = ((dst - [W / 2, H]) * z + [W / 2, H]).astype(np.float32)
+                M = cv2.getPerspectiveTransform(src, dst)
+                arr = cv2.warpPerspective(arr, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+                out = Image.fromarray(arr, "RGB")
+        fx = s.get("fx") or ""
+        names = [x.strip() for x in (fx if isinstance(fx, list) else str(fx).replace("+", ",").split(",")) if x.strip()]
+        if names:
+            from .vector import _FX, FX_CHOICES
+            names = [n for n in names if n in FX_CHOICES]
+            if names:
+                if not hasattr(self, "_fx"):
+                    self._fx = _FX(names, (255, 255, 255), W, H, self.index)
+                rgba = out.convert("RGBA")
+                self._fx.draw(rgba, t, False)
+                self._fx.draw(rgba, t, True)
+                out = rgba.convert("RGB")
+        intro = s.get("intro") or ""
+        if intro in ("blanco", "negro"):
+            a = 1 - seg(t, 0.0, float(s.get("intro_dur", 0.7)), "linear")
+            if a > 0.01:
+                out = Image.blend(out, Image.new("RGB", (W, H), (255, 255, 255) if intro == "blanco" else (0, 0, 0)), a)
         return out
 
     def _inv(self, frac: float) -> float:
@@ -937,6 +1168,13 @@ SCENE_TYPES: dict[str, dict] = {
         ("geojson", "GeoJSON propio (barrios, colonias, estados…)", "file", ""),
         ("overlays", "Íconos/cifras/fotos sobre el mapa (JSON)", "json", []),
         ("route_style", "Ruta: estilo", "choice", "arc", ["arc", "line"]),
+        ("route_color", "Ruta: color (#rrggbb, p. ej. #f2ff2e)", "text", ""), ("route_width", "Ruta: grosor", "number", 6),
+        ("follow", "Ruta: la cámara sigue la punta", "bool", False), ("follow_zoom", "Zoom al seguir (menor = más cerca)", "number", 0.0),
+        ("tip_photo", "Avatar en la punta de la ruta (foto)", "file", ""), ("tip_name", "Nombre sobre el avatar", "text", ""),
+        ("route_labels", "Rótulos sobre la ruta (JSON: [{\"frac\":0.5,\"text\":\"2 años\"}])", "json", []),
+        ("arrows", "Flechas punteadas (JSON: [{\"from\":\"Lima\",\"to\":[53.7,-0.3],\"label\":\"Hull, UK\",\"at\":2}])", "json", []),
+        ("tilt", "Inclinación 3D (0-40)", "number", 0), ("grade", "Color del mapa", "choice", "", ["", "vivo", "cine"]),
+        ("fx", "Efectos (nieve, polvo_luz, bokeh)", "text", ""), ("intro", "Entrada", "choice", "", ["", "blanco", "negro"]),
         ("place_zoom", "Zoom por lugar (menor = más cerca)", "number", 0.02),
         ("narration", "Narración (voz y subtítulos)", "multiline", ""), ("duration", "Duración mínima (s)", "number", 8.0),
         ("color", "Color de resalte (#rrggbb)", "text", "")]},
@@ -947,7 +1185,9 @@ SCENE_TYPES: dict[str, dict] = {
         ("audio", "Audio propio (opcional, en vez de voz IA)", "file", ""),
         ("align", "Sincronía con audio propio", "choice", "estimado", ["estimado", "whisper"]),
         ("layers", "Capas animadas (JSON)", "json", []),
-        ("camera", "Cámara", "choice", "", ["", "push", "pull", "pan_left", "pan_right"]),
+        ("fx", "Efectos ambientales (humo, bokeh, corazones, brillos, nieve, burbujas, polvo_luz)", "text", ""),
+        ("camera", "Cámara", "choice", "", ["", "push", "pull", "push_fuerte", "drift", "pan_left", "pan_right"]),
+        ("caption_style", "Estilo de subtítulos", "choice", "suave", ["suave", "caja", "clasico"]),
         ("caption_y", "Posición de subtítulos (0 arriba – 1 abajo)", "number", 0.12),
         ("duration", "Duración mínima (s)", "number", 5.0)]},
     "broll": {"label": "B-roll con voz", "desc": "Imágenes y videos con fundidos, narración y subtítulos palabra por palabra.", "icon": "film", "cls": BRollScene, "fields": [

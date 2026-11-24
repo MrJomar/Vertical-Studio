@@ -38,6 +38,23 @@ proveedor en Ajustes → *URL de teselas propia* (`https://…/{z}/{x}/{y}.png`)
 Línea de comandos: `python cli.py render examples/demo_mapas.json -o demo.mp4`
 (también `preview`, `top`, `autoclip`; ver `python cli.py -h`).
 
+### Mapas estilo documental (v2.1)
+Una escena de mapa en modo `route` admite (ver el ejemplo «Mapa: expedición estilo documental»):
+- `route_color`, `route_width`: línea gruesa (p. ej. `#f2ff2e`, 11). `follow: true`: la cámara sigue la punta; `follow_zoom`: cuánto se acerca.
+- `tip_photo`, `tip_name`: avatar hexagonal con nombre que viaja en la punta.
+- `route_labels`: `[{"frac":0.3,"text":"2 años"}, {"frac":0.8,"text":"28 años","style":"etiqueta"}]` rótulos pegados a la ruta.
+- `arrows`: `[{"from":"Lima","to":[53.7,-0.3],"label":"Hull, UK","at":"palabra","dur":1.6}]` flechas punteadas en arco.
+- `highlight`: `"Colombia:#2a7bff, Kazajistán:#e02020"` países con color propio (`hl_alpha` = opacidad).
+- `tilt` (0-40): inclinación 3D aproximada · `fx`: `nieve`, `polvo_luz`, `bokeh` · `intro`: `blanco`/`negro` · `grade`: `vivo`/`cine` (más color).
+- Estilo de mapa **natural** (NASA, relieve y fondo marino, uso libre): zoom máximo moderado; buena opción para vista continental.
+
+### Animación vectorial: efectos (v2.1)
+- Escena: `fx` = `humo, bokeh, bokeh_frente, corazones, brillos, nieve, burbujas, polvo_luz`; cámara `drift`/`push_fuerte`; `caption_style: "suave"` (por defecto).
+- Capa: `blur` (profundidad de campo), `glow` (aura), `rot_var` (ángulos variados),
+  `shape` = `cara|corazon|circulo|estrella|texto:HOLA` con `count`, `form` (palabra) y `form_dur`: el enjambre forma la figura;
+  `react` + `rfrom` + `rdist` + `react_mood` + `react_shrink` + `react_fade`: los personajes reaccionan al impacto.
+- Nuevos elementos: `molecula`, `burbuja_villano`, `luz`, `humo`.
+
 ## Formato del proyecto (JSON)
 Mira `examples/*.json`. Las rutas relativas se buscan junto al archivo del proyecto.
 `settings` admite: `theme` (neon, oscuro, retro, papel, esmeralda), `tts_engine` (`edge`, `sapi`, `silencio`), `voice`,

@@ -59,6 +59,7 @@ SETTINGS_GROUPS = [
     ("Subtítulos", [("caption_size", "Tamaño", "number", 78), ("caption_y", "Posición vertical (0 a 1)", "number", 0.80)]),
     ("Mapas", [("map_style", "Estilo de mapa por defecto", "choice", "satelite", T.STYLE_CHOICES),
                ("map_tile_url", "URL de teselas propia (opcional): https://…/{z}/{x}/{y}.png", "text", ""),
+               ("map_grade", "Color del mapa (vivo = más saturado)", "choice", "", ["", "vivo", "cine"]),
                ("map_attribution", "Mostrar atribución del mapa", "bool", True)]),
     ("Transiciones y música", [("transition", "Transición entre escenas", "choice", "fade", TRANSITIONS),
                                ("transition_seconds", "Duración de la transición (s)", "number", 0.3),

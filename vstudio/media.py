@@ -303,7 +303,7 @@ class CaptionTrack:
         lines.append(cur)
         asc, desc = font.getmetrics()
         lh = int((asc + desc) * 1.05)
-        stroke = max(4, self.size // 9) if self.style != "caja" else 0
+        stroke = max(4, self.size // 9) if self.style not in ("caja", "suave") else 0
         pad = stroke + 6
         W = int(maxw + pad * 2)
         H = lh * len(lines) + pad * 2
@@ -316,8 +316,8 @@ class CaptionTrack:
             x = (W - tw) / 2
             for i in line:
                 col = self.hl if i == active else self.fill
-                if self.style == "caja":
-                    a_ = 255 if i == active else 170
+                if self.style in ("caja", "suave"):
+                    a_ = 255 if i == active else (150 if self.style == "suave" else 170)
                     if i == active:
                         d.rounded_rectangle([x - 8, y + lh * 0.1, x + widths[i] + 8, y + lh * 0.98], radius=10,
                                             outline=(120, 170, 255, 255), width=3, fill=(40, 70, 160, 70))
