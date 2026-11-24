@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
 <defs>
 <radialGradient id="gr_aura" cx="50%" cy="50%" r="50%">
-<stop offset="0%" stop-color="#f4a6b8" stop-opacity="0.42" />
-<stop offset="60%" stop-color="#e37c9c" stop-opacity="0.16" />
+<stop offset="0%" stop-color="#f4a6b8" stop-opacity="0.34" />
+<stop offset="65%" stop-color="#e37c9c" stop-opacity="0.1" />
 <stop offset="100%" stop-color="#c2557a" stop-opacity="0" />
 </radialGradient>
-<linearGradient id="gr_cerebro_hemisferio" x1="12%" y1="8%" x2="88%" y2="92%">
+<linearGradient id="gr_cerebro_hemisferio" x1="12%" y1="10%" x2="88%" y2="90%">
 <stop offset="0%" stop-color="#f8bcc9" />
-<stop offset="38%" stop-color="#ee8ea9" />
-<stop offset="75%" stop-color="#d8698c" />
+<stop offset="40%" stop-color="#ee8ea9" />
+<stop offset="76%" stop-color="#d8698c" />
 <stop offset="100%" stop-color="#b94c71" />
 </linearGradient>
 <linearGradient id="gr_cerebelo" x1="20%" y1="10%" x2="85%" y2="90%">
@@ -21,9 +21,10 @@
 <stop offset="55%" stop-color="#cf5f82" />
 <stop offset="100%" stop-color="#a83e62" />
 </linearGradient>
-<linearGradient id="gr_brillo_sup" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" stop-color="#ffffff" stop-opacity="0.56" />
-<stop offset="100%" stop-color="#ffffff" stop-opacity="0.04" />
+<linearGradient id="gr_reflejo_discreto" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.42" />
+<stop offset="65%" stop-color="#ffffff" stop-opacity="0.14" />
+<stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
 </linearGradient>
 <filter id="flt_sombra_interior" x="-15%" y="-15%" width="130%" height="130%">
 <feFlood flood-color="#8e2f55" flood-opacity="0.38" result="flood" />
@@ -47,150 +48,157 @@
 </feMerge>
 </filter>
 <clipPath id="clip_cerebro">
-<path d="M 192 78
-C 145 76, 95 102, 82 146
-C 72 180, 76 218, 96 244
-C 108 260, 128 266, 146 266
-C 156 286, 178 298, 208 296
-C 238 294, 258 276, 266 254
-C 298 252, 326 232, 332 200
-C 338 166, 320 124, 286 98
-C 258 78, 224 79, 192 78 Z" />
+<path d="M 192 84
+C 142 84, 82 104, 60 144
+C 44 174, 48 212, 74 232
+C 92 246, 118 248, 138 242
+C 132 256, 138 274, 158 282
+C 186 294, 232 290, 260 272
+C 278 260, 286 246, 290 236
+C 324 232, 348 212, 350 184
+C 352 154, 332 122, 296 102
+C 266 86, 228 84, 192 84 Z" />
 </clipPath>
 </defs>
 <g id="aura">
-<ellipse cx="205" cy="205" rx="168" ry="145" fill="url(#gr_aura)" />
-<circle cx="195" cy="185" r="118" fill="#f4a6b8" fill-opacity="0.09" />
+<ellipse cx="204" cy="212" rx="176" ry="132" fill="url(#gr_aura)" />
 </g>
 <g id="tronco" filter="url(#flt_sombra_interior)">
-<path d="M 178 256
-C 178 282, 180 314, 174 342
-C 171 356, 178 366, 192 366
-C 206 366, 214 356, 216 340
-C 220 312, 226 284, 236 262
-C 220 254, 196 252, 178 256 Z"
+<path d="M 176 262
+C 178 290, 184 324, 186 354
+C 188 368, 200 376, 218 374
+C 236 372, 244 362, 242 346
+C 238 318, 236 288, 244 260
+C 224 256, 196 256, 176 262 Z"
 fill="url(#gr_tronco)" stroke="#8e2f55" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-<path d="M 181 286 C 194 290, 210 290, 224 285" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" opacity="0.65" />
-<path d="M 178 318 C 190 322, 204 322, 216 318" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" opacity="0.6" />
-<path d="M 188 264 C 186 294, 185 326, 183 356" stroke="#8e2f55" stroke-width="3.5" stroke-linecap="round" opacity="0.45" />
-<path d="M 206 270 C 204 300, 201 330, 198 358" stroke="#8e2f55" stroke-width="3" stroke-linecap="round" opacity="0.35" />
-<path d="M 184 266 C 183 292, 182 322, 179 348" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.35" />
+<!-- Protuberancia del puente troncal y relieves -->
+<path d="M 179 282 C 170 294, 172 312, 183 320" stroke="#8e2f55" stroke-width="4.5" stroke-linecap="round" fill="none" />
+<path d="M 183 318 C 200 322, 220 320, 238 314" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" opacity="0.6" />
+<path d="M 196 270 C 198 302, 202 334, 204 366" stroke="#8e2f55" stroke-width="3.6" stroke-linecap="round" opacity="0.45" />
+<path d="M 218 272 C 218 304, 220 336, 222 366" stroke="#8e2f55" stroke-width="3.2" stroke-linecap="round" opacity="0.35" />
+<path d="M 188 274 C 190 304, 193 334, 196 362" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" opacity="0.32" />
 </g>
 <g id="cerebelo" filter="url(#flt_sombra_interior)">
-<path d="M 232 246
-C 254 242, 284 246, 298 264
-C 310 280, 304 304, 282 312
-C 258 320, 232 312, 222 292
-C 214 276, 218 252, 232 246 Z"
+<path d="M 244 234
+C 272 226, 314 230, 334 252
+C 350 270, 344 302, 316 316
+C 286 330, 248 322, 234 298
+C 222 278, 226 242, 244 234 Z"
 fill="url(#gr_cerebelo)" stroke="#8e2f55" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-<path d="M 230 258 C 250 254, 274 256, 292 268" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" />
-<path d="M 224 271 C 248 266, 276 268, 298 280" stroke="#8e2f55" stroke-width="4.2" stroke-linecap="round" />
-<path d="M 224 284 C 248 280, 274 282, 296 293" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" />
-<path d="M 230 297 C 250 294, 270 295, 286 303" stroke="#8e2f55" stroke-width="3.8" stroke-linecap="round" />
-<path d="M 234 263 C 252 260, 274 262, 290 272" stroke="#f8c5d2" stroke-width="2.5" stroke-linecap="round" opacity="0.65" />
-<path d="M 228 276 C 250 272, 274 274, 294 284" stroke="#f8c5d2" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
-<path d="M 230 289 C 250 286, 272 287, 290 296" stroke="#f8c5d2" stroke-width="2.2" stroke-linecap="round" opacity="0.55" />
+<!-- Laminillas / folias finas y densas del cerebelo -->
+<path d="M 242 248 C 268 242, 302 244, 326 258" stroke="#8e2f55" stroke-width="3.8" stroke-linecap="round" />
+<path d="M 234 261 C 266 254, 306 256, 336 271" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" />
+<path d="M 232 275 C 266 268, 308 270, 338 285" stroke="#8e2f55" stroke-width="4" stroke-linecap="round" />
+<path d="M 234 289 C 266 283, 304 285, 332 298" stroke="#8e2f55" stroke-width="3.8" stroke-linecap="round" />
+<path d="M 242 302 C 268 298, 298 300, 320 310" stroke="#8e2f55" stroke-width="3.6" stroke-linecap="round" />
+<!-- Resaltes suaves entre laminillas -->
+<path d="M 246 253 C 270 248, 300 250, 322 262" stroke="#f8c5d2" stroke-width="2.2" stroke-linecap="round" opacity="0.62" />
+<path d="M 238 266 C 268 260, 304 262, 332 275" stroke="#f8c5d2" stroke-width="2.2" stroke-linecap="round" opacity="0.58" />
+<path d="M 238 280 C 268 274, 304 276, 332 289" stroke="#f8c5d2" stroke-width="2.2" stroke-linecap="round" opacity="0.54" />
+<path d="M 242 294 C 268 289, 298 291, 324 302" stroke="#f8c5d2" stroke-width="2" stroke-linecap="round" opacity="0.5" />
 </g>
 <g id="cerebro" filter="url(#flt_sombra_interior)">
 <g clip-path="url(#clip_cerebro)">
 <!-- Degradado base continuo para todo el hemisferio -->
-<rect x="65" y="70" width="280" height="240" fill="url(#gr_cerebro_hemisferio)" />
-<!-- Sombra envolvente inferior para dar volumen redondeado -->
-<path d="M 72 205 C 98 258, 152 290, 212 292 C 272 294, 318 258, 338 202 L 345 260 L 205 312 L 70 258 Z"
-fill="#8e2f55" fill-opacity="0.2" />
+<rect x="40" y="75" width="320" height="225" fill="url(#gr_cerebro_hemisferio)" />
+<!-- Sombra envolvente inferior para dar volumen al lóbulo frontal, temporal y occipital -->
+<path d="M 45 198
+C 68 232, 108 244, 138 238
+C 134 264, 158 286, 206 286
+C 254 286, 282 260, 290 232
+C 324 228, 346 208, 354 180
+L 360 255 L 200 305 L 45 250 Z"
+fill="#8e2f55" fill-opacity="0.22" />
 <!-- Circunvoluciones sinuosas, ramificadas y de grosor variable con sombra suave -->
 <g filter="url(#flt_sombra_surco)" stroke="#8e2f55" stroke-linecap="round" stroke-linejoin="round" fill="none">
-<!-- Surco central (marcado) -->
-<path d="M 197 80
-C 192 98, 202 114, 194 132
-C 186 148, 198 164, 190 180
-C 186 188, 183 193, 180 198" stroke-width="6.2" />
-<!-- Ramas del surco central -->
-<path d="M 196 114 C 184 118, 176 114, 168 120" stroke-width="3.4" />
-<path d="M 193 152 C 204 150, 212 155, 220 152" stroke-width="3.2" />
-<!-- Cisura lateral / de Silvio (marcada y ramificada) -->
-<path d="M 140 223
-C 156 210, 170 214, 186 201
-C 202 188, 218 195, 236 189
-C 250 185, 262 190, 275 195" stroke-width="6.4" />
-<path d="M 176 208 C 182 216, 190 218, 198 214" stroke-width="3.5" />
-<path d="M 218 192 C 224 182, 232 178, 240 180" stroke-width="3.2" />
-<!-- Región frontal: circunvoluciones serpenteantes y bifurcadas -->
-<path d="M 122 106
-C 134 94, 148 102, 160 95
+<!-- Surco central (de Rolando) -->
+<path d="M 196 86
+C 190 104, 200 120, 192 138
+C 184 154, 196 170, 188 186
+C 184 194, 180 200, 176 206" stroke-width="6.2" />
+<path d="M 194 120 C 180 124, 170 118, 160 124" stroke-width="3.4" />
+<path d="M 191 156 C 204 154, 214 160, 224 156" stroke-width="3.2" />
+<!-- Cisura lateral / de Silvio marcando la separación del lóbulo temporal que cuelga -->
+<path d="M 134 238
+C 146 222, 164 216, 184 206
+C 204 196, 224 200, 246 194
+C 262 190, 276 194, 288 200" stroke-width="6.5" />
+<path d="M 172 212 C 178 222, 188 224, 198 220" stroke-width="3.4" />
+<path d="M 224 198 C 230 186, 240 182, 250 184" stroke-width="3.2" />
+<!-- Lóbulo frontal prominente y redondeado: meandros sinuosos -->
+<path d="M 116 106
+C 130 94, 146 104, 160 96
 C 170 90, 178 96, 184 104" stroke-width="4.2" />
-<path d="M 146 100 C 148 110, 142 118, 134 122" stroke-width="3" />
-<path d="M 94 136
-C 108 124, 122 134, 136 125
-C 150 116, 162 128, 176 124" stroke-width="4.8" />
-<path d="M 124 130 C 126 142, 118 148, 110 152" stroke-width="3.2" />
-<path d="M 86 168
-C 102 158, 114 168, 130 158
-C 146 148, 158 160, 174 152
-C 180 149, 184 144, 188 140" stroke-width="5" />
-<path d="M 148 156 C 154 166, 162 170, 172 168" stroke-width="3.4" />
-<path d="M 88 202
-C 102 190, 116 198, 130 186
-C 142 176, 154 186, 166 180" stroke-width="4.4" />
-<path d="M 114 194 C 118 204, 112 214, 104 220" stroke-width="3.1" />
-<!-- Región superior y parietal: meandros orgánicos -->
-<path d="M 210 96
-C 222 88, 234 98, 248 92
-C 258 88, 266 96, 272 104" stroke-width="4.4" />
-<path d="M 236 96 C 234 108, 226 114, 218 118" stroke-width="3.2" />
-<path d="M 206 128
-C 220 118, 232 128, 246 120
-C 258 114, 268 124, 278 122" stroke-width="4.8" />
-<path d="M 248 120 C 252 132, 246 140, 238 144" stroke-width="3.3" />
-<path d="M 204 162
-C 218 154, 232 164, 246 154
-C 258 146, 268 156, 280 152" stroke-width="4.6" />
-<!-- Región occipital posterior: pliegues densos y curvos -->
-<path d="M 284 106
-C 296 106, 304 116, 316 118" stroke-width="4" />
-<path d="M 286 136
-C 300 132, 310 144, 324 146" stroke-width="4.8" />
-<path d="M 304 138 C 302 150, 294 156, 288 162" stroke-width="3.1" />
-<path d="M 284 172
-C 298 168, 310 180, 324 182" stroke-width="4.6" />
-<path d="M 282 204
-C 296 200, 308 210, 320 208" stroke-width="4.2" />
-<!-- Región temporal inferior: circunvoluciones horizontales onduladas -->
-<path d="M 152 238
-C 168 228, 184 238, 202 228
-C 218 220, 234 232, 252 224
-C 262 220, 270 224, 276 228" stroke-width="4.8" />
-<path d="M 196 232 C 198 242, 190 250, 182 254" stroke-width="3.2" />
-<path d="M 168 264
-C 184 254, 198 264, 214 256
-C 228 248, 242 258, 256 252" stroke-width="4.6" />
-<path d="M 226 254 C 228 264, 222 272, 214 276" stroke-width="3" />
-<path d="M 188 282
-C 202 276, 216 284, 230 278
-C 238 274, 244 278, 250 280" stroke-width="4" />
+<path d="M 142 100 C 144 112, 136 120, 126 124" stroke-width="3" />
+<path d="M 80 134
+C 96 122, 114 134, 130 124
+C 146 114, 160 128, 176 122" stroke-width="4.8" />
+<path d="M 116 128 C 118 140, 108 148, 98 152" stroke-width="3.2" />
+<path d="M 62 166
+C 80 154, 98 166, 116 156
+C 134 146, 150 160, 168 152
+C 176 148, 182 144, 186 140" stroke-width="5" />
+<path d="M 138 154 C 144 166, 154 170, 164 168" stroke-width="3.4" />
+<path d="M 62 198
+C 78 186, 96 196, 114 184
+C 130 174, 144 186, 160 178" stroke-width="4.6" />
+<path d="M 96 192 C 100 204, 92 214, 82 220" stroke-width="3.2" />
+<path d="M 86 226
+C 102 216, 118 224, 134 214" stroke-width="4" />
+<!-- Región parietal superior -->
+<path d="M 210 100
+C 224 90, 238 102, 254 96
+C 266 92, 276 100, 284 108" stroke-width="4.4" />
+<path d="M 240 100 C 238 112, 228 120, 218 124" stroke-width="3.2" />
+<path d="M 206 132
+C 222 122, 238 134, 254 124
+C 268 116, 280 128, 292 124" stroke-width="4.8" />
+<path d="M 256 124 C 260 136, 252 146, 242 150" stroke-width="3.3" />
+<path d="M 204 168
+C 220 158, 236 170, 254 160
+C 268 152, 280 162, 294 158" stroke-width="4.6" />
+<!-- Lóbulo occipital más compacto atrás -->
+<path d="M 296 116
+C 310 114, 320 124, 334 126" stroke-width="4.2" />
+<path d="M 298 146
+C 314 142, 326 154, 342 156" stroke-width="4.8" />
+<path d="M 318 148 C 316 160, 306 168, 298 174" stroke-width="3.1" />
+<path d="M 296 180
+C 312 176, 326 188, 342 188" stroke-width="4.5" />
+<path d="M 294 210
+C 308 206, 320 214, 332 212" stroke-width="4" />
+<!-- Lóbulo temporal colgante inferior: circunvoluciones horizontales sinuosas -->
+<path d="M 148 242
+C 166 230, 186 242, 206 230
+C 226 220, 244 234, 264 224
+C 276 218, 284 222, 290 226" stroke-width="4.8" />
+<path d="M 198 234 C 200 246, 190 254, 180 258" stroke-width="3.2" />
+<path d="M 162 266
+C 182 254, 200 266, 220 256
+C 238 246, 254 258, 272 250" stroke-width="4.6" />
+<path d="M 234 254 C 236 266, 228 274, 218 278" stroke-width="3.1" />
+<path d="M 186 280
+C 204 274, 220 282, 238 276" stroke-width="4" />
 </g>
-<!-- Brillo principal semitransparente en la parte superior izquierda -->
-<path d="M 96 148
-C 108 106, 150 82, 204 82
-C 226 82, 244 86, 258 92
-C 214 92, 164 104, 134 134
-C 118 150, 108 168, 100 186
-C 92 174, 92 160, 96 148 Z"
-fill="url(#gr_brillo_sup)" />
-<!-- Destellos suaves en la zona superior izquierda -->
-<ellipse cx="136" cy="108" rx="18" ry="8" transform="rotate(-24 136 108)" fill="#ffffff" fill-opacity="0.38" />
-<circle cx="112" cy="126" r="4.5" fill="#ffffff" fill-opacity="0.42" />
+<!-- Reflejo discreto siguiendo la curvatura superior del lóbulo frontal -->
+<path d="M 74 148
+C 90 112, 134 92, 184 91
+C 142 98, 102 118, 84 152
+C 78 162, 74 172, 72 182
+C 68 170, 68 158, 74 148 Z"
+fill="url(#gr_reflejo_discreto)" />
 </g>
-<!-- Contorno exterior limpio y redondeado del hemisferio -->
-<path d="M 192 78
-C 145 76, 95 102, 82 146
-C 72 180, 76 218, 96 244
-C 108 260, 128 266, 146 266
-C 156 286, 178 298, 208 296
-C 238 294, 258 276, 266 254
-C 298 252, 326 232, 332 200
-C 338 166, 320 124, 286 98
-C 258 78, 224 79, 192 78 Z"
+<!-- Contorno exterior anatómico: alargado, frontal prominente, temporal colgante con contorno propio y occipital más pequeño -->
+<path d="M 192 84
+C 142 84, 82 104, 60 144
+C 44 174, 48 212, 74 232
+C 92 246, 118 248, 138 242
+C 132 256, 138 274, 158 282
+C 186 294, 232 290, 260 272
+C 278 260, 286 246, 290 236
+C 324 232, 348 212, 350 184
+C 352 154, 332 122, 296 102
+C 266 86, 228 84, 192 84 Z"
 stroke="#8e2f55" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
 </g>
 </svg>
