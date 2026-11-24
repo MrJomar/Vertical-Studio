@@ -1,0 +1,681 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave"
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "push",
+   "fx": "bokeh",
+   "narration": "¿Por qué se te duerme el pie al sentarte?",
+   "duration": 4.1,
+   "layers": [
+    {
+     "asset": "persona",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.55,
+     "anim": "pop+float",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "🦶",
+     "x": 0.5,
+     "y": 0.82,
+     "w": 0.28,
+     "at": "pie",
+     "anim": "pop+wobble",
+     "z": 3
+    },
+    {
+     "asset": "emoji",
+     "char": "❓",
+     "x": 0.78,
+     "y": 0.4,
+     "w": 0.3,
+     "at": "duerme",
+     "anim": "pop+pulse",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "fx": "brillos",
+   "narration": "La culpa es de un nervio que pide auxilio.",
+   "duration": 4.1,
+   "layers": [
+    {
+     "asset": "esfera",
+     "color": "#ffd23f",
+     "mood": "scared",
+     "x": 0.5,
+     "y": 0.58,
+     "w": 0.5,
+     "at": "nervio",
+     "anim": "pop+shake",
+     "z": 2
+    },
+    {
+     "asset": "cartel",
+     "text": "¡AUXILIO!",
+     "x": 0.5,
+     "y": 0.28,
+     "w": 0.6,
+     "at": "auxilio",
+     "anim": "drop",
+     "z": 3
+    }
+   ],
+   "bg_colors": [
+    "#1b2a4a",
+    "#0b1020",
+    "#ffd23f"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pan_right",
+   "fx": "brillos",
+   "narration": "Dentro de tu pierna viaja un cable que lleva mensajes al cerebro.",
+   "duration": 5.2,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🦵",
+     "x": 0.5,
+     "y": 0.72,
+     "w": 0.55,
+     "anim": "slide_up",
+     "z": 1
+    },
+    {
+     "asset": "esfera",
+     "color": "#ffd23f",
+     "mood": "happy",
+     "count": 6,
+     "spread": [
+      0.4,
+      0.35,
+      0.6,
+      0.7
+     ],
+     "layout": "line",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.12,
+     "at": "mensajes",
+     "anim": "rise",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "🧠",
+     "x": 0.5,
+     "y": 0.3,
+     "w": 0.34,
+     "at": "cerebro",
+     "anim": "pop+float",
+     "z": 3
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "push",
+   "fx": "polvo_luz",
+   "narration": "Al cruzar las piernas, lo aplastas contra el hueso.",
+   "duration": 4.1,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🦴",
+     "x": 0.5,
+     "y": 0.7,
+     "w": 0.5,
+     "at": "hueso",
+     "anim": "fade",
+     "z": 1
+    },
+    {
+     "asset": "esfera",
+     "color": "#ffd23f",
+     "mood": "sad",
+     "x": 0.5,
+     "y": 0.64,
+     "w": 0.26,
+     "anim": "pop",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "🦵",
+     "x": 0.5,
+     "y": 0.38,
+     "w": 0.6,
+     "at": "aplastas",
+     "anim": "drop+shake",
+     "z": 3
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "drift",
+   "fx": "humo",
+   "narration": "Sin sangre ni oxígeno, el nervio se desconcierta.",
+   "duration": 3.7,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🩸",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.12,
+     "count": 8,
+     "spread": [
+      0.2,
+      0.2,
+      0.8,
+      0.5
+     ],
+     "layout": "random",
+     "at": "sangre",
+     "out": "oxígeno",
+     "anim": "fall",
+     "z": 1
+    },
+    {
+     "asset": "esfera",
+     "color": "#ffd23f",
+     "mood": "scared",
+     "x": 0.5,
+     "y": 0.68,
+     "w": 0.42,
+     "anim": "pop+shake",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "❓",
+     "x": 0.5,
+     "y": 0.35,
+     "w": 0.3,
+     "at": "desconcierta",
+     "anim": "pop+pulse",
+     "z": 3
+    }
+   ],
+   "bg_colors": [
+    "#3a1020",
+    "#12060c",
+    "#ff4d5e"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "fx": "brillos",
+   "narration": "Y manda señales falsas: ese hormigueo no es real.",
+   "duration": 4.1,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "⚡",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.16,
+     "count": 14,
+     "spread": [
+      0.1,
+      0.3,
+      0.9,
+      0.8
+     ],
+     "layout": "random",
+     "at": "señales",
+     "anim": "pop+shake",
+     "z": 1
+    },
+    {
+     "asset": "texto",
+     "text": "FALSO",
+     "color": "#ff4d5e",
+     "x": 0.5,
+     "y": 0.55,
+     "w": 0.7,
+     "at": "falsas",
+     "anim": "pop",
+     "z": 3
+    },
+    {
+     "asset": "marca",
+     "kind": "no",
+     "x": 0.5,
+     "y": 0.8,
+     "w": 0.28,
+     "at": "real",
+     "anim": "pop",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push_fuerte",
+   "fx": "bokeh",
+   "narration": "Tu cerebro recibe puro ruido, y no sabe qué sentir.",
+   "duration": 4.4,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🧠",
+     "x": 0.5,
+     "y": 0.55,
+     "w": 0.55,
+     "anim": "pop+pulse",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "⚡",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.14,
+     "count": 12,
+     "spread": [
+      0.05,
+      0.3,
+      0.95,
+      0.8
+     ],
+     "layout": "random",
+     "at": "ruido",
+     "anim": "shake",
+     "z": 3
+    },
+    {
+     "asset": "emoji",
+     "char": "❓",
+     "x": 0.8,
+     "y": 0.28,
+     "w": 0.22,
+     "at": "sabe",
+     "anim": "pop+float",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "pull",
+   "fx": "polvo_luz",
+   "narration": "Por eso tu pie se siente pesado, como de otro.",
+   "duration": 4.4,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🦶",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.6,
+     "anim": "slide_left+float",
+     "z": 1
+    },
+    {
+     "asset": "emoji",
+     "char": "⚓",
+     "x": 0.5,
+     "y": 0.82,
+     "w": 0.3,
+     "at": "pesado",
+     "anim": "drop",
+     "z": 2
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "fx": "brillos",
+   "narration": "Tranquilo: después de unos diez minutos, es normal.",
+   "duration": 3.7,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "⏱️",
+     "x": 0.5,
+     "y": 0.42,
+     "w": 0.5,
+     "at": "diez",
+     "anim": "pop+wobble",
+     "z": 2
+    },
+    {
+     "asset": "etiqueta",
+     "text": "10 min",
+     "x": 0.5,
+     "y": 0.68,
+     "w": 0.5,
+     "at": "diez",
+     "anim": "pop",
+     "z": 3
+    },
+    {
+     "asset": "marca",
+     "kind": "ok",
+     "x": 0.5,
+     "y": 0.84,
+     "w": 0.2,
+     "at": "normal",
+     "anim": "pop",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "fx": "corazones",
+   "narration": "Al estirarte, la sangre regresa de golpe.",
+   "duration": 3.3,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🩸",
+     "x": 0.5,
+     "y": 0.8,
+     "w": 0.14,
+     "count": 10,
+     "spread": [
+      0.2,
+      0.55,
+      0.8,
+      0.9
+     ],
+     "layout": "random",
+     "at": "sangre",
+     "anim": "rise",
+     "z": 1
+    },
+    {
+     "asset": "corazon",
+     "color": "#ff4d5e",
+     "x": 0.5,
+     "y": 0.35,
+     "w": 0.34,
+     "at": "regresa",
+     "anim": "pop+pulse",
+     "z": 2
+    }
+   ],
+   "bg_colors": [
+    "#3a1020",
+    "#12060c",
+    "#ff4d5e"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "fx": "bokeh",
+   "narration": "Los nervios despiertan, y todos gritan a la vez.",
+   "duration": 4.1,
+   "layers": [
+    {
+     "asset": "esfera",
+     "color": "#ffd23f",
+     "mood": "scared",
+     "count": 8,
+     "spread": [
+      0.15,
+      0.35,
+      0.85,
+      0.85
+     ],
+     "layout": "grid",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.2,
+     "at": "despiertan",
+     "anim": "pop+shake",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "📢",
+     "x": 0.5,
+     "y": 0.28,
+     "w": 0.28,
+     "at": "gritan",
+     "anim": "pop+shake",
+     "z": 3
+    }
+   ],
+   "bg_colors": [
+    "#1b2a4a",
+    "#0b1020",
+    "#ffd23f"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push_fuerte",
+   "fx": "brillos",
+   "narration": "Por eso sientes ese cosquilleo eléctrico.",
+   "duration": 3.0,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🦶",
+     "x": 0.5,
+     "y": 0.58,
+     "w": 0.5,
+     "glow": "#ffd23f",
+     "anim": "float",
+     "z": 1
+    },
+    {
+     "asset": "emoji",
+     "char": "⚡",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.12,
+     "count": 26,
+     "spread": [
+      0.1,
+      0.3,
+      0.9,
+      0.9
+     ],
+     "layout": "random",
+     "at": "cosquilleo",
+     "anim": "pop+shake",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "¡ZZZ!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.3,
+     "w": 0.5,
+     "at": "eléctrico",
+     "anim": "pop+pulse",
+     "z": 3
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "pull",
+   "fx": "polvo_luz",
+   "narration": "No hace daño, salvo que te pase todos los días.",
+   "duration": 4.4,
+   "layers": [
+    {
+     "asset": "marca",
+     "kind": "ok",
+     "x": 0.5,
+     "y": 0.35,
+     "w": 0.28,
+     "at": "daño",
+     "anim": "pop",
+     "z": 2
+    },
+    {
+     "asset": "calendario",
+     "month": "NOV",
+     "day": "23",
+     "x": 0.5,
+     "y": 0.65,
+     "w": 0.4,
+     "at": "días",
+     "anim": "pop+wobble",
+     "z": 2
+    },
+    {
+     "asset": "etiqueta",
+     "text": "A DIARIO",
+     "color": "#d62839",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 0.5,
+     "at": "días",
+     "anim": "pop",
+     "z": 3
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "push",
+   "fx": "bokeh",
+   "narration": "Si duele o es frecuente, consulta a tu médico.",
+   "duration": 4.1,
+   "layers": [
+    {
+     "asset": "persona",
+     "var": 2,
+     "x": 0.5,
+     "y": 0.64,
+     "w": 0.55,
+     "anim": "slide_up",
+     "z": 1
+    },
+    {
+     "asset": "emoji",
+     "char": "🩺",
+     "x": 0.5,
+     "y": 0.35,
+     "w": 0.3,
+     "at": "médico",
+     "anim": "pop+float",
+     "z": 3
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "pan_left",
+   "fx": "brillos",
+   "narration": "Para evitarlo, cambia de postura cada veinte minutos.",
+   "duration": 3.7,
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "🪑",
+     "x": 0.35,
+     "y": 0.62,
+     "w": 0.4,
+     "anim": "fade",
+     "z": 1
+    },
+    {
+     "asset": "emoji",
+     "char": "🔄",
+     "x": 0.7,
+     "y": 0.4,
+     "w": 0.3,
+     "at": "cambia",
+     "anim": "pop+spin",
+     "z": 2
+    },
+    {
+     "asset": "etiqueta",
+     "text": "20 min",
+     "x": 0.5,
+     "y": 0.84,
+     "w": 0.5,
+     "at": "veinte",
+     "anim": "pop",
+     "z": 3
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "fx": "corazones",
+   "narration": "Y tu pie dejará de pedir auxilio.",
+   "duration": 3.3,
+   "layers": [
+    {
+     "asset": "esfera",
+     "color": "#ffd23f",
+     "mood": "happy",
+     "x": 0.5,
+     "y": 0.55,
+     "w": 0.5,
+     "anim": "pop+bounce",
+     "z": 2
+    },
+    {
+     "asset": "emoji",
+     "char": "🦶",
+     "x": 0.5,
+     "y": 0.82,
+     "w": 0.3,
+     "at": "pie",
+     "anim": "pop",
+     "z": 3
+    },
+    {
+     "asset": "corazon",
+     "color": "#ff4d5e",
+     "x": 0.8,
+     "y": 0.3,
+     "w": 0.18,
+     "at": "auxilio",
+     "anim": "pop+float",
+     "z": 4
+    }
+   ],
+   "bg_colors": [
+    "#1b4a3a",
+    "#0b2018",
+    "#ffd23f"
+   ]
+  }
+ ]
+}
