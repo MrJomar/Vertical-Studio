@@ -5,3 +5,4 @@ edge-tts>=6.1          # voz neuronal gratuita (requiere internet)
 faster-whisper>=1.0    # subtítulos automáticos y auto-clipping (opcional pero recomendado)
 pyttsx3>=2.90          # voz offline de Windows (opcional)
 resvg-py>=0.2     # conversor de SVG (dibujos vectoriales del kit)
+keyring>=25         # guarda las claves de Buffer/Cloudinary en el almacén seguro de Windows

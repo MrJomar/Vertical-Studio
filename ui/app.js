@@ -36,7 +36,7 @@ function renderList(){
       <div class="mv"><button data-m="up" title="Subir">↑</button><button data-m="dn" title="Bajar">↓</button><button data-m="dup" title="Duplicar">⧉</button><button data-m="del" title="Eliminar">✕</button></div>`;
     d.onclick=e=>{const m=e.target.dataset.m;if(m){e.stopPropagation();return moveScene(i,m)}select(i)};
     L.appendChild(d)});
-  const empty=!sc.length;$("#empty").hidden=!empty;$("#player").hidden=empty;$(".insp").style.visibility=empty?"hidden":"visible";
+  const empty=!sc.length;$(".work").classList.toggle("home",empty);$("#empty").hidden=!empty;$("#player").hidden=empty;$(".insp").style.visibility=empty?"hidden":"visible";
   if(empty)renderEmpty();
 }
 function moveScene(i,m){const a=S.project.scenes;S.durs={};
@@ -53,14 +53,15 @@ function addScene(type){const ty=S.schema.types[type];const sc={type};
 
 function renderEmpty(){
   const E=$("#empty");const ty=S.schema.types;
-  E.innerHTML=`<h1>¿Qué video vamos a hacer hoy?</h1><p>Elige un tipo para empezar desde cero, o abre un ejemplo ya armado para ver cómo queda.</p>
+  E.innerHTML=`<h1>Tus proyectos</h1><p>Lo que sube la tarea diaria a GitHub y lo que abres o guardas, separado por estilo. Inicia todo lo pendiente con un clic.</p>
+  <div id="dash"></div>
+  <div class="sec" style="margin-top:34px">Crear algo nuevo</div>
   <div class="grid">${S.schema.order.map(k=>`<div class="tcard" data-add="${k}"><div class="ic">${icon(ty[k].icon,22)}</div><b>${esc(ty[k].label)}</b><span>${esc(ty[k].desc)}</span></div>`).join("")}</div>
-  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button><button class="btn" data-act="pieces">🧩 Piezas SVG</button><button class="btn" data-act="daily" id="dailyb">🆕 Proyectos nuevos</button></div>
-  <div id="dash" style="margin-top:8px"></div>`;
+  <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="ai">🎨 Animación con IA</button><button class="btn" data-act="script">📝 Guion → escenas</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button><button class="btn" data-act="pieces">🧩 Piezas SVG</button></div>`;
   E.querySelectorAll("[data-add]").forEach(e=>e.onclick=()=>addScene(e.dataset.add));
   E.querySelectorAll("[data-act]").forEach(e=>e.onclick=()=>act(e.dataset.act));
   startDash();
-  jget("/api/proyectos_nuevos").then(l=>{let seen=[];try{seen=JSON.parse(localStorage.getItem("vs_seen")||"[]")}catch(e){}const n=l.filter(x=>!seen.includes(x.id)).length;const b=$("#dailyb");if(b&&n)b.textContent="🆕 Proyectos nuevos ("+n+")"}).catch(()=>{});
+  if(!window._synced){window._synced=1;jpost("/api/tablero_sync",{}).then(r=>{if(r&&r.nuevos)toast(r.nuevos+" proyecto(s) nuevo(s) de GitHub")}).catch(()=>{})}
 }
 
 // ------------------------------------------------------------------ formulario
@@ -142,21 +143,6 @@ async function examplesModal(){
           if(j.state==="done"){e.video=j.result.video+"?t="+Date.now();draw()}else{toast(j.error||"No se pudo generar",1);gb.disabled=false}}catch(x){toast(x.message,1);gb.disabled=false}};
       const v=el.querySelector("video");if(v){el.onmouseenter=()=>v.play().catch(()=>{});el.onmouseleave=()=>v.pause()}})};
   draw()}
-
-async function dailyModal(){
-  const c=modal(`<div class="mh">Proyectos nuevos<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb"><div id="dl" style="display:flex;flex-direction:column;gap:12px"></div></div>`);
-  const list=await jget("/api/proyectos_nuevos");const box=c.querySelector("#dl");
-  let seen=[];try{seen=JSON.parse(localStorage.getItem("vs_seen")||"[]")}catch(e){}
-  if(!list.length){box.innerHTML=`<p class="hint">Todavía no hay proyectos nuevos. Cuando la tarea diaria suba proyectos a GitHub y actualices el programa, aparecerán aquí.</p>`;return}
-  let day="";
-  box.innerHTML=list.map(e=>{const h=e.fecha!==day?`<div class="sec" style="margin-top:6px">${esc(e.fecha)}</div>`:"";day=e.fecha;
-    const nuevo=!seen.includes(e.id);
-    return h+`<div class="ex" data-id="${esc(e.id)}" style="display:block;padding:12px"><b>${nuevo?"🆕 ":""}${esc(e.titulo)}</b><br><span>${esc(e.tema||"")}</span>
-      <div class="hint" style="margin:6px 0">${e.escenas} escenas · ${e.palabras} palabras · ~${e.segundos_aprox} s</div>
-      ${(e.fuentes||[]).length?`<div class="hint">Fuentes: ${e.fuentes.map(u=>/^https?:/.test(u)?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,38))}</a>`:esc(u)).join(" · ")}</div>`:""}
-      <div style="margin-top:8px"><button class="btn small primary" data-use>Abrir</button></div></div>`}).join("");
-  box.querySelectorAll(".ex").forEach(el=>{const e=list.find(x=>x.id===el.dataset.id);
-    el.querySelector("[data-use]").onclick=()=>{try{localStorage.setItem("vs_seen",JSON.stringify([...new Set([...seen,...list.map(x=>x.id)])]))}catch(x){}loadProject(e.project,null,e.titulo);closeModal()}})}
 
 function loadProject(p,path,name){
   S.project={settings:p.settings||{},scenes:p.scenes||[]};S.path=path;S.durs={};S.sel=S.project.scenes.length?0:-1;S.t=1.6;
@@ -359,20 +345,117 @@ async function voicePromptModal(){
 // ------------------------------------------------------------------ panel de inicio (trabajos y recientes)
 let dashTimer=null;
 const ago=ts=>{const m=Math.round((Date.now()/1000-ts)/60);return m<1?"ahora":m<60?m+" min":m<1440?Math.round(m/60)+" h":Math.round(m/1440)+" d"};
+let TBF="all";
+const ESTL={pendiente:"Pendiente",en_cola:"En cola",renderizando:"Renderizando",listo:"Listo",error:"Con error"};
+const PUBL={subiendo:"subiendo el video…",enviando:"enviando a Buffer…",enviado:"enviado a Buffer",programado:"programado en Buffer",incierto:"estado incierto: revisa Buffer",error:"error al publicar"};
 async function renderDash(){
   const box=$("#dash");if(!box)return;
-  try{const [j,r]=await Promise.all([jget("/api/jobs"),jget("/api/recent")]);
-    const act=j.jobs.filter(x=>x.state==="running"),done=j.jobs.filter(x=>x.state!=="running").slice(0,6);
-    box.innerHTML=`<div class="dcols"><div><div class="sec">En curso ${act.length?`(${act.length})`:""}</div>
-      ${act.length?act.map(x=>`<div class="dcard"><b>${esc(x.name||"Trabajo")}</b><div class="bar"><i style="width:${Math.round(x.frac*100)}%"></i></div><span class="hint">${esc(x.stage)} · ${Math.round(x.frac*100)}% · ${fmtT(x.elapsed)}</span> <button class="btn small danger" data-cancel="${x.id}">Cancelar</button></div>`).join(""):`<div class="hint">Nada renderizándose ahora mismo.</div>`}
-      ${done.length?`<div class="sec">Terminados hace poco</div>`+done.map(x=>`<div class="dcard"><b>${esc(x.name||"Trabajo")}</b> <span class="hint">${x.state==="done"?"✔ listo":x.state==="error"?"✖ "+esc(x.error||"error"):"cancelado"} · hace ${ago(Date.now()/1000-x.elapsed)}</span>${x.out?` <button class="btn small" data-reveal="${esc(x.out)}">Mostrar</button>`:""}</div>`).join(""):""}
-      <div class="dcard dim"><b>🏭 Máquina de videos</b><div class="hint">Próximamente: una carpeta de entrada donde dejas proyectos (.json) y se renderizan solos, con su voz y perfil, hasta quedar guardados.</div></div></div>
-      <div><div class="sec">Proyectos recientes</div>
-      ${r.recent.length?r.recent.slice(0,10).map(x=>`<div class="dcard clk" data-open="${esc(x.path)}"><b>${esc(x.name)}</b><div class="hint">${x.scenes} escenas · ${esc((x.types||[]).join(", "))} · editado hace ${ago(x.ts)}${x.last_render?" · exportado":""}</div></div>`).join(""):`<div class="hint">Aquí aparecerán tus proyectos guardados o abiertos.</div>`}</div></div>`;
-    box.querySelectorAll("[data-open]").forEach(e=>e.onclick=async()=>{if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Abrir otro proyecto?"))return;try{const p=await jpost("/api/open_project",{path:e.dataset.open});loadProject(p.project,p.path);voicePromptModal()}catch(er){toast(er.message,1)}});
-    box.querySelectorAll("[data-cancel]").forEach(e=>e.onclick=()=>jpost("/api/cancel",{id:e.dataset.cancel}));
-    box.querySelectorAll("[data-reveal]").forEach(e=>e.onclick=()=>jpost("/api/reveal",{path:e.dataset.reveal}));
+  try{
+    const t=await jget("/api/tablero");S.tb=t;
+    const c=t.conteo,q=t.cola,pend=c.pendiente+c.error;
+    const order={renderizando:0,en_cola:1,error:2,pendiente:3,listo:4};
+    const items=t.items.filter(i=>TBF==="all"||i.estilo===TBF).sort((x,y)=>order[x.estado]-order[y.estado]||(y.fecha>x.fecha?1:y.fecha<x.fecha?-1:0)||x.id.localeCompare(y.id));
+    const resume=q.pendientes>0&&!q.corriendo;
+    const startLbl=resume?`▶ Continuar cola (${q.pendientes})`:`▶ Iniciar pendientes (${pend})`;
+    const main=q.corriendo&&!q.pausada?`<button class="btn" data-tb="pause">⏸ Pausar después del actual</button>`
+      :q.corriendo?`<button class="btn" disabled>Pausando… termina el actual</button>`
+      :`<button class="btn primary" data-tb="start" ${pend+q.pendientes?"":"disabled"}>${startLbl}</button>`;
+    const tabs=[["all","Todos",t.items.length],...t.estilos.map(s=>[s.id,s.label,s.count])].map(([k,l,n])=>`<button class="tab ${TBF===k?"on":""}" data-tab="${k}">${esc(l)} <span>${n}</span></button>`).join("");
+    const cards=items.map(it=>{
+      const job=q.actual===it.id?q.job:null,pb=it.pub&&it.pub.estado?it.pub:null;
+      return `<div class="pcard st-${it.estado}" data-id="${esc(it.id)}">
+        <div class="ph"><span class="badge b-${it.estado}">${ESTL[it.estado]}</span><span class="tag">${esc(it.estilo_label)}</span><span class="hint">${esc(it.fecha)}</span></div>
+        <b>${esc(it.titulo)}</b>
+        <div class="hint">${esc(it.tema||"")}${it.tema?" · ":""}${it.escenas} escenas · ~${it.segundos_aprox} s${it.modificado?" · modificado: hay que renderizar de nuevo":""}</div>
+        ${it.estado==="renderizando"&&job?`<div class="bar"><i style="width:${Math.round(job.frac*100)}%"></i></div><div class="hint">${esc(job.stage)} · ${Math.round(job.frac*100)}% · ${fmtT(job.elapsed)}</div>`:""}
+        ${it.estado==="en_cola"?`<div class="hint">En cola · lugar ${it.cola_pos||"?"}</div>`:""}
+        ${it.estado==="error"?`<div class="hint errtxt">${esc(it.error)}</div>`:""}
+        ${pb?`<div class="hint">📤 ${esc(PUBL[pb.estado]||pb.estado)}${pb.canal?" · "+esc(pb.canal):""}${pb.estado==="error"||pb.estado==="incierto"?` · ${esc(pb.detalle||"")}`:""}</div>`:""}
+        <div class="pbtn">
+          <button class="btn small" data-a="open">Abrir</button>
+          ${["pendiente","error","listo"].includes(it.estado)?`<button class="btn small ${it.estado==="listo"?"":"primary"}" data-a="render">${it.estado==="listo"?"Renderizar otra vez":"Renderizar"}</button>`:""}
+          ${it.estado==="en_cola"?`<button class="btn small" data-a="unqueue">Quitar de la cola</button>`:""}
+          ${it.estado==="listo"?`<button class="btn small primary" data-a="play">▶ Ver</button><button class="btn small" data-a="reveal">Carpeta</button><button class="btn small" data-a="pub">📤 Publicar</button>`:""}
+          ${pb&&["incierto","error"].includes(pb.estado)?`<button class="btn small" data-a="forget">Descartar aviso</button>`:""}
+        </div></div>`}).join("");
+    const html=`<div class="tbar"><div class="tsum"><b>${pend}</b> pendientes · <b>${c.en_cola+c.renderizando}</b> en cola · <b>${c.listo}</b> listos${c.error?` · <span class="errtxt">${c.error} con error</span>`:""}</div>
+      <div class="tact">${main}<button class="btn" data-tb="sync">⟳ Buscar proyectos nuevos</button><button class="btn" data-tb="cfg">📤 Publicación</button></div></div>
+      ${resume?`<div class="tban">Quedaron ${q.pendientes} proyecto(s) en cola. Pulsa «Continuar cola» para retomarlos.</div>`:""}
+      <div class="ttabs">${tabs}</div>
+      <div class="pgrid">${cards||`<div class="hint">Aún no hay proyectos aquí. Los que sube la tarea diaria a GitHub aparecen solos; también verás los que abras o guardes.</div>`}</div>`;
+    if(box._h===html)return;box._h=html;box.innerHTML=html;
+    box.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TBF=b.dataset.tab;box._h="";renderDash()});
+    box.querySelectorAll("[data-tb]").forEach(b=>b.onclick=async()=>{const k=b.dataset.tb;
+      try{if(k==="start"){const r=await jpost("/api/cola_iniciar",{});toast(r.error||("Cola iniciada: "+r.encolados+" proyecto(s)"),!!r.error)}
+        else if(k==="pause"){await jpost("/api/cola_pausar",{});toast("Se detendrá al terminar el proyecto actual")}
+        else if(k==="sync"){b.disabled=true;const r=await jpost("/api/tablero_sync",{});toast(r.error||(r.nuevos?r.nuevos+" proyecto(s) nuevo(s)":"No hay proyectos nuevos"),!!r.error);b.disabled=false}
+        else if(k==="cfg")publishModal(null)}catch(e){toast(e.message,1)}box._h="";renderDash()});
+    box.querySelectorAll(".pcard [data-a]").forEach(b=>b.onclick=async()=>{const id=b.closest(".pcard").dataset.id,it=t.items.find(x=>x.id===id),a=b.dataset.a;
+      try{
+        if(a==="open"){if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Abrir otro proyecto?"))return;const p=await jpost("/api/proyecto_abrir",{id});if(p.error)return toast(p.error,1);loadProject(p.project,it.origen==="local"?p.path:null,it.titulo);voicePromptModal()}
+        else if(a==="render"){const r=await jpost("/api/cola_iniciar",{ids:[id]});toast("Añadido a la cola ("+r.encolados+")")}
+        else if(a==="unqueue")await jpost("/api/cola_quitar",{id});
+        else if(a==="play")playModal(it);
+        else if(a==="reveal")jpost("/api/reveal",{path:it.video});
+        else if(a==="pub")publishModal(it);
+        else if(a==="forget"){if(confirm("¿Ya revisaste en Buffer que NO se publicó? Se podrá volver a enviar."))await jpost("/api/publicar_olvidar",{id})}
+      }catch(e){toast(e.message,1)}box._h="";renderDash()});
   }catch(e){}
+}
+function playModal(it){modal(`<div class="mh">${esc(it.titulo)}<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb" style="text-align:center"><video src="/api/video?path=${encodeURIComponent(it.video)}&k=${window.VS_TOKEN}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:10px"></video></div>`,"md")}
+
+async function publishModal(it){
+  const stt=await jget("/api/publicar_estado");
+  const c=modal(`<div class="mh">${it?"Publicar: "+esc(it.titulo):"Publicación (Buffer)"}<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb" id="pb"></div><div class="mf" id="pf"></div>`,"md");
+  const B=c.querySelector("#pb"),F=c.querySelector("#pf");let canales=[],canal=null;
+  const chip=(ok,l)=>`<span class="badge ${ok?"b-listo":"b-error"}">${ok?"✔":"✖"} ${l}</span> `;
+  const cfg=()=>{
+    B.innerHTML=`<p class="hint">Las claves se guardan en el almacén seguro de Windows, nunca en archivos del proyecto. Si ya las configuraste en DiffStudio, se detectan solas.</p>
+    <div>${chip(stt.keyring,"Almacén seguro")}${chip(stt.buffer,"Buffer")}${chip(stt.cloudinary_secret,"Cloudinary (secreto)")}${chip(!!stt.api_key,"Cloudinary (API key)")}${chip(!!stt.cloud_name,"Nombre de nube")}</div>
+    <div class="fld"><label>Cloudinary · nombre de la nube</label><input type="text" id="cn" value="${esc(stt.cloud_name)}"></div>
+    <div class="fld"><label>Cloudinary · API key ${stt.api_key?"("+esc(stt.api_key)+" guardada; déjalo vacío para conservarla)":""}</label><input type="text" id="ck" autocomplete="off"></div>
+    <div class="fld"><label>Cloudinary · API secret ${stt.cloudinary_secret?"(guardado)":""}</label><input type="password" id="cs" autocomplete="off" placeholder="${stt.cloudinary_secret?"•••••• (vacío = conservar)":""}"></div>
+    <div class="fld"><label>Buffer · clave personal ${stt.buffer?"(guardada)":""}</label><input type="password" id="bt" autocomplete="off" placeholder="${stt.buffer?"•••••• (vacío = conservar)":""}"></div>
+    <div class="fld"><label>Canal de Buffer</label><select id="ch"><option value="">— carga los canales —</option></select><div class="hint" id="chh"></div></div>`;
+    F.innerHTML=`<button class="btn" id="lc">Cargar canales</button><span style="flex:1"></span><button class="btn" data-close>Cerrar</button><button class="btn primary" id="sv">Guardar${it?" y continuar":""}</button>`;
+    const sel=B.querySelector("#ch"),h=B.querySelector("#chh");
+    const fill=()=>{sel.innerHTML='<option value="">— elige un canal —</option>'+canales.map(x=>`<option value="${esc(x.id)}" ${x.soportado?"":"disabled"} ${x.id===stt.channel_id?"selected":""}>${esc(x.nombre)} · ${esc(x.servicio)}${x.soportado?"":" (aún no verificado)"}</option>`).join("")};
+    if(stt.channel_id){sel.innerHTML=`<option value="${esc(stt.channel_id)}" selected>${esc(stt.channel_name||stt.channel_id)}</option>`}
+    F.querySelector("#lc").onclick=async()=>{await save(true);const r=await jpost("/api/publicar_canales",{});if(r.error)return toast(r.error,1);canales=r.canales;fill();h.textContent=canales.length?"Solo TikTok está verificado por ahora; los demás canales aparecen pero no se envían.":"Buffer no devolvió canales."};
+    const save=async(quiet)=>{const body={cloud_name:B.querySelector("#cn").value.trim(),buffer_token:B.querySelector("#bt").value.trim(),cloudinary_secret:B.querySelector("#cs").value.trim()};
+      const k=B.querySelector("#ck").value.trim();if(k)body.api_key=k;const v=sel.value;if(v){const ch=canales.find(x=>x.id===v);body.channel_id=v;if(ch)body.channel_name=ch.nombre}
+      const r=await jpost("/api/publicar_guardar",body);if(r.error){toast(r.error,1);throw new Error(r.error)}Object.assign(stt,r);if(!quiet)toast("Guardado");return r};
+    F.querySelector("#sv").onclick=async()=>{try{await save();if(it&&stt.listo)send();else if(!it)closeModal()}catch(e){}};
+  };
+  const send=()=>{
+    const tags=(it.hashtags||[]).map(h=>"#"+String(h).replace(/^#/,"").replace(/\s/g,"")).join(" ");
+    const base=[it.titulo,it.descripcion,tags].filter(Boolean).join("\n\n");
+    B.innerHTML=`<div class="fld"><label>Canal</label><div><b>${esc(stt.channel_name||stt.channel_id)}</b> <button class="btn small" id="cc">Cambiar</button></div></div>
+    <div class="fld"><label>Descripción de la publicación</label><textarea id="tx" rows="6">${esc(base)}</textarea></div>
+    <div class="fld"><label>¿Cuándo?</label><label class="chk"><input type="radio" name="w" value="now" checked><span>Publicar ahora</span></label><label class="chk"><input type="radio" name="w" value="later"><span>Programar</span></label><input type="datetime-local" id="dt" disabled></div>
+    <div class="hint">Todavía no se envía nada: primero verás un resumen para confirmar.</div>`;
+    F.innerHTML=`<button class="btn" data-close>Cancelar</button><span style="flex:1"></span><button class="btn primary" id="rv">Revisar y confirmar</button>`;
+    B.querySelector("#cc").onclick=cfg;
+    B.querySelectorAll("[name=w]").forEach(r=>r.onchange=()=>{B.querySelector("#dt").disabled=B.querySelector("[name=w]:checked").value!=="later"});
+    F.querySelector("#rv").onclick=async()=>{
+      let sched=null;if(B.querySelector("[name=w]:checked").value==="later"){const v=B.querySelector("#dt").value;if(!v)return toast("Elige la fecha y hora",1);sched=new Date(v).toISOString()}
+      const ch=(canales.find(x=>x.id===stt.channel_id)||{});
+      const r=await jpost("/api/publicar_preparar",{id:it.id,channel_id:stt.channel_id,channel_name:stt.channel_name,service:ch.servicio||"tiktok",text:B.querySelector("#tx").value,scheduled:sched});
+      if(r.error)return toast(r.error,1);confirmar(r)};
+  };
+  const confirmar=r=>{const s=r.resumen;
+    B.innerHTML=`<p><b>Revisa antes de enviar:</b></p><div class="dcard"><b>${esc(s.titulo)}</b><div class="hint">Canal: ${esc(s.canal)} (${esc(s.servicio)}) · ${s.mb} MB</div><div class="hint">${s.programado?"Programado para "+esc(s.programado):"Se publica AHORA"}</div><pre class="code" style="white-space:pre-wrap;margin-top:8px">${esc(s.texto)}</pre></div>
+    <p class="hint">El video se sube a Cloudinary y Buffer lo publica en TikTok. Una vez enviado no se puede deshacer desde aquí.</p>`;
+    F.innerHTML=`<button class="btn" data-close>Cancelar</button><span style="flex:1"></span><button class="btn" id="bk">Volver</button><button class="btn primary" id="go">✔ Confirmar y enviar</button>`;
+    F.querySelector("#bk").onclick=send;
+    F.querySelector("#go").onclick=async()=>{F.querySelector("#go").disabled=true;
+      const j=await jpost("/api/publicar_confirmar",{confirm:r.confirm});if(j.error){toast(j.error,1);return send()}
+      B.innerHTML=`<div class="bar"><i id="pbar" style="width:5%"></i></div><div class="hint" id="pst">Enviando…</div>`;F.innerHTML="";
+      const done=await poll(j.id,x=>{const b=B.querySelector("#pbar");if(b)b.style.width=Math.max(5,x.frac*100)+"%";const t=B.querySelector("#pst");if(t)t.textContent=x.stage});
+      if(done.state==="done"){B.innerHTML=`<p>✔ <b>${done.result.estado==="programado"?"Programado":"Enviado"} a Buffer.</b></p><div class="hint">ID: ${esc(done.result.buffer_id)}. Comprueba la publicación en tu panel de Buffer y en la red.</div>`;F.innerHTML=`<button class="btn primary" data-close>Listo</button>`}
+      else{B.innerHTML=`<p>✖ No se completó el envío.</p><div class="hint errtxt">${esc(done.error||"error")}</div><div class="hint">Si dice «incierto», revisa Buffer antes de reintentar para no duplicar.</div>`;F.innerHTML=`<button class="btn primary" data-close>Cerrar</button>`}
+      renderDash()}};
+  if(it&&stt.listo)send();else cfg();
 }
 function startDash(){clearInterval(dashTimer);renderDash();dashTimer=setInterval(()=>{if($("#empty").hidden){clearInterval(dashTimer);return}renderDash()},3000)}
 
@@ -462,7 +545,7 @@ function act(a){
   if(a==="new"){if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Empezar un proyecto nuevo?"))return;loadProject({settings:{theme:"oscuro"},scenes:[]},null)}
   else if(a==="home"){if(S.dirty&&!confirm("Volver al menú principal. Los cambios sin guardar se perderán. ¿Continuar?"))return;loadProject({settings:{...S.project.settings},scenes:[]},null)}
   else if(a==="update")checkUpdates(true);else if(a==="voices")voicesModal();else if(a==="pieces")piecesModal();
-  else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();else if(a==="daily")dailyModal();
+  else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();
   else if(a==="settings")settingsModal();else if(a==="export")exportModal();else if(a==="add")addModal();
   else if(a==="script")scriptModal();else if(a==="ai")aiModal();else if(a==="autoclip")autoclipModal()}
 $$("[data-act]").forEach(b=>b.onclick=()=>act(b.dataset.act));

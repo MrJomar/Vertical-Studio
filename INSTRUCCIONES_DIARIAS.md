@@ -25,7 +25,7 @@ Busca en la web cada cifra, fecha y afirmación. Prefiere fuentes primarias o in
 ## 4. Construir cada proyecto
 Formato: JSON con `settings`, `scenes` y `meta`. Ajustes obligatorios:
 `{"theme":"oscuro","tts_engine":"edge","caption_style":"suave","caption_size":92,"sfx":"auto","sfx_volume":0.5,"voice_speed":1.08,"trim_silences":true,"scene_pad":0.15,"transition_seconds":0.35}`
-`meta`: `{"titulo": "...", "tema": "familia / subtema", "fuentes": ["https://..."]}`.
+`meta`: `{"titulo": "...", "tema": "familia / subtema", "fuentes": ["https://..."], "descripcion": "texto breve para la publicación en redes (1–2 frases, con gancho)", "hashtags": ["tema1", "tema2", "tema3"]}`. La descripción y los hashtags se usan al publicar en TikTok con Buffer: sin signos de emoji excesivos, sin afirmaciones que el video no respalde.
 
 Reglas de diseño:
 - **Duración:** 10–13 escenas, 120–150 palabras (≈40–50 s con la voz real). Ninguna escena con más de ~5 s de voz seguida.
@@ -51,4 +51,4 @@ Reglas de diseño:
 - No modifiques el motor, la interfaz ni otros proyectos más allá de los assets nuevos necesarios.
 
 ## 7. Qué ve Omar
-Al actualizar el programa, el botón «🆕 Proyectos nuevos» muestra los de cada día, con título, tema, duración aproximada y fuentes; «Abrir» carga el proyecto para renderizarlo y revisarlo.
+El programa descarga solo los proyectos nuevos de `proyectos_diarios/` y los muestra en su pantalla de inicio, separados por estilo (Animación vertical, Mapas…), con estado, botón «Iniciar pendientes» y publicación a TikTok vía Buffer. El estilo se deduce del tipo de escenas (`vector` = Animación vertical), así que cada proyecto debe usar el tipo de escena correcto.

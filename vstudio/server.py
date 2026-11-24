@@ -385,6 +385,104 @@ def daily_projects() -> list[dict]:
     return out
 
 
+# ----------------------------------------------------------------------------- tablero, cola y publicación
+from . import tablero as TB          # noqa: E402
+from . import publicar as PUB        # noqa: E402
+
+_Q = {"thread": None, "job": None, "item": None, "stop": False}
+_QL = threading.Lock()
+
+
+def _slug(text: str) -> str:
+    t = re.sub(r"[^\w\- ]", "", text, flags=re.U).strip().replace(" ", "_")
+    return (t[:48] or "video")
+
+
+def _queue_alive() -> bool:
+    th = _Q["thread"]
+    return bool(th and th.is_alive())
+
+
+def _queue_loop():
+    try:
+        while not _Q["stop"] and not TB.get_state()["paused"]:
+            iid = TB.next_queued()
+            if not iid:
+                break
+            loaded = TB.load_project(iid, _recent())
+            if not loaded:
+                TB.finish(iid, "error", error="No se encontró el archivo del proyecto.")
+                continue
+            data, path = loaded
+            title = (data.get("meta") or {}).get("titulo") or Path(path).stem
+            h = TB.content_hash(data)
+            TB.set_item(iid, estado="renderizando", error="")
+            out_dir = _default_out_dir()
+            out_dir.mkdir(parents=True, exist_ok=True)
+            out = str(out_dir / f"{_slug(title)}_{time.strftime('%Y%m%d_%H%M')}.mp4")
+            job = Job()
+            JOBS[job.id] = job
+            job.name = title
+            _Q["job"], _Q["item"] = job, iid
+            try:
+                proj = Project({"settings": data["settings"], "scenes": data["scenes"]}, path)
+                info = proj.render(out, job_progress(job), lambda: job.cancel or _Q["stop"])
+                job.result = {**(info if isinstance(info, dict) else {}), "path": out}
+                job.state, job.frac = "done", 1.0
+                TB.finish(iid, "listo", video=out, hash=h, ts_listo=time.time(), error="")
+            except Cancelled:
+                job.state = "cancelled"
+                if _Q["stop"]:
+                    TB.set_item(iid, estado="en_cola")           # cierre del programa: se retoma luego
+                else:
+                    TB.dequeue(iid)                              # cancelado a propósito: vuelve a «pendiente» y la cola se detiene
+                    TB.set_paused(True)
+                break
+            except Exception as e:
+                job.state, job.error = "error", str(e)
+                traceback.print_exc()
+                TB.finish(iid, "error", error=str(e)[:300])
+    finally:
+        _Q["job"], _Q["item"] = None, None
+
+
+def queue_start() -> bool:
+    with _QL:
+        if _queue_alive():
+            return False
+        TB.set_paused(False)
+        _Q["stop"] = False
+        _Q["thread"] = threading.Thread(target=_queue_loop, daemon=True)
+        _Q["thread"].start()
+        return True
+
+
+def tablero_snapshot() -> dict:
+    items = TB.scan(_recent())
+    st = TB.get_state()
+    job = _Q["job"]
+    counts = {e: sum(1 for i in items if i["estado"] == e) for e in TB.ESTADOS}
+    styles = [{"id": k, "label": v, "count": sum(1 for i in items if i["estilo"] == k)} for k, v in TB.STYLES]
+    pos = {i: n + 1 for n, i in enumerate(st["queue"])}
+    for it in items:
+        it["cola_pos"] = pos.get(it["id"], 0)
+    return {"items": items, "estilos": [s for s in styles if s["count"]], "conteo": counts,
+            "cola": {"corriendo": _queue_alive(), "pausada": st["paused"], "pendientes": len(st["queue"]),
+                     "actual": _Q["item"],
+                     "job": ({"id": job.id, "frac": job.frac, "stage": job.stage, "elapsed": time.time() - job.started} if job else None)}}
+
+
+def publish_job(d: dict, item_id: str):
+    def fn(job):
+        def save(**f):
+            TB.set_item(item_id, **f)
+        job.stage = "Preparando…"
+        return PUB.execute(d, save, lambda m: setattr(job, "stage", m))
+    jb = start_job(fn)
+    jb.name = "Publicar: " + d["titulo"]
+    return jb
+
+
 PRESETS_FILE = CACHE_DIR / "presets.json"
 
 
@@ -560,6 +658,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(_presets())
             if path == "/api/examples":
                 return self._json(examples_catalog())
+            if path == "/api/tablero":
+                return self._json(tablero_snapshot())
+            if path == "/api/publicar_estado":
+                return self._json(PUB.status())
             if path == "/api/proyectos_nuevos":
                 return self._json(daily_projects())
             if path == "/api/thumb":
@@ -638,6 +740,70 @@ class Handler(BaseHTTPRequestHandler):
                 if d.get("path"):
                     _recent_add(d["path"], d["project"], rendered=out)
                 return self._json({"id": jb.id})
+            if path == "/api/tablero_sync":
+                from . import updater
+                if not updater.load_config().get("check_updates", True):
+                    return self._json({"nuevos": 0, "omitido": True})
+                try:
+                    return self._json(TB.sync_github())
+                except Exception as e:
+                    return self._json({"error": "No se pudo consultar GitHub (" + e.__class__.__name__ + ")."}, 502)
+            if path == "/api/cola_iniciar":
+                ids = d.get("ids")
+                if not ids:
+                    ids = [i["id"] for i in TB.scan(_recent()) if i["estado"] in ("pendiente", "error", "en_cola")]
+                else:
+                    known = {i["id"] for i in TB.scan(_recent())}
+                    ids = [i for i in ids if i in known]
+                n = TB.enqueue(ids)
+                queue_start()
+                return self._json({"encolados": n})
+            if path == "/api/cola_pausar":
+                TB.set_paused(True)                      # termina el proyecto actual y no inicia otro
+                return self._json({"ok": True})
+            if path == "/api/cola_quitar":
+                TB.dequeue(d.get("id", ""))
+                return self._json({"ok": True})
+            if path == "/api/proyecto_abrir":
+                r = TB.load_project(d.get("id", ""), _recent())
+                if not r:
+                    return self._json({"error": "No se encontró el proyecto."}, 404)
+                return self._json({"project": {"settings": r[0]["settings"], "scenes": r[0]["scenes"]}, "path": r[1], "meta": r[0]["meta"]})
+            if path == "/api/publicar_guardar":
+                try:
+                    PUB.save_prefs({k: d.get(k) for k in ("cloud_name", "api_key", "channel_id", "channel_name") if k in d})
+                    if (d.get("buffer_token") or "").strip():
+                        PUB.save_secret("buffer_token", d["buffer_token"])
+                    if (d.get("cloudinary_secret") or "").strip():
+                        PUB.save_secret("cloudinary_secret", d["cloudinary_secret"])
+                except PUB.PublishError as e:
+                    return self._json({"error": str(e)}, 400)
+                return self._json(PUB.status())
+            if path == "/api/publicar_canales":
+                try:
+                    return self._json({"canales": PUB.list_channels(PUB.get_secret("buffer_token"))})
+                except PUB.PublishError as e:
+                    return self._json({"error": str(e)}, 400)
+            if path == "/api/publicar_preparar":
+                item = next((i for i in TB.scan(_recent()) if i["id"] == d.get("id")), None)
+                if not item:
+                    return self._json({"error": "No se encontró el proyecto."}, 404)
+                try:
+                    return self._json(PUB.prepare(item, d.get("channel_id", ""), d.get("channel_name", ""), d.get("service", ""),
+                                                  d.get("text", ""), d.get("scheduled") or None))
+                except PUB.PublishError as e:
+                    return self._json({"error": str(e)}, 400)
+            if path == "/api/publicar_confirmar":
+                try:
+                    c = PUB.take_confirmed(d.get("confirm", ""))
+                except PUB.PublishError as e:
+                    return self._json({"error": str(e)}, 400)
+                return self._json({"id": publish_job(c, c["item_id"]).id})
+            if path == "/api/publicar_olvidar":
+                it = next((i for i in TB.scan(_recent()) if i["id"] == d.get("id")), None)
+                if it and (it.get("pub") or {}).get("estado") in ("incierto", "error"):
+                    TB.set_item(it["id"], pub={})
+                return self._json({"ok": True})
             if path == "/api/cancel":
                 j = JOBS.get(d.get("id", ""))
                 if j:
@@ -859,13 +1025,19 @@ def main(open_ui: bool = True, port: int = 0) -> None:
     print(f"Vertical Studio {__version__} — {url}")
     print("Cierra la ventana de la app para terminar (o Ctrl+C aquí).")
     threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        n = TB.recover_on_start()
+        if n:
+            print(f"Quedaron {n} proyecto(s) en cola; se retoman cuando pulses «Continuar».")
+    except Exception:
+        pass
     if open_ui:
         open_window(url)
     try:
         start = time.time()
         while True:
             time.sleep(2)
-            busy = any(j.state == "running" for j in JOBS.values())
+            busy = any(j.state == "running" for j in JOBS.values()) or _queue_alive()
             if open_ui and not busy:
                 if LAST_PING["seen"] and time.time() - LAST_PING["t"] > 150:
                     break
