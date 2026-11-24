@@ -69,6 +69,47 @@ async def _edge_async(text: str, voice: str, rate: str, out: str):
     return words
 
 
+def trim_tail(path: str) -> bool:
+    """Gemini a veces deja al final un ráfaga de ruido/chasquido tras un silencio. La corta y suaviza el final."""
+    import numpy as np
+    r = run_quiet([ffmpeg_bin(), "-v", "error", "-i", path, "-ac", "1", "-ar", "24000", "-f", "f32le", "-"])
+    if r.returncode != 0 or len(r.stdout) < 4000:
+        return False
+    x = np.frombuffer(r.stdout, "<f4")
+    fr = 480                                              # 20 ms
+    n = len(x) // fr
+    e = np.sqrt((x[:n * fr].reshape(n, fr) ** 2).mean(axis=1))
+    thr = max(0.004, float(np.percentile(e, 90)) * 0.06)
+    voiced = e > thr
+    idx = np.where(voiced)[0]
+    if len(idx) < 5:
+        return False
+    # bloques de voz: si el último bloque es corto (<0.45 s) y está precedido por >=0.12 s de silencio, es basura
+    blocks, a = [], idx[0]
+    for i, j in zip(idx[:-1], idx[1:]):
+        if j - i > 5:                                      # hueco de más de ~100 ms
+            blocks.append((a, i)); a = j
+    blocks.append((a, idx[-1]))
+    cut = None
+    typical = float(np.median(e[voiced]))
+    last_rms = float(e[blocks[-1][0]:blocks[-1][1] + 1].mean())
+    if len(blocks) >= 2 and last_rms > 2.2 * typical and (blocks[-1][1] - blocks[-1][0] + 1) * 0.02 < 0.45 and blocks[-1][0] - blocks[-2][1] >= 6:
+        cut = (blocks[-2][1] + 1) * fr + int(0.12 * 24000)
+    end = min(len(x), cut) if cut else len(x)
+    fade = min(int(0.03 * 24000), end)
+    if not cut and fade <= 0:
+        return False
+    y = x[:end].copy()
+    y[-fade:] *= np.linspace(1, 0, fade)
+    import wave
+    tmp = path + ".tt.wav"
+    with wave.open(tmp, "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000)
+        w.writeframes((np.clip(y, -1, 1) * 32767).astype("<i2").tobytes())
+    os.replace(tmp, path)
+    return bool(cut)
+
+
 def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, rate: int = 0,
                model: str = "", style: str = "") -> tuple[str | None, Words, float]:
     """Devuelve (ruta_audio|None, palabras, duración). Cachea por texto/voz."""
@@ -81,7 +122,7 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
         return None, estimate_words(text, d), d
     tdir = CACHE_DIR / "tts"
     tdir.mkdir(parents=True, exist_ok=True)
-    key = hash_key("p2" if engine == "gemini" else "", engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
+    key = hash_key("p3" if engine == "gemini" else "", engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
     ext = ".mp3" if engine == "edge" else ".wav"
     audio, meta = tdir / (key + ext), tdir / (key + ".json")
     if audio.exists() and meta.exists():
@@ -106,6 +147,7 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
         from . import master as _M
         for _try in range(3):             # genera y valida; reintenta si el audio sale vacío o raro
             _V.gemini_synthesize(text, voice, model, style, str(audio))
+            trim_tail(str(audio))
             ok, why = _M.validate(str(audio), text)
             if ok:
                 break

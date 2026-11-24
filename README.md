@@ -129,3 +129,4 @@ En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (
 - En una escena: `"sfx": ["impacto@0.8", "click@2.1"]` (etiqueta@segundos). Los automáticos nunca se amontonan; los manuales siempre suenan.
 - `python cli.py kit` regenera `assets/sfx/catalogo.json` y `CATALOGO.md`; `revisar` avisa de etiquetas inexistentes o saturación. Los prompts de la IA diaria ya conocen las etiquetas.
 - v2.12.1: efectos más bajos (≈ -7 dB), 3 variantes de cada sonido que rotan, y los automáticos van espaciados (whoosh cada ≥4.5 s, pop ≥1.4 s) y solo en piezas protagonistas.
+- v2.12.2: se corta el ruido/chasquido que Gemini a veces deja al final de la voz y se suaviza el final de cada audio.
