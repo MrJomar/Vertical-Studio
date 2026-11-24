@@ -470,9 +470,11 @@ class VectorScene(Scene):
     def sfx_events(self) -> list:
         tags = {"reloj": "tic", "chispas": "ding"}
         ev = []
-        for L in self.layers:
-            if L["start"] > 0.12:
-                ev.append((L["start"], tags.get(str(L.get("file") or L.get("asset")), "pop")))
+        last = -9.0
+        for L in sorted(self.layers, key=lambda d: d["start"]):
+            if L["start"] > 0.12 and L["start"] - last > 0.8 and float(L.get("w", 0.3) or 0.3) >= 0.3:
+                ev.append((L["start"], tags.get(str(L.get("file") or L.get("asset")), "pop")))   # solo piezas protagonistas
+                last = L["start"]
         return ev
 
     def prepare(self) -> None:

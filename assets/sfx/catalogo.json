@@ -2,7 +2,7 @@
  "click.wav": {
   "tag": "click",
   "uso": "aparece un texto, un pin o un detalle pequeño",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 0.021,
   "hit": 0.002,
   "rms_db": -15.5,
@@ -10,10 +10,32 @@
   "brillo": "agudo",
   "trim": 0.0
  },
+ "click_2.wav": {
+  "tag": "click",
+  "uso": "aparece un texto, un pin o un detalle pequeño",
+  "mtime": 1795502649,
+  "dur": 0.02,
+  "hit": 0.003,
+  "rms_db": -16.0,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.0
+ },
+ "click_3.wav": {
+  "tag": "click",
+  "uso": "aparece un texto, un pin o un detalle pequeño",
+  "mtime": 1795502649,
+  "dur": 0.021,
+  "hit": 0.002,
+  "rms_db": -15.2,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.0
+ },
  "ding.wav": {
   "tag": "ding",
   "uso": "acierto, dato clave, aviso",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 1.0,
   "hit": 0.004,
   "rms_db": -13.7,
@@ -21,10 +43,32 @@
   "brillo": "medio",
   "trim": 0.0
  },
+ "ding_2.wav": {
+  "tag": "ding",
+  "uso": "acierto, dato clave, aviso",
+  "mtime": 1795502649,
+  "dur": 1.0,
+  "hit": 0.004,
+  "rms_db": -13.8,
+  "peak_db": -0.9,
+  "brillo": "medio",
+  "trim": 0.0
+ },
+ "ding_3.wav": {
+  "tag": "ding",
+  "uso": "acierto, dato clave, aviso",
+  "mtime": 1795502649,
+  "dur": 1.0,
+  "hit": 0.004,
+  "rms_db": -13.8,
+  "peak_db": -0.9,
+  "brillo": "medio",
+  "trim": 0.0
+ },
  "impacto.wav": {
   "tag": "impacto",
   "uso": "susto, dato fuerte, golpe dramático",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 1.1,
   "hit": 0.043,
   "rms_db": -9.2,
@@ -32,10 +76,54 @@
   "brillo": "grave",
   "trim": 0.0
  },
+ "impacto_2.wav": {
+  "tag": "impacto",
+  "uso": "susto, dato fuerte, golpe dramático",
+  "mtime": 1795502649,
+  "dur": 1.1,
+  "hit": 0.074,
+  "rms_db": -9.2,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "impacto_3.wav": {
+  "tag": "impacto",
+  "uso": "susto, dato fuerte, golpe dramático",
+  "mtime": 1795502649,
+  "dur": 1.1,
+  "hit": 0.052,
+  "rms_db": -9.1,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
  "pop.wav": {
   "tag": "pop",
   "uso": "aparece una pieza o elemento",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
+  "dur": 0.122,
+  "hit": 0.003,
+  "rms_db": -15.3,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "pop_2.wav": {
+  "tag": "pop",
+  "uso": "aparece una pieza o elemento",
+  "mtime": 1795502649,
+  "dur": 0.128,
+  "hit": 0.003,
+  "rms_db": -14.3,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "pop_3.wav": {
+  "tag": "pop",
+  "uso": "aparece una pieza o elemento",
+  "mtime": 1795502649,
   "dur": 0.122,
   "hit": 0.003,
   "rms_db": -15.3,
@@ -46,7 +134,7 @@
  "splash.wav": {
   "tag": "splash",
   "uso": "agua, líquido, golpe de color",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 0.578,
   "hit": 0.017,
   "rms_db": -21.3,
@@ -54,10 +142,32 @@
   "brillo": "agudo",
   "trim": 0.0
  },
+ "splash_2.wav": {
+  "tag": "splash",
+  "uso": "agua, líquido, golpe de color",
+  "mtime": 1795502649,
+  "dur": 0.56,
+  "hit": 0.01,
+  "rms_db": -19.5,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.0
+ },
+ "splash_3.wav": {
+  "tag": "splash",
+  "uso": "agua, líquido, golpe de color",
+  "mtime": 1795502649,
+  "dur": 0.584,
+  "hit": 0.012,
+  "rms_db": -19.2,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.0
+ },
  "subida.wav": {
   "tag": "subida",
   "uso": "tensión que crece antes de una revelación",
-  "mtime": 1795501502,
+  "mtime": 1795502650,
   "dur": 1.108,
   "hit": 1.065,
   "rms_db": -19.6,
@@ -65,10 +175,32 @@
   "brillo": "agudo",
   "trim": 0.491
  },
+ "subida_2.wav": {
+  "tag": "subida",
+  "uso": "tensión que crece antes de una revelación",
+  "mtime": 1795502650,
+  "dur": 1.072,
+  "hit": 1.02,
+  "rms_db": -20.1,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.527
+ },
+ "subida_3.wav": {
+  "tag": "subida",
+  "uso": "tensión que crece antes de una revelación",
+  "mtime": 1795502650,
+  "dur": 1.093,
+  "hit": 1.037,
+  "rms_db": -19.3,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.505
+ },
  "tic.wav": {
   "tag": "tic",
   "uso": "reloj, cuenta atrás, tensión",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 0.045,
   "hit": 0.002,
   "rms_db": -13.8,
@@ -76,10 +208,32 @@
   "brillo": "medio",
   "trim": 0.0
  },
+ "tic_2.wav": {
+  "tag": "tic",
+  "uso": "reloj, cuenta atrás, tensión",
+  "mtime": 1795502649,
+  "dur": 0.045,
+  "hit": 0.002,
+  "rms_db": -13.9,
+  "peak_db": -0.9,
+  "brillo": "medio",
+  "trim": 0.0
+ },
+ "tic_3.wav": {
+  "tag": "tic",
+  "uso": "reloj, cuenta atrás, tensión",
+  "mtime": 1795502649,
+  "dur": 0.045,
+  "hit": 0.003,
+  "rms_db": -13.9,
+  "peak_db": -0.9,
+  "brillo": "medio",
+  "trim": 0.0
+ },
  "whoosh.wav": {
   "tag": "whoosh",
   "uso": "transición entre escenas, cámara que se mueve rápido",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 0.567,
   "hit": 0.35,
   "rms_db": -17.0,
@@ -87,15 +241,59 @@
   "brillo": "agudo",
   "trim": 0.162
  },
+ "whoosh_2.wav": {
+  "tag": "whoosh",
+  "uso": "transición entre escenas, cámara que se mueve rápido",
+  "mtime": 1795502649,
+  "dur": 0.58,
+  "hit": 0.384,
+  "rms_db": -15.7,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.15
+ },
+ "whoosh_3.wav": {
+  "tag": "whoosh",
+  "uso": "transición entre escenas, cámara que se mueve rápido",
+  "mtime": 1795502649,
+  "dur": 0.582,
+  "hit": 0.422,
+  "rms_db": -16.0,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.15
+ },
  "whoosh_corto.wav": {
   "tag": "whoosh_corto",
   "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
-  "mtime": 1795501502,
+  "mtime": 1795502649,
   "dur": 0.29,
   "hit": 0.191,
   "rms_db": -16.6,
   "peak_db": -0.9,
   "brillo": "agudo",
   "trim": 0.081
+ },
+ "whoosh_corto_2.wav": {
+  "tag": "whoosh_corto",
+  "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
+  "mtime": 1795502649,
+  "dur": 0.297,
+  "hit": 0.199,
+  "rms_db": -15.6,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.075
+ },
+ "whoosh_corto_3.wav": {
+  "tag": "whoosh_corto",
+  "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
+  "mtime": 1795502649,
+  "dur": 0.292,
+  "hit": 0.164,
+  "rms_db": -16.6,
+  "peak_db": -0.9,
+  "brillo": "agudo",
+  "trim": 0.078
  }
 }

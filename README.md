@@ -128,3 +128,4 @@ En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (
 - Ajustes: `sfx` = `off` | `manual` (solo los que pones en las escenas) | `auto` (además whoosh en transiciones, pop/click al aparecer piezas, pines y países); `sfx_volume` 0-1.
 - En una escena: `"sfx": ["impacto@0.8", "click@2.1"]` (etiqueta@segundos). Los automáticos nunca se amontonan; los manuales siempre suenan.
 - `python cli.py kit` regenera `assets/sfx/catalogo.json` y `CATALOGO.md`; `revisar` avisa de etiquetas inexistentes o saturación. Los prompts de la IA diaria ya conocen las etiquetas.
+- v2.12.1: efectos más bajos (≈ -7 dB), 3 variantes de cada sonido que rotan, y los automáticos van espaciados (whoosh cada ≥4.5 s, pop ≥1.4 s) y solo en piezas protagonistas.

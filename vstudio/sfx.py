@@ -63,31 +63,36 @@ def _norm(x, peak=0.9):
     return (x / m * peak).astype(np.float32)
 
 
-def _gen(name: str) -> np.ndarray:
-    rng = np.random.default_rng(sum(map(ord, name)))
+VARIANTES = 3          # cada sonido se crea en 3 versiones (distinto tono y ruido) para que no se note la repetición
+_FM = (1.0, 1.17, 0.86)
+
+
+def _gen(name: str, v: int = 0) -> np.ndarray:
+    fm = _FM[v % 3]
+    rng = np.random.default_rng(sum(map(ord, name)) + 101 * v)
     if name in ("whoosh", "whoosh_corto"):
         d = 0.75 if name == "whoosh" else 0.38
         n = int(d * SR)
         t = np.linspace(0, 1, n)
         env = np.sin(np.pi * np.clip(t, 0, 1) ** 1.6) ** 2          # sube y baja; pico hacia 0.6
-        x = _band_noise(n, 300, 5200, rng) * env
+        x = _band_noise(n, 300 * fm, 5200 * fm, rng) * env
         return _norm(x)
     if name == "pop":
         n = int(0.16 * SR)
         t = np.arange(n) / SR
-        f = 150 + 650 * np.exp(-t * 38)
+        f = (150 + 650 * np.exp(-t * 38)) * fm
         x = np.sin(2 * np.pi * np.cumsum(f) / SR) * _env_exp(n, 0.035)
         x[:60] += rng.standard_normal(60) * 0.25 * np.linspace(1, 0, 60)
         return _norm(x)
     if name == "click":
         n = int(0.06 * SR)
         t = np.arange(n) / SR
-        x = np.sin(2 * np.pi * 2600 * t) * _env_exp(n, 0.006)
+        x = np.sin(2 * np.pi * 2600 * fm * t) * _env_exp(n, 0.006)
         x[:90] += rng.standard_normal(90) * 0.5 * np.linspace(1, 0, 90)
         return _norm(x)
     if name == "splash":
         n = int(0.8 * SR)
-        x = _band_noise(n, 6000, 1800, rng) * (_env_exp(n, 0.16) * (1 - np.exp(-np.arange(n) / (0.004 * SR))))
+        x = _band_noise(n, 6000 * fm, 1800 * fm, rng) * (_env_exp(n, 0.16) * (1 - np.exp(-np.arange(n) / (0.004 * SR))))
         for k in range(5):                                             # burbujas
             s = int((0.06 + 0.11 * k + rng.uniform(0, 0.05)) * SR)
             m = int(0.07 * SR)
@@ -99,7 +104,7 @@ def _gen(name: str) -> np.ndarray:
     if name == "impacto":
         n = int(1.1 * SR)
         t = np.arange(n) / SR
-        f = 34 + 70 * np.exp(-t * 14)
+        f = (34 + 70 * np.exp(-t * 14)) * fm
         x = np.sin(2 * np.pi * np.cumsum(f) / SR) * _env_exp(n, 0.35)
         nz = _band_noise(int(0.25 * SR), 80, 600, rng) * _env_exp(int(0.25 * SR), 0.05)
         x[:len(nz)] += nz * 0.9
@@ -107,19 +112,19 @@ def _gen(name: str) -> np.ndarray:
     if name == "tic":
         n = int(0.09 * SR)
         t = np.arange(n) / SR
-        x = np.sin(2 * np.pi * 1700 * t) * _env_exp(n, 0.012) + 0.4 * np.sin(2 * np.pi * 3400 * t) * _env_exp(n, 0.006)
+        x = np.sin(2 * np.pi * 1700 * fm * t) * _env_exp(n, 0.012) + 0.4 * np.sin(2 * np.pi * 3400 * fm * t) * _env_exp(n, 0.006)
         return _norm(x)
     if name == "ding":
         n = int(1.0 * SR)
         t = np.arange(n) / SR
         x = sum(a * np.sin(2 * np.pi * f * t) * _env_exp(n, tau) for a, f, tau in
-                ((1, 1320, 0.30), (0.4, 2640, 0.15), (0.2, 3960, 0.08)))
+                ((1, 1320 * fm, 0.30), (0.4, 2640 * fm, 0.15), (0.2, 3960 * fm, 0.08)))
         x[:40] *= np.linspace(0, 1, 40)
         return _norm(x)
     if name == "subida":
         n = int(1.6 * SR)
         t = np.linspace(0, 1, n)
-        x = _band_noise(n, 200, 6000, rng) * (t ** 2.2)
+        x = _band_noise(n, 200 * fm, 6000 * fm, rng) * (t ** 2.2)
         x += 0.25 * np.sin(2 * np.pi * np.cumsum(90 + 700 * t ** 3) / SR) * t ** 2
         x[-int(0.04 * SR):] *= np.linspace(1, 0, int(0.04 * SR))
         return _norm(x)
@@ -138,9 +143,15 @@ def _write_wav(path: Path, x: np.ndarray) -> None:
 def ensure_bank() -> None:
     """Crea los sonidos incluidos que falten (si ya existe un archivo con ese nombre, se respeta el tuyo)."""
     for name in USOS:
-        f = SFX_DIR / f"{name}.wav"
-        if not f.exists() and not any(p.stem == name for p in SFX_DIR.glob("*") if p.suffix.lower() in AUDIO_EXT):
-            _write_wav(f, _gen(name))
+        mine = [p for p in SFX_DIR.rglob("*") if p.suffix.lower() in AUDIO_EXT and tag_of(p) == name
+                and not p.stem.endswith("_auto")]
+        if mine and not all(p.parent == SFX_DIR and p.stem in {name, f"{name}_2", f"{name}_3"} and
+                            p.with_suffix(".wav") == p for p in mine):
+            continue                                   # tienes archivos propios de esta etiqueta: se respetan
+        for v in range(VARIANTES):
+            f = SFX_DIR / (f"{name}.wav" if v == 0 else f"{name}_{v + 1}.wav")
+            if not f.exists():
+                _write_wav(f, _gen(name, v))
 
 
 # --------------------------------------------------------------------------- análisis
@@ -277,9 +288,11 @@ def plan_events(scenes, starts, settings, tlen_s) -> tuple[list[tuple[float, str
     out: list[tuple[float, str, float]] = []
     last_any = -9.0
     last_tag: dict = {}
+    seq: list = []
     for t, tag, vol, manual in ev:
-        if not manual and (t - last_any < 0.22 or t - last_tag.get(tag, -9) < 0.6):
-            continue                                   # automáticos: nunca amontonados
+        gap = {"whoosh": 4.5, "whoosh_corto": 3.0, "pop": 1.4, "click": 1.2}.get(tag, 1.5)
+        if not manual and (t - last_any < 0.5 or t - last_tag.get(tag, -99) < gap):
+            continue                                   # automáticos: espaciados, sin repetir el mismo seguido
         out.append((t, tag, vol))
         last_any = t
         last_tag[tag] = t
@@ -293,7 +306,7 @@ def resolve_tracks(events, settings, total) -> tuple[list[tuple[str, float, floa
     for rel, i in cat.items():
         by_tag.setdefault(i["tag"], []).append((rel, i))
     vol_set = max(0.0, min(1.0, float(settings.get("sfx_volume", 0.5) or 0.0)))
-    target = -30.0 + 20 * math.log10(max(vol_set, 1e-3) / 0.5)    # rms objetivo (dBFS); la voz ronda -20
+    target = -37.0 + 20 * math.log10(max(vol_set, 1e-3) / 0.5)    # rms objetivo (dBFS); la voz ronda -20
     warns: list[str] = []
     tracks = []
     n_used: dict = {}
@@ -305,7 +318,7 @@ def resolve_tracks(events, settings, total) -> tuple[list[tuple[str, float, floa
             continue
         k = n_used.get(tag, 0)
         n_used[tag] = k + 1
-        rel, info = lst[k % len(lst)]
+        rel, info = lst[(k * 2 + (k // len(lst))) % len(lst)] if len(lst) > 1 else lst[0]
         jitter = ((k * 37) % 7 - 3) * 0.35                      # ±1 dB de variación determinista
         gain_db = target - info["rms_db"] + jitter
         gain_db = min(gain_db, -1.5 - info["peak_db"])          # nunca saturar
