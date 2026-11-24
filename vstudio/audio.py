@@ -81,7 +81,7 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
         return None, estimate_words(text, d), d
     tdir = CACHE_DIR / "tts"
     tdir.mkdir(parents=True, exist_ok=True)
-    key = hash_key(engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
+    key = hash_key("p2" if engine == "gemini" else "", engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
     ext = ".mp3" if engine == "edge" else ".wav"
     audio, meta = tdir / (key + ext), tdir / (key + ".json")
     if audio.exists() and meta.exists():
