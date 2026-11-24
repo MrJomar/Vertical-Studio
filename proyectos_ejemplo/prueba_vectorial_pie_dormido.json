@@ -7,266 +7,493 @@
  "scenes": [
   {
    "type": "vector",
-   "bg": "cuarto",
+   "bg": "cuerpo",
    "camera": "push",
-   "fx": "bokeh",
+   "fx": "bokeh,polvo_luz",
    "narration": "¿Por qué se te duerme el pie al sentarte?",
    "duration": 4.1,
    "layers": [
     {
-     "asset": "persona",
+     "asset": "pierna",
      "x": 0.5,
-     "y": 0.62,
-     "w": 0.55,
-     "anim": "pop+float",
-     "z": 2
+     "y": 0.6,
+     "w": 0.95,
+     "z": 2,
+     "anim": "slide_up+float",
+     "nerve": 1
     },
     {
-     "asset": "emoji",
-     "char": "🦶",
-     "x": 0.5,
-     "y": 0.82,
-     "w": 0.28,
-     "at": "pie",
-     "anim": "pop+wobble",
-     "z": 3
-    },
-    {
-     "asset": "emoji",
-     "char": "❓",
-     "x": 0.78,
-     "y": 0.4,
+     "asset": "texto",
+     "text": "?",
+     "color": "#ff4d5e",
+     "x": 0.82,
+     "y": 0.3,
      "w": 0.3,
      "at": "duerme",
      "anim": "pop+pulse",
-     "z": 4
+     "z": 5
+    },
+    {
+     "asset": "rayo",
+     "count": 6,
+     "spread": [
+      0.55,
+      0.6,
+      0.95,
+      0.95
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.07,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "pie"
+    },
+    {
+     "asset": "persona",
+     "x": 0.18,
+     "y": 0.82,
+     "w": 0.34,
+     "var": 2,
+     "anim": "slide_left",
+     "z": 3,
+     "alpha": 0.95
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "degradado",
+   "bg": "musculo",
    "camera": "push_fuerte",
-   "fx": "brillos",
+   "fx": "bokeh",
    "narration": "La culpa es de un nervio que pide auxilio.",
    "duration": 4.1,
    "layers": [
     {
-     "asset": "esfera",
-     "color": "#ffd23f",
-     "mood": "scared",
+     "asset": "nervio",
      "x": 0.5,
      "y": 0.58,
      "w": 0.5,
+     "glow": 1,
      "at": "nervio",
      "anim": "pop+shake",
-     "z": 2
+     "z": 3
     },
     {
      "asset": "cartel",
      "text": "¡AUXILIO!",
      "x": 0.5,
-     "y": 0.28,
-     "w": 0.6,
+     "y": 0.3,
+     "w": 0.65,
      "at": "auxilio",
      "anim": "drop",
-     "z": 3
+     "z": 6
+    },
+    {
+     "asset": "globulo",
+     "count": 10,
+     "spread": [
+      0.1,
+      0.25,
+      0.9,
+      0.9
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.1,
+     "anim": "float",
+     "z": 4,
+     "alpha": 0.8
+    },
+    {
+     "asset": "gota",
+     "count": 6,
+     "spread": [
+      0.1,
+      0.3,
+      0.9,
+      0.9
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.07,
+     "anim": "fall",
+     "z": 4
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
-   ],
-   "bg_colors": [
-    "#1b2a4a",
-    "#0b1020",
-    "#ffd23f"
    ]
   },
   {
    "type": "vector",
-   "bg": "espacio",
+   "bg": "cuerpo",
    "camera": "pan_right",
-   "fx": "brillos",
+   "fx": "brillos,bokeh",
    "narration": "Dentro de tu pierna viaja un cable que lleva mensajes al cerebro.",
    "duration": 5.2,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🦵",
+     "asset": "pierna",
      "x": 0.5,
-     "y": 0.72,
-     "w": 0.55,
-     "anim": "slide_up",
-     "z": 1
+     "y": 0.66,
+     "w": 0.95,
+     "z": 2,
+     "anim": "fade",
+     "nerve": 1
     },
     {
-     "asset": "esfera",
-     "color": "#ffd23f",
-     "mood": "happy",
-     "count": 6,
-     "spread": [
-      0.4,
-      0.35,
-      0.6,
-      0.7
-     ],
-     "layout": "line",
+     "asset": "cerebro",
      "x": 0.5,
-     "y": 0.5,
-     "w": 0.12,
-     "at": "mensajes",
-     "anim": "rise",
-     "z": 2
-    },
-    {
-     "asset": "emoji",
-     "char": "🧠",
-     "x": 0.5,
-     "y": 0.3,
-     "w": 0.34,
+     "y": 0.26,
+     "w": 0.36,
      "at": "cerebro",
      "anim": "pop+float",
-     "z": 3
+     "glow": "#ff9ab0",
+     "z": 4
+    },
+    {
+     "asset": "rayo",
+     "count": 7,
+     "spread": [
+      0.58,
+      0.35,
+      0.72,
+      0.8
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.06,
+     "anim": "rise",
+     "z": 4,
+     "at": "mensajes"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.7,
+     "y": 0.52,
+     "w": 0.16,
+     "rot": -90,
+     "at": "mensajes",
+     "anim": "slide_up",
+     "color": "#ffd23f",
+     "z": 5
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "cuarto",
+   "bg": "cuerpo",
    "camera": "push",
-   "fx": "polvo_luz",
+   "fx": "polvo_luz,bokeh",
    "narration": "Al cruzar las piernas, lo aplastas contra el hueso.",
    "duration": 4.1,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🦴",
+     "asset": "pierna",
      "x": 0.5,
-     "y": 0.7,
+     "y": 0.58,
+     "w": 0.95,
+     "z": 2,
+     "anim": "fade",
+     "nerve": 1
+    },
+    {
+     "asset": "hueso",
+     "x": 0.4,
+     "y": 0.5,
      "w": 0.5,
      "at": "hueso",
-     "anim": "fade",
-     "z": 1
-    },
-    {
-     "asset": "esfera",
-     "color": "#ffd23f",
-     "mood": "sad",
-     "x": 0.5,
-     "y": 0.64,
-     "w": 0.26,
-     "anim": "pop",
-     "z": 2
-    },
-    {
-     "asset": "emoji",
-     "char": "🦵",
-     "x": 0.5,
-     "y": 0.38,
-     "w": 0.6,
-     "at": "aplastas",
-     "anim": "drop+shake",
+     "anim": "slide_left",
      "z": 3
+    },
+    {
+     "asset": "nervio",
+     "x": 0.4,
+     "y": 0.44,
+     "w": 0.2,
+     "rot": 90,
+     "pinch": 0.5,
+     "at": "aplastas",
+     "anim": "pop",
+     "z": 4
+    },
+    {
+     "asset": "flecha",
+     "x": 0.4,
+     "y": 0.3,
+     "w": 0.2,
+     "rot": 90,
+     "color": "#ff4d5e",
+     "at": "aplastas",
+     "anim": "drop+bounce",
+     "z": 6
+    },
+    {
+     "asset": "rayo",
+     "count": 4,
+     "spread": [
+      0.2,
+      0.38,
+      0.6,
+      0.46
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.05,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "aplastas"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "niebla",
+   "bg": "musculo",
    "camera": "drift",
-   "fx": "humo",
+   "fx": "humo,bokeh",
    "narration": "Sin sangre ni oxígeno, el nervio se desconcierta.",
    "duration": 3.7,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🩸",
+     "asset": "nervio",
      "x": 0.5,
-     "y": 0.45,
-     "w": 0.12,
-     "count": 8,
+     "y": 0.62,
+     "w": 0.42,
+     "pinch": 0.5,
+     "anim": "pop+shake",
+     "z": 3
+    },
+    {
+     "asset": "globulo",
+     "count": 12,
      "spread": [
+      0.1,
       0.2,
-      0.2,
-      0.8,
+      0.9,
       0.5
      ],
      "layout": "random",
-     "at": "sangre",
-     "out": "oxígeno",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.1,
      "anim": "fall",
-     "z": 1
+     "z": 4,
+     "out": "oxígeno",
+     "at": "sangre"
     },
     {
-     "asset": "esfera",
-     "color": "#ffd23f",
-     "mood": "scared",
+     "asset": "gota",
+     "count": 8,
+     "spread": [
+      0.1,
+      0.2,
+      0.9,
+      0.5
+     ],
+     "layout": "random",
      "x": 0.5,
-     "y": 0.68,
-     "w": 0.42,
-     "anim": "pop+shake",
-     "z": 2
+     "y": 0.5,
+     "w": 0.06,
+     "anim": "fall",
+     "z": 4,
+     "out": "oxígeno",
+     "at": "sangre"
     },
     {
-     "asset": "emoji",
-     "char": "❓",
+     "asset": "texto",
+     "text": "?",
+     "color": "#ffffff",
      "x": 0.5,
-     "y": 0.35,
-     "w": 0.3,
+     "y": 0.34,
+     "w": 0.28,
      "at": "desconcierta",
      "anim": "pop+pulse",
-     "z": 3
+     "z": 6
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ],
    "bg_colors": [
-    "#3a1020",
-    "#12060c",
-    "#ff4d5e"
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
    ]
   },
   {
    "type": "vector",
-   "bg": "cuadricula",
+   "bg": "cuerpo",
    "camera": "push",
    "fx": "brillos",
    "narration": "Y manda señales falsas: ese hormigueo no es real.",
    "duration": 4.1,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "⚡",
+     "asset": "nervio",
      "x": 0.5,
-     "y": 0.5,
-     "w": 0.16,
-     "count": 14,
+     "y": 0.6,
+     "w": 0.4,
+     "glow": 1,
+     "anim": "shake",
+     "z": 2
+    },
+    {
+     "asset": "rayo",
+     "count": 18,
      "spread": [
-      0.1,
-      0.3,
-      0.9,
-      0.8
+      0.08,
+      0.28,
+      0.92,
+      0.9
      ],
      "layout": "random",
-     "at": "señales",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.08,
      "anim": "pop+shake",
-     "z": 1
+     "z": 4,
+     "at": "señales"
     },
     {
      "asset": "texto",
      "text": "FALSO",
      "color": "#ff4d5e",
      "x": 0.5,
-     "y": 0.55,
-     "w": 0.7,
+     "y": 0.5,
+     "w": 0.72,
      "at": "falsas",
-     "anim": "pop",
-     "z": 3
+     "anim": "pop+pulse",
+     "z": 6
     },
     {
      "asset": "marca",
      "kind": "no",
      "x": 0.5,
      "y": 0.8,
-     "w": 0.28,
+     "w": 0.26,
      "at": "real",
      "anim": "pop",
-     "z": 4
+     "z": 7
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
@@ -274,75 +501,152 @@
    "type": "vector",
    "bg": "espacio",
    "camera": "push_fuerte",
-   "fx": "bokeh",
+   "fx": "brillos,bokeh",
    "narration": "Tu cerebro recibe puro ruido, y no sabe qué sentir.",
    "duration": 4.4,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🧠",
+     "asset": "cerebro",
      "x": 0.5,
-     "y": 0.55,
-     "w": 0.55,
+     "y": 0.54,
+     "w": 0.8,
      "anim": "pop+pulse",
+     "glow": "#ff9ab0",
      "z": 2
     },
     {
-     "asset": "emoji",
-     "char": "⚡",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.14,
-     "count": 12,
+     "asset": "rayo",
+     "count": 20,
      "spread": [
-      0.05,
-      0.3,
-      0.95,
-      0.8
+      0.04,
+      0.28,
+      0.96,
+      0.82
      ],
      "layout": "random",
-     "at": "ruido",
-     "anim": "shake",
-     "z": 3
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.08,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "ruido"
     },
     {
-     "asset": "emoji",
-     "char": "❓",
-     "x": 0.8,
-     "y": 0.28,
-     "w": 0.22,
+     "asset": "texto",
+     "text": "?",
+     "color": "#ffd23f",
+     "x": 0.84,
+     "y": 0.3,
+     "w": 0.26,
      "at": "sabe",
      "anim": "pop+float",
-     "z": 4
+     "z": 6
+    },
+    {
+     "asset": "texto",
+     "text": "?",
+     "color": "#ffd23f",
+     "x": 0.16,
+     "y": 0.34,
+     "w": 0.2,
+     "at": "sentir",
+     "anim": "pop+float",
+     "z": 6
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "cuarto",
+   "bg": "cuerpo",
    "camera": "pull",
-   "fx": "polvo_luz",
+   "fx": "polvo_luz,bokeh",
    "narration": "Por eso tu pie se siente pesado, como de otro.",
    "duration": 4.4,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🦶",
+     "asset": "pie",
      "x": 0.5,
-     "y": 0.5,
-     "w": 0.6,
+     "y": 0.52,
+     "w": 0.95,
      "anim": "slide_left+float",
-     "z": 1
+     "spark": 1,
+     "z": 2
     },
     {
-     "asset": "emoji",
-     "char": "⚓",
+     "asset": "cartel",
+     "text": "PESADO",
      "x": 0.5,
-     "y": 0.82,
-     "w": 0.3,
+     "y": 0.26,
+     "w": 0.6,
      "at": "pesado",
      "anim": "drop",
-     "z": 2
+     "z": 6
+    },
+    {
+     "asset": "nervio",
+     "x": 0.2,
+     "y": 0.74,
+     "w": 0.12,
+     "glow": 1,
+     "anim": "float",
+     "z": 3
+    },
+    {
+     "asset": "rayo",
+     "count": 5,
+     "spread": [
+      0.2,
+      0.4,
+      0.85,
+      0.8
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.06,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "pie"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
@@ -350,90 +654,175 @@
    "type": "vector",
    "bg": "cuadricula",
    "camera": "push",
-   "fx": "brillos",
+   "fx": "brillos,bokeh",
    "narration": "Tranquilo: después de unos diez minutos, es normal.",
    "duration": 3.7,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "⏱️",
+     "asset": "reloj",
      "x": 0.5,
      "y": 0.42,
-     "w": 0.5,
+     "w": 0.6,
+     "hour": 3,
+     "min": 10,
      "at": "diez",
      "anim": "pop+wobble",
-     "z": 2
+     "z": 3
     },
     {
      "asset": "etiqueta",
      "text": "10 min",
      "x": 0.5,
-     "y": 0.68,
-     "w": 0.5,
+     "y": 0.7,
+     "w": 0.55,
      "at": "diez",
      "anim": "pop",
-     "z": 3
+     "z": 5
     },
     {
      "asset": "marca",
      "kind": "ok",
      "x": 0.5,
-     "y": 0.84,
+     "y": 0.86,
      "w": 0.2,
      "at": "normal",
      "anim": "pop",
-     "z": 4
+     "z": 6
+    },
+    {
+     "asset": "estrella",
+     "count": 8,
+     "spread": [
+      0.05,
+      0.25,
+      0.95,
+      0.9
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.05,
+     "anim": "float",
+     "z": 4,
+     "at": "diez"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "niebla",
+   "bg": "musculo",
    "camera": "push",
-   "fx": "corazones",
+   "fx": "corazones,bokeh",
    "narration": "Al estirarte, la sangre regresa de golpe.",
    "duration": 3.3,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🩸",
-     "x": 0.5,
-     "y": 0.8,
-     "w": 0.14,
-     "count": 10,
-     "spread": [
-      0.2,
-      0.55,
-      0.8,
-      0.9
-     ],
-     "layout": "random",
-     "at": "sangre",
-     "anim": "rise",
-     "z": 1
-    },
-    {
      "asset": "corazon",
      "color": "#ff4d5e",
      "x": 0.5,
-     "y": 0.35,
-     "w": 0.34,
+     "y": 0.3,
+     "w": 0.4,
      "at": "regresa",
      "anim": "pop+pulse",
-     "z": 2
+     "glow": "#ff4d5e",
+     "z": 4
+    },
+    {
+     "asset": "globulo",
+     "count": 14,
+     "spread": [
+      0.1,
+      0.5,
+      0.9,
+      0.95
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.11,
+     "anim": "rise",
+     "z": 4,
+     "at": "sangre"
+    },
+    {
+     "asset": "gota",
+     "count": 8,
+     "spread": [
+      0.1,
+      0.5,
+      0.9,
+      0.95
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.07,
+     "anim": "rise",
+     "z": 4,
+     "at": "sangre"
+    },
+    {
+     "asset": "pierna",
+     "x": 0.5,
+     "y": 0.76,
+     "w": 0.7,
+     "nerve": 0,
+     "alpha": 0.85,
+     "z": 3,
+     "anim": "slide_up"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ],
    "bg_colors": [
-    "#3a1020",
-    "#12060c",
-    "#ff4d5e"
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
    ]
   },
   {
    "type": "vector",
-   "bg": "degradado",
+   "bg": "cuerpo",
    "camera": "push",
-   "fx": "bokeh",
+   "fx": "brillos,bokeh",
    "narration": "Los nervios despiertan, y todos gritan a la vez.",
    "duration": 4.1,
    "layers": [
@@ -444,9 +833,9 @@
      "count": 8,
      "spread": [
       0.15,
-      0.35,
+      0.38,
       0.85,
-      0.85
+      0.88
      ],
      "layout": "grid",
      "x": 0.5,
@@ -454,60 +843,92 @@
      "w": 0.2,
      "at": "despiertan",
      "anim": "pop+shake",
-     "z": 2
+     "z": 3
     },
     {
-     "asset": "emoji",
-     "char": "📢",
+     "asset": "texto",
+     "text": "¡AAAH!",
+     "color": "#ffd23f",
      "x": 0.5,
-     "y": 0.28,
-     "w": 0.28,
+     "y": 0.26,
+     "w": 0.7,
      "at": "gritan",
      "anim": "pop+shake",
-     "z": 3
+     "z": 6
+    },
+    {
+     "asset": "rayo",
+     "count": 12,
+     "spread": [
+      0.05,
+      0.3,
+      0.95,
+      0.9
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.07,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "gritan"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
-   ],
-   "bg_colors": [
-    "#1b2a4a",
-    "#0b1020",
-    "#ffd23f"
    ]
   },
   {
    "type": "vector",
    "bg": "espacio",
    "camera": "push_fuerte",
-   "fx": "brillos",
+   "fx": "brillos,bokeh",
    "narration": "Por eso sientes ese cosquilleo eléctrico.",
    "duration": 3.0,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🦶",
+     "asset": "pie",
      "x": 0.5,
-     "y": 0.58,
-     "w": 0.5,
+     "y": 0.56,
+     "w": 0.9,
+     "spark": 1,
      "glow": "#ffd23f",
      "anim": "float",
-     "z": 1
+     "z": 2
     },
     {
-     "asset": "emoji",
-     "char": "⚡",
-     "x": 0.5,
-     "y": 0.5,
-     "w": 0.12,
-     "count": 26,
+     "asset": "rayo",
+     "count": 30,
      "spread": [
-      0.1,
+      0.04,
       0.3,
-      0.9,
+      0.96,
       0.9
      ],
      "layout": "random",
-     "at": "cosquilleo",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.075,
      "anim": "pop+shake",
-     "z": 2
+     "z": 4,
+     "at": "cosquilleo"
     },
     {
      "asset": "texto",
@@ -515,18 +936,38 @@
      "color": "#ffd23f",
      "x": 0.5,
      "y": 0.3,
-     "w": 0.5,
+     "w": 0.55,
      "at": "eléctrico",
      "anim": "pop+pulse",
-     "z": 3
+     "z": 6
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "cuarto",
+   "bg": "cuerpo",
    "camera": "pull",
-   "fx": "polvo_luz",
+   "fx": "polvo_luz,bokeh",
    "narration": "No hace daño, salvo que te pase todos los días.",
    "duration": 4.4,
    "layers": [
@@ -534,33 +975,69 @@
      "asset": "marca",
      "kind": "ok",
      "x": 0.5,
-     "y": 0.35,
+     "y": 0.3,
      "w": 0.28,
      "at": "daño",
      "anim": "pop",
-     "z": 2
+     "z": 5
     },
     {
      "asset": "calendario",
      "month": "NOV",
      "day": "23",
      "x": 0.5,
-     "y": 0.65,
-     "w": 0.4,
+     "y": 0.58,
+     "w": 0.45,
      "at": "días",
      "anim": "pop+wobble",
-     "z": 2
+     "z": 3
     },
     {
      "asset": "etiqueta",
      "text": "A DIARIO",
      "color": "#d62839",
      "x": 0.5,
-     "y": 0.86,
-     "w": 0.5,
+     "y": 0.82,
+     "w": 0.55,
      "at": "días",
      "anim": "pop",
-     "z": 3
+     "z": 5
+    },
+    {
+     "asset": "estrella",
+     "count": 6,
+     "spread": [
+      0.05,
+      0.3,
+      0.95,
+      0.9
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.05,
+     "anim": "float",
+     "z": 4
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
@@ -576,59 +1053,131 @@
      "asset": "persona",
      "var": 2,
      "x": 0.5,
-     "y": 0.64,
-     "w": 0.55,
+     "y": 0.66,
+     "w": 0.6,
      "anim": "slide_up",
-     "z": 1
+     "z": 2
     },
     {
-     "asset": "emoji",
-     "char": "🩺",
+     "asset": "etiqueta",
+     "text": "CONSULTA",
      "x": 0.5,
-     "y": 0.35,
-     "w": 0.3,
+     "y": 0.34,
+     "w": 0.6,
      "at": "médico",
      "anim": "pop+float",
-     "z": 3
+     "z": 5
+    },
+    {
+     "asset": "corazon",
+     "color": "#ff4d5e",
+     "x": 0.8,
+     "y": 0.5,
+     "w": 0.14,
+     "at": "duele",
+     "anim": "pop+pulse",
+     "z": 4
+    },
+    {
+     "asset": "marca",
+     "kind": "ok",
+     "x": 0.2,
+     "y": 0.48,
+     "w": 0.14,
+     "at": "consulta",
+     "anim": "pop",
+     "z": 4
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
   {
    "type": "vector",
-   "bg": "cuadricula",
+   "bg": "cuarto",
    "camera": "pan_left",
-   "fx": "brillos",
+   "fx": "brillos,bokeh",
    "narration": "Para evitarlo, cambia de postura cada veinte minutos.",
    "duration": 3.7,
    "layers": [
     {
-     "asset": "emoji",
-     "char": "🪑",
+     "asset": "persona",
+     "var": 3,
      "x": 0.35,
-     "y": 0.62,
-     "w": 0.4,
-     "anim": "fade",
-     "z": 1
+     "y": 0.72,
+     "w": 0.55,
+     "anim": "slide_left+float",
+     "z": 2
     },
     {
-     "asset": "emoji",
-     "char": "🔄",
-     "x": 0.7,
-     "y": 0.4,
-     "w": 0.3,
+     "asset": "reloj",
+     "x": 0.74,
+     "y": 0.38,
+     "w": 0.34,
+     "hour": 2,
+     "min": 0,
      "at": "cambia",
-     "anim": "pop+spin",
-     "z": 2
+     "anim": "pop+wobble",
+     "z": 4
     },
     {
      "asset": "etiqueta",
      "text": "20 min",
      "x": 0.5,
-     "y": 0.84,
+     "y": 0.88,
      "w": 0.5,
      "at": "veinte",
      "anim": "pop",
-     "z": 3
+     "z": 5
+    },
+    {
+     "asset": "flecha",
+     "x": 0.62,
+     "y": 0.58,
+     "w": 0.18,
+     "rot": -45,
+     "color": "#ffd23f",
+     "at": "postura",
+     "anim": "slide_up",
+     "z": 4
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.04,
+     "y": 0.97,
+     "w": 0.55,
+     "z": 9,
+     "anim": "float"
+    },
+    {
+     "asset": "globulo",
+     "blur": 0.75,
+     "alpha": 0.9,
+     "x": 0.97,
+     "y": 0.62,
+     "w": 0.42,
+     "z": 9,
+     "anim": "drift"
     }
    ]
   },
@@ -636,7 +1185,7 @@
    "type": "vector",
    "bg": "degradado",
    "camera": "pull",
-   "fx": "corazones",
+   "fx": "corazones,brillos",
    "narration": "Y tu pie dejará de pedir auxilio.",
    "duration": 3.3,
    "layers": [
@@ -645,29 +1194,45 @@
      "color": "#ffd23f",
      "mood": "happy",
      "x": 0.5,
-     "y": 0.55,
-     "w": 0.5,
+     "y": 0.5,
+     "w": 0.55,
      "anim": "pop+bounce",
-     "z": 2
+     "z": 3
     },
     {
-     "asset": "emoji",
-     "char": "🦶",
+     "asset": "pie",
      "x": 0.5,
-     "y": 0.82,
-     "w": 0.3,
+     "y": 0.84,
+     "w": 0.5,
+     "glow": "#ffd23f",
      "at": "pie",
      "anim": "pop",
-     "z": 3
+     "z": 4
     },
     {
      "asset": "corazon",
      "color": "#ff4d5e",
-     "x": 0.8,
-     "y": 0.3,
+     "x": 0.82,
+     "y": 0.28,
      "w": 0.18,
      "at": "auxilio",
      "anim": "pop+float",
+     "z": 5
+    },
+    {
+     "asset": "estrella",
+     "count": 10,
+     "spread": [
+      0.05,
+      0.2,
+      0.95,
+      0.9
+     ],
+     "layout": "random",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.05,
+     "anim": "float",
      "z": 4
     }
    ],

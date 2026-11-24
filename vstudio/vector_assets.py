@@ -765,6 +765,247 @@ def a_humo(w, p):
     return im
 
 
+# ----------------------------------------------------------------------------- cuerpo humano / ciencia
+def _glass(dr, pts_list, width, rim=(170, 225, 255), fill=(70, 130, 210), alpha=120):
+    """Dibuja un tubo translúcido tipo cristal siguiendo una o varias polilíneas (borde claro + relleno azul)."""
+    for pts in pts_list:
+        dr.line(pts, fill=rim + (235,), width=int(width), joint="curve")
+        for p_ in (pts[0], pts[-1]):
+            dr.ellipse([p_[0] - width / 2, p_[1] - width / 2, p_[0] + width / 2, p_[1] + width / 2], fill=rim + (235,))
+    for pts in pts_list:
+        dr.line(pts, fill=fill + (alpha,), width=int(width * 0.86), joint="curve")
+        for p_ in (pts[0], pts[-1]):
+            r_ = width * 0.43
+            dr.ellipse([p_[0] - r_, p_[1] - r_, p_[0] + r_, p_[1] + r_], fill=fill + (alpha,))
+
+
+def _sm(pts, n=12):
+    """Suaviza una polilínea (Catmull-Rom)."""
+    out = []
+    P = [pts[0]] + list(pts) + [pts[-1]]
+    for i in range(1, len(P) - 2):
+        for k in range(n):
+            t = k / n
+            out.append(tuple(0.5 * ((2 * P[i][j]) + (-P[i - 1][j] + P[i + 1][j]) * t +
+                                    (2 * P[i - 1][j] - 5 * P[i][j] + 4 * P[i + 1][j] - P[i + 2][j]) * t * t +
+                                    (-P[i - 1][j] + 3 * P[i][j] - 3 * P[i + 1][j] + P[i + 2][j]) * t ** 3) for j in (0, 1)))
+    out.append(tuple(pts[-1]))
+    return out
+
+
+def a_gota(w, p):
+    W, H = int(w), int(w * 1.3)
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    col = _c(p.get("color"), (214, 40, 57))
+    r = W * S * 0.42
+    cx, cy = W * S / 2, H * S * 0.66
+    dr.polygon([(cx, H * S * 0.04), (cx - r * 0.92, cy - r * 0.35), (cx + r * 0.92, cy - r * 0.35)], fill=_shade(col, 0.8) + (255,))
+    dr.ellipse([cx - r, cy - r, cx + r, cy + r], fill=_shade(col, 0.8) + (255,))
+    r2 = r * 0.82
+    dr.ellipse([cx - r2 * 0.95, cy - r2 * 0.9, cx + r2 * 0.75, cy + r2 * 0.75], fill=col + (255,))
+    dr.ellipse([cx - r * 0.55, cy - r * 0.55, cx - r * 0.2, cy - r * 0.05], fill=_shade(col, 1.0 + 0.0) and (250, 170, 175, 255))
+    return _fin(big, W, H)
+
+
+def a_globulo(w, p):
+    d = int(w)
+    col = _c(p.get("color"), (220, 40, 60))
+    base = sphere(d, col, spec=0.35, dark=0.5)
+    H = int(d * 0.82)
+    base = base.resize((d, H), Image.LANCZOS)
+    big = Image.new("RGBA", (d * SS, H * SS), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(big)
+    dr.ellipse([d * SS * 0.27, H * SS * 0.3, d * SS * 0.73, H * SS * 0.7], fill=_shade(col, 0.55) + (190,))
+    dim = _fin(big, d, H)
+    from PIL import ImageFilter
+    dim = dim.filter(ImageFilter.GaussianBlur(max(1, d * 0.03)))
+    base.alpha_composite(dim)
+    return base
+
+
+def a_rayo(w, p):
+    W, H = int(w), int(w * 1.6)
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    pts = [(.62, .0), (.12, .56), (.44, .56), (.30, 1.0), (.88, .38), (.55, .38)]
+    pts = [(x * W * S, y * H * S) for x, y in pts]
+    col = _c(p.get("color"), (255, 214, 60))
+    dr.polygon(pts, fill=col + (255,), outline=_shade(col, 0.6) + (255,))
+    dr.line(pts + [pts[0]], fill=_shade(col, 0.55) + (255,), width=int(W * S * 0.03))
+    dr.polygon([(.58 * W * S, .08 * H * S), (.26 * W * S, .5 * H * S), (.4 * W * S, .5 * H * S)], fill=(255, 243, 150, 255))
+    return _fin(big, W, H)
+
+
+def a_hueso(w, p):
+    W, H = int(w), int(w * 0.34)
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    col = _c(p.get("color"), (242, 232, 206))
+    sh = _shade(col, 0.78)
+    dr.rounded_rectangle([W * S * 0.12, H * S * 0.3, W * S * 0.88, H * S * 0.7], radius=H * S * 0.2, fill=col + (255,), outline=sh + (255,), width=int(S * 2))
+    r = H * S * 0.26
+    for cx, sgn in ((W * S * 0.1, 1), (W * S * 0.9, -1)):
+        for cy in (H * S * 0.3, H * S * 0.7):
+            dr.ellipse([cx - r, cy - r, cx + r, cy + r], fill=col + (255,), outline=sh + (255,), width=int(S * 2))
+    dr.rectangle([W * S * 0.14, H * S * 0.34, W * S * 0.86, H * S * 0.42], fill=(255, 250, 236, 255))
+    return _fin(big, W, H)
+
+
+def a_reloj(w, p):
+    d = int(w)
+    big = _canvas(d, d)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    c = d * S / 2
+    dr.ellipse([c * 0.04, c * 0.1, c * 1.96, c * 2.0], fill=(0, 0, 0, 70))
+    dr.ellipse([0, 0, 2 * c * 0.97, 2 * c * 0.97], fill=(70, 78, 96, 255))
+    dr.ellipse([c * 0.1, c * 0.1, c * 1.87, c * 1.87], fill=(250, 250, 248, 255))
+    for i in range(12):
+        a = i * math.pi / 6
+        r0, r1 = c * (0.72 if i % 3 else 0.64), c * 0.82
+        dr.line([(c * .97 + r0 * math.sin(a), c * .97 - r0 * math.cos(a)), (c * .97 + r1 * math.sin(a), c * .97 - r1 * math.cos(a))],
+                fill=(60, 66, 80, 255), width=int(S * (2 if i % 3 else 4)))
+    hh, mm = float(p.get("hour", 10)), float(p.get("min", 10))
+    for ang, ln, wd in (((hh % 12 + mm / 60) * math.pi / 6, 0.45, 7), (mm * math.pi / 30, 0.68, 5)):
+        dr.line([(c * .97, c * .97), (c * .97 + c * ln * math.sin(ang), c * .97 - c * ln * math.cos(ang))], fill=(30, 34, 46, 255), width=int(S * wd))
+    dr.ellipse([c * .97 - S * 6, c * .97 - S * 6, c * .97 + S * 6, c * .97 + S * 6], fill=(214, 40, 57, 255))
+    return _fin(big, d, d)
+
+
+def a_cerebro(w, p):
+    W, H = int(w), int(w * 0.85)
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    col = _c(p.get("color"), (236, 150, 170))
+    dk = _shade(col, 0.62)
+    # tronco y cerebelo
+    dr.rounded_rectangle([W * S * 0.46, H * S * 0.66, W * S * 0.58, H * S * 1.0], radius=W * S * 0.04, fill=_shade(col, 0.9) + (255,))
+    dr.ellipse([W * S * 0.56, H * S * 0.62, W * S * 0.9, H * S * 0.88], fill=_shade(col, 0.85) + (255,), outline=dk + (255,), width=int(S * 2))
+    # hemisferio
+    for off, sc in ((0, 1.0),):
+        dr.ellipse([W * S * 0.04, H * S * 0.02, W * S * 0.96, H * S * 0.78], fill=dk + (255,))
+        dr.ellipse([W * S * 0.07, H * S * 0.04, W * S * 0.93, H * S * 0.74], fill=col + (255,))
+    rnd = random.Random(int(p.get("seed", 5)))
+    for _ in range(26):                                  # circunvoluciones
+        x0, y0 = rnd.uniform(.14, .82), rnd.uniform(.1, .62)
+        pts, a = [], rnd.uniform(0, 6.28)
+        x, y = x0, y0
+        for _k in range(7):
+            pts.append((x * W * S, y * H * S))
+            a += rnd.uniform(-1.1, 1.1)
+            x += 0.045 * math.cos(a)
+            y += 0.045 * math.sin(a)
+            x, y = min(.9, max(.1, x)), min(.7, max(.08, y))
+        dr.line(_sm(pts, 5), fill=dk + (255,), width=int(S * 4), joint="curve")
+    dr.arc([W * S * 0.2, H * S * 0.55, W * S * 0.8, H * S * 0.9], 200, 340, fill=dk + (230,), width=int(S * 3))
+    dr.ellipse([W * S * 0.2, H * S * 0.08, W * S * 0.46, H * S * 0.22], fill=(246, 178, 194, 255))
+    return _fin(big, W, H)
+
+
+def a_nervio(w, p):
+    """Cable nervioso amarillo con vainas; pinch (0-1) lo aprieta en ese punto; glow lo enciende."""
+    W, H = int(w), int(w * 1.6)
+    pad = int(W * 0.3)
+    big = _canvas(W + 2 * pad, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    col = _c(p.get("color"), (255, 214, 63))
+    pinch = p.get("pinch")
+    pinch = None if pinch in (None, "", False) else float(pinch)
+    N = 220
+    path = [((pad + W * (0.5 + 0.16 * math.sin(i / N * 6.28 * 1.1))) * S, (0.03 + 0.94 * i / N) * H * S) for i in range(N + 1)]
+    base_r = W * S * 0.085
+
+    def radius(i):
+        t = i / N
+        return base_r * (1 - 0.68 * math.exp(-((t - pinch) / 0.05) ** 2)) if pinch is not None else base_r
+
+    for layer in (0, 1):
+        for i, (x, y) in enumerate(path):
+            r = radius(i) + (S * 2 if layer == 0 else 0)
+            tint = _shade(col, 0.55) if layer == 0 else col
+            if layer and pinch is not None:
+                f = math.exp(-((i / N - pinch) / 0.05) ** 2)
+                tint = tuple(int(col[k] * (1 - 0.75 * f) + (232, 64, 64)[k] * 0.75 * f) for k in range(3))
+            dr.ellipse([x - r, y - r, x + r, y + r], fill=tint + (255,))
+    for i in range(10, N, 18):                            # vainas de mielina
+        x, y = path[i]
+        r = radius(i)
+        dr.line([(x - r, y), (x + r, y)], fill=_shade(col, 0.7) + (255,), width=int(S * 3))
+    for i in range(N):                                    # brillo
+        x, y = path[i]
+        r = radius(i)
+        dr.ellipse([x - r * 0.5 - S, y - S, x - r * 0.5 + S, y + S], fill=(255, 250, 215, 255))
+    im = _fin(big, W + 2 * pad, H)
+    if p.get("glow") in (True, "1", 1, "true", "si"):
+        im = _aura(im, col, W * 0.16, 0.8)
+    return im
+
+
+def _leg_paths(W, H):
+    thigh = [(.14 * W, .2 * H), (.36 * W, .18 * H), (.58 * W, .21 * H)]
+    shin = [(.58 * W, .21 * H), (.62 * W, .48 * H), (.65 * W, .72 * H)]
+    return thigh, shin
+
+
+def a_pierna(w, p):
+    """Pierna sentada, vista de lado, translucida (cristal) con arteria, vena y nervio por dentro."""
+    W, H = int(w), int(w * 1.05)
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    thigh, shin = _leg_paths(W * S, H * S)
+    fw = W * S * 0.27
+    foot = [(.65 * W * S, .72 * H * S), (.72 * W * S, .84 * H * S), (.88 * W * S, .85 * H * S)]
+    glass = _c(p.get("color"), (70, 130, 210))
+    _glass(dr, [thigh, shin], fw, fill=glass, alpha=110)
+    _glass(dr, [foot], fw * 0.62, fill=glass, alpha=110)
+    cen = _sm([thigh[0], thigh[1], thigh[2], shin[1], shin[2], foot[1], foot[2]], 10)
+
+    def off(path, d):
+        o = []
+        for i, (x, y) in enumerate(path):
+            a, b = path[max(0, i - 1)], path[min(len(path) - 1, i + 1)]
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            n = math.hypot(dx, dy) or 1
+            o.append((x - dy / n * d, y + dx / n * d))
+        return o
+    dr.line(off(cen, fw * 0.18), fill=(230, 50, 60, 255), width=int(S * 5), joint="curve")
+    dr.line(off(cen, -fw * 0.18), fill=(60, 110, 240, 255), width=int(S * 5), joint="curve")
+    nerve = float(p.get("nerve", 1) or 0)
+    if nerve:
+        dr.line(cen, fill=(255, 214, 63, int(255 * min(1, nerve))), width=int(S * 4), joint="curve")
+    for i in range(0, len(cen), 7):                      # glóbulos
+        x, y = off(cen, fw * 0.18)[i]
+        dr.ellipse([x - S * 4, y - S * 3, x + S * 4, y + S * 3], fill=(255, 120, 130, 255))
+    im = _fin(big, W, H)
+    return _aura(im, (120, 200, 255), W * 0.03, 0.5)
+
+
+def a_pie(w, p):
+    """Pie de lado, translucido, con nervio dorado por dentro (spark enciende chispas)."""
+    W, H = int(w), int(w * 0.6)
+    big = _canvas(W, H)
+    dr = ImageDraw.Draw(big)
+    S = SS
+    glass = _c(p.get("color"), (70, 130, 210))
+    path = [(.12 * W * S, .12 * H * S), (.16 * W * S, .55 * H * S), (.36 * W * S, .78 * H * S), (.62 * W * S, .78 * H * S), (.9 * W * S, .8 * H * S)]
+    _glass(dr, [path], H * S * 0.34, fill=glass, alpha=115)
+    dr.line(_sm(path, 10), fill=(255, 214, 63, 255), width=int(S * 4), joint="curve")
+    for k in range(5):
+        x = (.72 + k * .045) * W * S
+        dr.line([(x, .72 * H * S), (x + S * 4, .88 * H * S)], fill=(190, 230, 255, 220), width=int(S * 2))
+    im = _fin(big, W, H)
+    if p.get("spark") in (True, "1", 1, "true", "si"):
+        im = _aura(im, (255, 214, 63), W * 0.04, 0.9)
+    return _aura(im, (120, 200, 255), W * 0.03, 0.45)
+
+
 ASSETS = {
     "esfera": (a_esfera, 1.0, "Bola con carita (personaje base)", "color, mood: neutral|happy|angry|sad|scared|none"),
     "villano": (a_villano, 1.0, "Bolita azul enmascarada con capa y brazos", "color, cape"),
@@ -798,6 +1039,15 @@ ASSETS = {
     "burbuja_villano": (a_burbuja_villano, 1.0, "Burbuja con un villano diminuto adentro", "color"),
     "luz": (a_luz, 0.35, "Resplandor suave (luz bajo la puerta, foco)", "color, h"),
     "humo": (a_humo, 0.6, "Humo o niebla translúcida", "color"),
+    "gota": (a_gota, 1.3, "Gota de sangre", "color"),
+    "globulo": (a_globulo, 0.82, "Glóbulo rojo (disco bicóncavo)", "color"),
+    "rayo": (a_rayo, 1.6, "Rayo amarillo (señal eléctrica)", "color"),
+    "hueso": (a_hueso, 0.34, "Hueso", "color"),
+    "reloj": (a_reloj, 1.0, "Reloj analógico", "hour, min"),
+    "cerebro": (a_cerebro, 0.85, "Cerebro rosa con circunvoluciones", "color, seed"),
+    "nervio": (a_nervio, 1.6, "Nervio amarillo vertical con vainas", "color, pinch (0-1: punto aplastado), glow"),
+    "pierna": (a_pierna, 1.05, "Pierna sentada translúcida con arteria, vena y nervio", "color, nerve (0-1)"),
+    "pie": (a_pie, 0.6, "Pie translúcido con nervio dorado", "color, spark"),
 }
 
 _cache: dict = {}

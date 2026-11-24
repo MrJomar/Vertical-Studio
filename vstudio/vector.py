@@ -70,10 +70,12 @@ def sprite(name, width, params, shadow=True):
         hit = _sh_cache[key] = out
     return hit
 
-BG_CHOICES = ["olas", "ladrillos", "azulejos", "niebla", "rayos", "cuarto", "cuadricula", "espacio", "degradado", "color"]
+BG_CHOICES = ["musculo", "cuerpo", "olas", "ladrillos", "azulejos", "niebla", "rayos", "cuarto", "cuadricula", "espacio", "degradado", "color"]
 CAMERAS = ["", "push", "pull", "push_fuerte", "drift", "pan_left", "pan_right"]
 
 DEFAULT_COLORS = {
+    "musculo": ["#b0243a", "#3a0a14", "#ff7a86"],
+    "cuerpo": ["#16306a", "#050a1e", "#5fb4ff"],
     "ladrillos": ["#b0587a", "#4a1f3a", "#e8a0c0"],
     "olas": ["#c2506f", "#3a0f28", "#ffb0c8"],
     "azulejos": ["#2c8f8c", "#1b5f63", "#d8d0b8"],
@@ -189,6 +191,37 @@ class Backdrop:
             glow = np.exp(-(((xx - w / 2) / (w * 0.35)) ** 2 + ((yy - h * 0.72) / (h * 0.1)) ** 2))
             im = np.clip(im + glow[..., None] * np.array(self.c3, np.float32) * 0.8, 0, 255).astype(np.uint8)
             return im
+        if k == "musculo":
+            im = g.copy()
+            rnd = np.random.RandomState(7)
+            lay = np.zeros((h, w, 3), np.float32)
+            msk = np.zeros((h, w), np.float32)
+            for i in range(70):
+                x0 = rnd.uniform(-0.1, 1.1) * w
+                th = int(rnd.uniform(0.012, 0.05) * w)
+                ph, amp = rnd.uniform(0, 6.28), rnd.uniform(0.02, 0.05) * w
+                pts = np.array([[x0 + amp * math.sin(y / h * 3.14 * rnd.uniform(0.6, 1.1) + ph) + (y - h / 2) * 0.08, y] for y in range(-20, h + 90, 90)], np.int32)
+                tone = rnd.uniform(0.7, 1.35)
+                cv2.polylines(lay, [pts], False, tuple(float(c) * tone for c in self.c1), th, cv2.LINE_AA)
+                cv2.polylines(msk, [pts], False, 1.0, th, cv2.LINE_AA)
+                cv2.polylines(lay, [pts + [int(th * 0.2), 0]], False, tuple(min(255., c * 1.7) for c in self.c3), max(1, th // 6), cv2.LINE_AA)
+            msk = cv2.GaussianBlur(msk, (0, 0), 2)[..., None]
+            lay = cv2.GaussianBlur(lay, (0, 0), 1.5)
+            im = (im * (1 - msk) * 0.55 + lay * msk + im * 0.0).clip(0, 255).astype(np.uint8)
+            return im
+        if k == "cuerpo":
+            yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+            glow = np.exp(-(((xx - w * 0.5) / (w * 0.7)) ** 2 + ((yy - h * 0.3) / (h * 0.35)) ** 2))
+            im = g.astype(np.float32) + glow[..., None] * np.array(self.c3, np.float32) * 0.22
+            step = int(w * 0.09)
+            for x in range(0, w, step):
+                im[:, x:x + 1] = im[:, x:x + 1] * 0.8 + np.array(self.c3, np.float32) * 0.2
+            for y in range(0, h, step):
+                im[y:y + 1] = im[y:y + 1] * 0.8 + np.array(self.c3, np.float32) * 0.2
+            fl = int(h * 0.88)
+            im[fl:] = im[fl:] * 0.6
+            im[fl:fl + 3] = np.array(self.c3, np.float32) * 0.8
+            return im.clip(0, 255).astype(np.uint8)
         if k == "cuadricula":
             im = g.copy()
             step = int(w * 0.085)
@@ -719,7 +752,7 @@ def ai_prompt(style: str = "") -> str:
     return f"""Eres director de animación para videos educativos verticales de YouTube Shorts en español. Convierte el guion que te daré en una lista de ESCENAS en JSON. Cada escena dura unas 2-6 s y cubre una o dos frases del guion.
 
 Formato de cada escena (responde SOLO un arreglo JSON, sin texto extra):
-{{"type":"vector","bg":"olas|azulejos|niebla|rayos|cuarto|cuadricula|espacio|degradado|color",
+{{"type":"vector","bg":"olas|azulejos|niebla|rayos|cuarto|cuadricula|espacio|musculo|cuerpo|degradado|color",
  "bg_colors":["#hex1","#hex2","#hex3"],  // opcional: fondo claro, fondo oscuro, acento
  "narration":"frase(s) que se dicen en esta escena",
  "camera":"push|pull|pan_left|pan_right",  // opcional

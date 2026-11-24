@@ -1185,7 +1185,7 @@ SCENE_TYPES: dict[str, dict] = {
         ("color", "Color de resalte (#rrggbb)", "text", "")]},
     "vector": {"label": "Animación vectorial", "desc": "Personajes, objetos y fondos animados por capas, sincronizados con la voz (estilo explicativo).", "icon": "shapes", "cls": None, "fields": [
         ("narration", "Narración (voz y subtítulos)", "multiline", ""),
-        ("bg", "Fondo", "choice", "olas", ["olas", "azulejos", "niebla", "rayos", "cuarto", "cuadricula", "espacio", "degradado", "color"]),
+        ("bg", "Fondo", "choice", "olas", ["olas", "azulejos", "niebla", "rayos", "cuarto", "cuadricula", "espacio", "musculo", "cuerpo", "degradado", "color"]),
         ("bg_colors", "Colores del fondo (#hex, separados por coma)", "text", ""),
         ("audio", "Audio propio (opcional, en vez de voz IA)", "file", ""),
         ("align", "Sincronía con audio propio", "choice", "estimado", ["estimado", "whisper"]),

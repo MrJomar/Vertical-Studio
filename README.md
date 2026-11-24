@@ -91,3 +91,6 @@ La carpeta `estilos/` guarda lo aprendido de los videos de referencia (estructur
 
 ## Voz maestra (v2.4.2)
 Con Gemini, todo el guion se envía en **una sola llamada** y el audio se corta por escenas en las pausas más cercanas al punto donde termina cada una: misma entonación y ritmo en todo el video, y menos peticiones. Cada audio se valida (existe, tiene voz, duración coherente) y se reintenta hasta 3 veces. Se desactiva con `"master_audio": false` en los ajustes del proyecto. El estilo de voz de una palabra («Alegre») ahora se envía como orden completa («Di de forma alegre:») para que no se lea en voz alta.
+
+## Animación con más detalle (v2.5)
+Elementos nuevos (cuerpo/ciencia): `pierna`, `pie`, `nervio` (con `pinch` y `glow`), `cerebro`, `gota`, `globulo`, `rayo`, `hueso`, `reloj`. Fondos nuevos: `musculo` y `cuerpo`. El aura (`glow`) ya no se recorta en cuadro. `prueba_vectorial_pie_dormido.json` se rehízo con capas: fondo con textura, glóbulos desenfocados al frente, protagonista nítido y enjambres de detalles.
