@@ -711,7 +711,7 @@ class VectorScene(Scene):
                 v = lerp(float(L["value_from"]), float(L.get("value_to", L["value_from"])), ease("in_out_cubic", clamp(lt / vd)))
                 params["value"] = round(v * 4) / 4
             wpx = int(round(base_w / 6.0) * 6)
-            spr = sprite(L["asset"], wpx, params, L.get("shadow", L["asset"] not in ("texto", "hielo", "banda", "olor", "agua")))
+            spr = sprite(L["asset"], wpx, params, L.get("shadow", L["asset"] not in ("texto", "hielo", "banda", "olor", "agua", "svg")))
             if L.get("flip"):
                 spr = spr.transpose(Image.FLIP_LEFT_RIGHT)
             ws = max(2, int(spr.width * sc * base_w / max(wpx, 1)))

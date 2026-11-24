@@ -11,16 +11,16 @@
    "camera": "push",
    "fx": "bokeh,polvo_luz",
    "narration": "¿Por qué se te duerme el pie al sentarte?",
-   "duration": 4.1,
+   "duration": 1.5,
    "layers": [
     {
-     "asset": "pierna",
+     "asset": "svg",
+     "file": "pierna",
      "x": 0.5,
      "y": 0.6,
      "w": 0.95,
      "z": 2,
-     "anim": "slide_up+float",
-     "nerve": 1
+     "anim": "slide_up+float"
     },
     {
      "asset": "texto",
@@ -35,7 +35,7 @@
     },
     {
      "asset": "rayo",
-     "count": 6,
+     "count": 3,
      "spread": [
       0.55,
       0.6,
@@ -49,36 +49,6 @@
      "anim": "pop+shake",
      "z": 4,
      "at": "pie"
-    },
-    {
-     "asset": "persona",
-     "x": 0.18,
-     "y": 0.82,
-     "w": 0.34,
-     "var": 2,
-     "anim": "slide_left",
-     "z": 3,
-     "alpha": 0.95
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -88,7 +58,7 @@
    "camera": "push_fuerte",
    "fx": "bokeh",
    "narration": "La culpa es de un nervio que pide auxilio.",
-   "duration": 4.1,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "nervio",
@@ -142,26 +112,6 @@
      "w": 0.07,
      "anim": "fall",
      "z": 4
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -171,16 +121,16 @@
    "camera": "pan_right",
    "fx": "brillos,bokeh",
    "narration": "Dentro de tu pierna viaja un cable que lleva mensajes al cerebro.",
-   "duration": 5.2,
+   "duration": 1.5,
    "layers": [
     {
-     "asset": "pierna",
+     "asset": "svg",
+     "file": "pierna",
      "x": 0.5,
      "y": 0.66,
      "w": 0.95,
      "z": 2,
-     "anim": "fade",
-     "nerve": 1
+     "anim": "fade"
     },
     {
      "asset": "cerebro",
@@ -194,7 +144,7 @@
     },
     {
      "asset": "rayo",
-     "count": 7,
+     "count": 3,
      "spread": [
       0.58,
       0.35,
@@ -219,26 +169,6 @@
      "anim": "slide_up",
      "color": "#ffd23f",
      "z": 5
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -248,16 +178,16 @@
    "camera": "push",
    "fx": "polvo_luz,bokeh",
    "narration": "Al cruzar las piernas, lo aplastas contra el hueso.",
-   "duration": 4.1,
+   "duration": 1.5,
    "layers": [
     {
-     "asset": "pierna",
+     "asset": "svg",
+     "file": "pierna",
      "x": 0.5,
      "y": 0.58,
      "w": 0.95,
      "z": 2,
-     "anim": "fade",
-     "nerve": 1
+     "anim": "fade"
     },
     {
      "asset": "hueso",
@@ -292,7 +222,7 @@
     },
     {
      "asset": "rayo",
-     "count": 4,
+     "count": 3,
      "spread": [
       0.2,
       0.38,
@@ -306,26 +236,6 @@
      "anim": "pop+shake",
      "z": 4,
      "at": "aplastas"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -335,7 +245,7 @@
    "camera": "drift",
    "fx": "humo,bokeh",
    "narration": "Sin sangre ni oxígeno, el nervio se desconcierta.",
-   "duration": 3.7,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "nervio",
@@ -392,26 +302,6 @@
      "at": "desconcierta",
      "anim": "pop+pulse",
      "z": 6
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ],
    "bg_colors": [
@@ -426,7 +316,7 @@
    "camera": "push",
    "fx": "brillos",
    "narration": "Y manda señales falsas: ese hormigueo no es real.",
-   "duration": 4.1,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "nervio",
@@ -439,7 +329,7 @@
     },
     {
      "asset": "rayo",
-     "count": 18,
+     "count": 9,
      "spread": [
       0.08,
       0.28,
@@ -474,26 +364,6 @@
      "at": "real",
      "anim": "pop",
      "z": 7
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -503,7 +373,7 @@
    "camera": "push_fuerte",
    "fx": "brillos,bokeh",
    "narration": "Tu cerebro recibe puro ruido, y no sabe qué sentir.",
-   "duration": 4.4,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "cerebro",
@@ -516,7 +386,7 @@
     },
     {
      "asset": "rayo",
-     "count": 20,
+     "count": 10,
      "spread": [
       0.04,
       0.28,
@@ -552,26 +422,6 @@
      "at": "sentir",
      "anim": "pop+float",
      "z": 6
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -581,15 +431,15 @@
    "camera": "pull",
    "fx": "polvo_luz,bokeh",
    "narration": "Por eso tu pie se siente pesado, como de otro.",
-   "duration": 4.4,
+   "duration": 1.5,
    "layers": [
     {
-     "asset": "pie",
+     "asset": "svg",
+     "file": "pie",
      "x": 0.5,
      "y": 0.56,
      "w": 0.88,
      "anim": "slide_left+float",
-     "spark": 1,
      "z": 2
     },
     {
@@ -613,7 +463,7 @@
     },
     {
      "asset": "rayo",
-     "count": 5,
+     "count": 3,
      "spread": [
       0.2,
       0.4,
@@ -627,26 +477,6 @@
      "anim": "pop+shake",
      "z": 4,
      "at": "pie"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -656,7 +486,7 @@
    "camera": "push",
    "fx": "brillos,bokeh",
    "narration": "Tranquilo: después de unos diez minutos, es normal.",
-   "duration": 3.7,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "reloj",
@@ -691,7 +521,7 @@
     },
     {
      "asset": "estrella",
-     "count": 8,
+     "count": 4,
      "spread": [
       0.05,
       0.25,
@@ -705,26 +535,6 @@
      "anim": "float",
      "z": 4,
      "at": "diez"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -734,7 +544,7 @@
    "camera": "push",
    "fx": "corazones,bokeh",
    "narration": "Al estirarte, la sangre regresa de golpe.",
-   "duration": 3.3,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "corazon",
@@ -782,34 +592,14 @@
      "at": "sangre"
     },
     {
-     "asset": "pierna",
+     "asset": "svg",
+     "file": "pierna",
      "x": 0.5,
      "y": 0.76,
      "w": 0.7,
-     "nerve": 0,
-     "alpha": 0.85,
+     "alpha": 0.9,
      "z": 3,
      "anim": "slide_up"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ],
    "bg_colors": [
@@ -824,7 +614,7 @@
    "camera": "push",
    "fx": "brillos,bokeh",
    "narration": "Los nervios despiertan, y todos gritan a la vez.",
-   "duration": 4.1,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "esfera",
@@ -858,7 +648,7 @@
     },
     {
      "asset": "rayo",
-     "count": 12,
+     "count": 6,
      "spread": [
       0.05,
       0.3,
@@ -872,26 +662,6 @@
      "anim": "pop+shake",
      "z": 4,
      "at": "gritan"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -901,21 +671,21 @@
    "camera": "push_fuerte",
    "fx": "brillos,bokeh",
    "narration": "Por eso sientes ese cosquilleo eléctrico.",
-   "duration": 3.0,
+   "duration": 1.5,
    "layers": [
     {
-     "asset": "pie",
+     "asset": "svg",
+     "file": "pie",
      "x": 0.5,
      "y": 0.58,
      "w": 0.84,
-     "spark": 1,
      "glow": "#ffd23f",
      "anim": "float",
      "z": 2
     },
     {
      "asset": "rayo",
-     "count": 30,
+     "count": 15,
      "spread": [
       0.04,
       0.3,
@@ -940,26 +710,6 @@
      "at": "eléctrico",
      "anim": "pop+pulse",
      "z": 6
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -969,7 +719,7 @@
    "camera": "pull",
    "fx": "polvo_luz,bokeh",
    "narration": "No hace daño, salvo que te pase todos los días.",
-   "duration": 4.4,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "marca",
@@ -997,15 +747,15 @@
      "text": "A DIARIO",
      "color": "#d62839",
      "x": 0.5,
-     "y": 0.82,
-     "w": 0.55,
+     "y": 0.84,
+     "w": 0.85,
      "at": "días",
      "anim": "pop",
      "z": 5
     },
     {
      "asset": "estrella",
-     "count": 6,
+     "count": 3,
      "spread": [
       0.05,
       0.3,
@@ -1018,26 +768,6 @@
      "w": 0.05,
      "anim": "float",
      "z": 4
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -1047,7 +777,7 @@
    "camera": "push",
    "fx": "bokeh",
    "narration": "Si duele o es frecuente, consulta a tu médico.",
-   "duration": 4.1,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "persona",
@@ -1087,26 +817,6 @@
      "at": "consulta",
      "anim": "pop",
      "z": 4
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -1116,7 +826,7 @@
    "camera": "pan_left",
    "fx": "brillos,bokeh",
    "narration": "Para evitarlo, cambia de postura cada veinte minutos.",
-   "duration": 3.7,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "persona",
@@ -1158,26 +868,6 @@
      "at": "postura",
      "anim": "slide_up",
      "z": 4
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.04,
-     "y": 0.97,
-     "w": 0.55,
-     "z": 9,
-     "anim": "float"
-    },
-    {
-     "asset": "globulo",
-     "blur": 0.75,
-     "alpha": 0.9,
-     "x": 0.97,
-     "y": 0.62,
-     "w": 0.42,
-     "z": 9,
-     "anim": "drift"
     }
    ]
   },
@@ -1187,7 +877,7 @@
    "camera": "pull",
    "fx": "corazones,brillos",
    "narration": "Y tu pie dejará de pedir auxilio.",
-   "duration": 3.3,
+   "duration": 1.5,
    "layers": [
     {
      "asset": "esfera",
@@ -1200,7 +890,8 @@
      "z": 3
     },
     {
-     "asset": "pie",
+     "asset": "svg",
+     "file": "pie",
      "x": 0.5,
      "y": 0.84,
      "w": 0.5,
@@ -1221,7 +912,7 @@
     },
     {
      "asset": "estrella",
-     "count": 10,
+     "count": 5,
      "spread": [
       0.05,
       0.2,

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" width="640" height="380">
+  <defs>
+    <linearGradient id="cristal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bfe6ff" stop-opacity=".82"/>
+      <stop offset=".55" stop-color="#5aa7ee" stop-opacity=".80"/>
+      <stop offset="1" stop-color="#2459b8" stop-opacity=".88"/>
+    </linearGradient>
+    <linearGradient id="brillo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="nucleo" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="{{nervio|#ffe27a}}" stop-opacity=".9"/>
+      <stop offset="1" stop-color="{{nervio|#ffe27a}}" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="suave"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <g id="dedos">
+    <ellipse cx="548" cy="326" rx="30" ry="20" fill="url(#cristal)" stroke="#d9f3ff" stroke-width="4"/>
+    <ellipse cx="514" cy="336" rx="26" ry="18" fill="url(#cristal)" stroke="#d9f3ff" stroke-width="4"/>
+    <ellipse cx="482" cy="341" rx="23" ry="16" fill="url(#cristal)" stroke="#d9f3ff" stroke-width="4"/>
+    <ellipse cx="454" cy="343" rx="20" ry="14" fill="url(#cristal)" stroke="#d9f3ff" stroke-width="4"/>
+  </g>
+  <g id="piel">
+    <path d="M150 0 C160 70 172 120 160 170 C140 215 100 235 108 285 C112 325 160 340 205 338 C250 336 272 296 322 300 C362 304 384 340 432 340 C492 340 562 338 590 318 C612 300 606 262 574 250 C542 242 502 232 472 214 C402 172 352 120 332 0 Z"
+          fill="url(#cristal)" stroke="#d9f3ff" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M178 30 C190 90 196 130 180 176" fill="none" stroke="url(#brillo)" stroke-width="10" stroke-linecap="round" filter="url(#suave)"/>
+    <path d="M360 150 C420 200 480 228 540 244" fill="none" stroke="url(#brillo)" stroke-width="9" stroke-linecap="round" filter="url(#suave)"/>
+    <ellipse cx="570" cy="282" rx="17" ry="11" transform="rotate(-18 570 282)" fill="#f2fbff" fill-opacity=".92"/>
+  </g>
+  <g id="huesos" opacity=".42">
+    <path d="M212 0 C214 60 222 110 240 150 C262 196 300 226 350 236" fill="none" stroke="#eaf8ff" stroke-width="22" stroke-linecap="round"/>
+    <ellipse cx="236" cy="196" rx="44" ry="34" fill="#eaf8ff"/>
+    <ellipse cx="180" cy="270" rx="46" ry="38" fill="#eaf8ff"/>
+  </g>
+  <g id="vasos">
+    <path d="M236 0 C238 90 240 150 254 204 C276 262 336 292 410 300 C480 306 540 300 580 284" fill="none" stroke="#ff4d5e" stroke-width="7" stroke-linecap="round"/>
+    <path d="M268 0 C268 84 266 146 278 196 C298 248 352 276 420 284 C486 290 542 284 578 270" fill="none" stroke="#4d86ff" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <g id="nervio" filter="url(#glow)">
+    <path d="M252 0 C254 90 254 150 266 200 C288 256 344 284 414 292 C482 298 540 292 578 277" fill="none" stroke="{{nervio|#ffd23f}}" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="262" cy="170" r="34" fill="url(#nucleo)"/><circle cx="420" cy="292" r="40" fill="url(#nucleo)"/>
+  </g>
+</svg>

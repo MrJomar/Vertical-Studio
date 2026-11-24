@@ -94,3 +94,6 @@ Con Gemini, todo el guion se envía en **una sola llamada** y el audio se corta 
 
 ## Animación con más detalle (v2.5)
 Elementos nuevos (cuerpo/ciencia): `pierna`, `pie`, `nervio` (con `pinch` y `glow`), `cerebro`, `gota`, `globulo`, `rayo`, `hueso`, `reloj`. Fondos nuevos: `musculo` y `cuerpo`. El aura (`glow`) ya no se recorta en cuadro. `prueba_vectorial_pie_dormido.json` se rehízo con capas: fondo con textura, glóbulos desenfocados al frente, protagonista nítido y enjambres de detalles.
+
+## Dibujos SVG (v2.6)
+Elemento `svg`: `{"asset":"svg","file":"pie","x":.5,"y":.6,"w":.8}` carga `assets/svg/pie.svg` (o `cache/svg_privados/`, o texto en `"svg"`). Partes con `id` en un `<g>` se animan por separado: `"only":"nervio"` dibuja solo esa parte y `"hide":"huesos"` la oculta (todas comparten posición y tamaño). Variables en el SVG: `{{nervio|#ffd23f}}` se cambia con `"nervio":"#ff4d5e"` en la capa. Usa `resvg-py` (se instala solo la primera vez). Kit inicial: `pie.svg`, `pierna.svg`.

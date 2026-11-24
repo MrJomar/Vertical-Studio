@@ -19,7 +19,7 @@
    "tilt": 14,
    "places": "Prudhoe Bay | 70.2, -148.5\nCiudad de México | 19.43, -99.13\nBuenos Aires | -34.6, -58.4\nUshuaia | -54.8, -68.3",
    "narration": "Hay una carretera de treinta mil kilómetros que casi cruza un continente entero. La llaman la Panamericana, y es la ruta más larga del mundo.",
-   "duration": 12.2,
+   "duration": 3.5,
    "intro": "blanco",
    "route_labels": [
     {
@@ -42,7 +42,7 @@
    "tilt": 14,
    "places": "Prudhoe Bay | 70.2, -148.5\nFairbanks | 64.84, -147.7\nAnchorage | 61.2, -149.9",
    "narration": "Empieza en Alaska, junto al océano Ártico, donde el invierno es brutal y el camino parece perderse en la nada.",
-   "duration": 8.3,
+   "duration": 1.5,
    "highlight": "Estados Unidos:#2a7bff",
    "route_labels": [
     {
@@ -65,7 +65,7 @@
    "tilt": 14,
    "places": "Anchorage | 61.2, -149.9\nVancouver | 49.28, -123.12\nLos Ángeles | 34.05, -118.24",
    "narration": "Baja por Canadá y Estados Unidos, cruzando bosques, montañas y desiertos durante miles de kilómetros.",
-   "duration": 6.4,
+   "duration": 1.5,
    "highlight": "Canadá:#e5383b, Estados Unidos:#2a7bff"
   },
   {
@@ -80,7 +80,7 @@
    "tilt": 14,
    "places": "Tijuana | 32.5, -117.0\nMazatlán | 23.2, -106.4\nCiudad de México | 19.43, -99.13",
    "narration": "En México recorre costa, desierto y montaña, y pasa por la capital, una de las ciudades más grandes del continente.",
-   "duration": 8.3,
+   "duration": 1.5,
    "highlight": "México:#22c55e"
   },
   {
@@ -95,7 +95,7 @@
    "tilt": 14,
    "places": "Ciudad de Guatemala | 14.63, -90.51\nSan José | 9.93, -84.08\nCiudad de Panamá | 8.98, -79.52",
    "narration": "Cruza Centroamérica, país por país, entre volcanes y selvas, hasta llegar a Panamá.",
-   "duration": 5.6,
+   "duration": 1.5,
    "highlight": "Guatemala:#f59e0b, Costa Rica:#a855f7, Panamá:#ef4444, Honduras:#06b6d4, Nicaragua:#ec4899, El Salvador:#84cc16"
   },
   {
@@ -110,7 +110,7 @@
    "tilt": 14,
    "places": "Yaviza | 8.15, -77.69\nTurbo | 8.1, -76.73",
    "narration": "Y ahí desaparece. Es el tapón del Darién: cien kilómetros de selva y pantano, sin un solo camino.",
-   "duration": 7.5,
+   "duration": 1.5,
    "highlight": "Panamá:#ef4444, Colombia:#2a7bff",
    "route_labels": [
     {
@@ -134,7 +134,7 @@
    "tilt": 14,
    "places": "Bogotá | 4.71, -74.07\nQuito | -0.18, -78.47\nLima | -12.05, -77.04\nSantiago | -33.45, -70.67\nBuenos Aires | -34.6, -58.4",
    "narration": "Después retoma en Colombia, sube a los Andes y cruza Ecuador, Perú, Chile y Argentina.",
-   "duration": 6.4,
+   "duration": 1.5,
    "highlight": "Colombia:#f59e0b, Ecuador:#06b6d4, Perú:#ef4444, Chile:#a855f7, Argentina:#2a7bff"
   },
   {
@@ -149,7 +149,7 @@
    "tilt": 14,
    "places": "Buenos Aires | -34.6, -58.4\nUshuaia | -54.8, -68.3",
    "narration": "Termina en Ushuaia, el fin del mundo, donde ya no hay más carretera.",
-   "duration": 5.6,
+   "duration": 1.5,
    "highlight": "Argentina:#2a7bff",
    "route_labels": [
     {
@@ -172,7 +172,7 @@
    "tilt": 14,
    "places": "Prudhoe Bay | 70.2, -148.5\nCiudad de México | 19.43, -99.13\nBogotá | 4.71, -74.07\nUshuaia | -54.8, -68.3",
    "narration": "Casi un planeta entero en una sola línea. Un camino, dos continentes, y una selva que sigue sin vencer.",
-   "duration": 7.9,
+   "duration": 1.5,
    "grade": "cine",
    "route_labels": [
     {

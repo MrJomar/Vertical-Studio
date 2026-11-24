@@ -1052,6 +1052,75 @@ def a_pierna(w, p):
     return _aura(im, (120, 200, 255), W * 0.03, 0.5)
 
 
+# ----------------------------------------------------------------------------- SVG
+_SVG_DIRS = None
+
+
+def _svg_dirs():
+    import os
+    app = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return [os.path.join(app, "assets", "svg"), os.path.join(app, "cache", "svg_privados"), app, os.getcwd()]
+
+
+def _svg_text(p):
+    import os
+    if p.get("svg"):
+        return str(p["svg"])
+    f = str(p.get("file") or "")
+    if not f:
+        raise ValueError("Elemento svg: falta «file» (en assets/svg/) o «svg» (texto).")
+    cands = [f] if os.path.isabs(f) else [os.path.join(d, f if f.lower().endswith(".svg") else f + ".svg") for d in _svg_dirs()]
+    for c in cands:
+        if os.path.isfile(c):
+            with open(c, encoding="utf-8") as fh:
+                return fh.read()
+    raise FileNotFoundError(f"No encuentro el SVG «{f}» (busqué en assets/svg/).")
+
+
+def svg_prepare(text, p):
+    """Sustituye {{variable|defecto}} y deja visibles solo las partes pedidas (only) o oculta otras (hide)."""
+    import re as _re
+    import xml.etree.ElementTree as ET
+    text = _re.sub(r"\{\{\s*([\w-]+)\s*(?:\|([^}]*))?\}\}", lambda m: str(p.get(m.group(1), m.group(2) if m.group(2) is not None else "")), text)
+    only = [x.strip() for x in str(p.get("only") or "").split(",") if x.strip()]
+    hide = [x.strip() for x in str(p.get("hide") or "").split(",") if x.strip()]
+    if only or hide:
+        ET.register_namespace("", "http://www.w3.org/2000/svg")
+        ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
+        root = ET.fromstring(text)
+        keep_tags = ("defs", "style", "title", "desc")
+        for ch in list(root):
+            tag = ch.tag.split("}")[-1]
+            if tag in keep_tags:
+                continue
+            cid = ch.get("id", "")
+            if (only and cid not in only) or (cid and cid in hide):
+                root.remove(ch)
+        text = ET.tostring(root, encoding="unicode")
+    return text
+
+
+def a_svg(w, p):
+    """SVG propio (assets/svg/<file>.svg o texto en «svg»). Partes con id en <g>: only="nervio" / hide="huesos"; variables {{nombre|defecto}}."""
+    try:
+        import resvg_py
+    except ImportError:
+        import subprocess
+        import sys
+        try:        # la actualización automática no instala paquetes: se intenta una vez aquí
+            subprocess.run([sys.executable, "-m", "pip", "install", "resvg-py"], check=True, capture_output=True, timeout=240)
+            import resvg_py
+        except Exception as e:
+            raise RuntimeError("Falta el conversor de SVG: ejecuta  python -m pip install resvg-py  (o instalar.bat)") from e
+    import io
+    svg = svg_prepare(_svg_text(p), p)
+    try:
+        png = resvg_py.svg_to_bytes(svg_string=svg, width=int(w))
+    except Exception as e:
+        raise ValueError(f"SVG no válido: {e}") from e
+    return Image.open(io.BytesIO(bytes(png))).convert("RGBA")
+
+
 ASSETS = {
     "esfera": (a_esfera, 1.0, "Bola con carita (personaje base)", "color, mood: neutral|happy|angry|sad|scared|none"),
     "villano": (a_villano, 1.0, "Bolita azul enmascarada con capa y brazos", "color, cape"),
@@ -1085,6 +1154,7 @@ ASSETS = {
     "burbuja_villano": (a_burbuja_villano, 1.0, "Burbuja con un villano diminuto adentro", "color"),
     "luz": (a_luz, 0.35, "Resplandor suave (luz bajo la puerta, foco)", "color, h"),
     "humo": (a_humo, 0.6, "Humo o niebla translúcida", "color"),
+    "svg": (a_svg, 1.0, "Dibujo SVG propio: file (assets/svg/…), only/hide (partes con id), variables {{nombre}}", "file, only, hide, svg"),
     "gota": (a_gota, 1.3, "Gota de sangre", "color"),
     "globulo": (a_globulo, 0.82, "Glóbulo rojo (disco bicóncavo)", "color"),
     "rayo": (a_rayo, 1.6, "Rayo amarillo (señal eléctrica)", "color"),
