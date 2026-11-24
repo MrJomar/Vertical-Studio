@@ -1,2 +1,2 @@
 """Vertical Studio — motor de videos verticales."""
-__version__ = "2.12.3"
+__version__ = "2.13.0"

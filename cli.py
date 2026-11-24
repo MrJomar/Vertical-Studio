@@ -24,7 +24,7 @@ def main(argv=None):
     r = sub.add_parser("render", help="Renderiza un proyecto a MP4")
     r.add_argument("project")
     r.add_argument("-o", "--out", default=None)
-    r.add_argument("--encoder", choices=["auto", "nvenc", "x264"], default=None)
+    r.add_argument("--encoder", choices=["auto", "nvenc", "amf", "x264"], default=None)
     r.add_argument("--quality", choices=["borrador", "normal", "alta", "maxima"], default=None)
 
     p = sub.add_parser("preview", help="Guarda un cuadro de una escena en PNG")

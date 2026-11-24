@@ -361,16 +361,41 @@ def nvenc_available() -> bool:
     return _nvenc_ok
 
 
+_amf_ok: bool | None = None
+
+
+def amf_available() -> bool:
+    """GPU AMD (Radeon) con codificador AMF."""
+    global _amf_ok
+    if _amf_ok is None:
+        try:
+            r = run_quiet([ffmpeg_bin(), "-v", "error", "-f", "lavfi", "-i", "color=black:s=256x256:d=0.2",
+                           "-c:v", "h264_amf", "-f", "null", "-"], timeout=20)
+            _amf_ok = r.returncode == 0
+        except Exception:
+            _amf_ok = False
+    return _amf_ok
+
+
+def gpu_name() -> str:
+    return "NVIDIA (NVENC)" if nvenc_available() else "AMD (AMF)" if amf_available() else ""
+
+
 def video_codec_args(encoder: str, quality: str = "alta") -> tuple[list[str], str]:
     enc = encoder
     if enc == "auto":
-        enc = "nvenc" if nvenc_available() else "x264"
+        enc = "nvenc" if nvenc_available() else "amf" if amf_available() else "x264"
     if enc == "nvenc" and not nvenc_available():
+        enc = "amf" if amf_available() else "x264"
+    if enc == "amf" and not amf_available():
         enc = "x264"
     cq = {"borrador": 28, "normal": 23, "alta": 19, "maxima": 16}.get(quality, 19)
     if enc == "nvenc":
         return (["-c:v", "h264_nvenc", "-preset", "p5", "-tune", "hq", "-rc", "vbr", "-cq", str(cq),
                  "-b:v", "0", "-profile:v", "high"], "nvenc")
+    if enc == "amf":
+        return (["-c:v", "h264_amf", "-quality", "quality", "-rc", "cqp", "-qp_i", str(cq), "-qp_p", str(cq + 2),
+                 "-qp_b", str(cq + 4), "-profile:v", "high"], "amf")
     preset = "ultrafast" if quality == "borrador" else "veryfast"
     return (["-c:v", "libx264", "-preset", preset, "-crf", str(cq - 1), "-profile:v", "high"], "x264")
 

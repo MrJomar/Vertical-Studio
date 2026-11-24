@@ -24,7 +24,7 @@ from PIL import Image
 
 from . import __version__
 from . import tiles as T
-from .core import (APP_DIR, CACHE_DIR, IMAGE_EXT, THEMES, VIDEO_EXT, ffmpeg_bin, nvenc_available, popen_kwargs,
+from .core import (APP_DIR, CACHE_DIR, IMAGE_EXT, THEMES, VIDEO_EXT, ffmpeg_bin, nvenc_available, gpu_name, popen_kwargs,
                    run_quiet)
 from .project import DEFAULT_SETTINGS, TRANSITIONS, Cancelled, Ctx, Project
 from .scenes import SCENE_TYPES
@@ -39,7 +39,7 @@ LABELS = {
     "arc": "Arco", "line": "Línea recta", "": "Predeterminado del proyecto",
     "vectorial": "Vectorial (sin internet)", "personalizado": "Personalizado (URL propia)",
     "edge": "Edge (voz neuronal, internet)", "sapi": "Windows (sin internet)", "silencio": "Sin voz (solo subtítulos)",
-    "auto": "Automático", "nvenc": "NVIDIA NVENC", "x264": "CPU (x264)",
+    "auto": "Automático", "nvenc": "NVIDIA NVENC", "amf": "AMD (Radeon, AMF)", "x264": "CPU (x264)",
     "borrador": "Borrador", "normal": "Normal", "alta": "Alta", "maxima": "Máxima",
     "fade": "Fundido", "slide": "Deslizar", "zoom_t": "Zoom", "flash": "Destello", "wipe": "Cortinilla", "cut": "Corte",
     "neon": "Neón", "oscuro": "Oscuro", "retro": "Retro", "papel": "Papel", "esmeralda": "Esmeralda",
@@ -67,7 +67,7 @@ SETTINGS_GROUPS = [
                                ("music_volume", "Volumen de la música (0 a 1)", "number", 0.12),
                                ("sfx", "Efectos de sonido (auto = pone whoosh, pop, click solos)", "choice", "manual", ["off", "manual", "auto"]),
                                ("sfx_volume", "Volumen de los efectos (0 a 1)", "number", 0.5)]),
-    ("Salida", [("encoder", "Codificador de video", "choice", "auto", ["auto", "nvenc", "x264"]),
+    ("Salida", [("encoder", "Codificador de video", "choice", "auto", ["auto", "nvenc", "amf", "x264"]),
                 ("quality", "Calidad", "choice", "alta", ["borrador", "normal", "alta", "maxima"]),
                 ("fps", "Cuadros por segundo", "choice", 30, [24, 30, 60]),
                 ("whisper_model", "Modelo Whisper (subtítulos y clipping)", "choice", "small",
@@ -104,7 +104,7 @@ def build_schema() -> dict:
     return {"version": __version__, "types": types, "order": list(SCENE_TYPES.keys()),
             "settings": [{"group": g, "fields": [_field(f) for f in fs]} for g, fs in SETTINGS_GROUPS],
             "themes": {k: {n: list(v[n]) for n in ("bg1", "bg2", "accent", "text")} for k, v in THEMES.items()},
-            "defaults": DEFAULT_SETTINGS, "nvenc": nvenc_available(),
+            "defaults": DEFAULT_SETTINGS, "nvenc": nvenc_available(), "gpu": gpu_name(),
             "map_styles": [{"value": k, "label": v["label"]} for k, v in T.PROVIDERS.items()]}
 
 
