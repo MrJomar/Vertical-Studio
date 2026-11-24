@@ -1,0 +1,546 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave",
+  "caption_size": 92,
+  "sfx": "auto",
+  "sfx_volume": 0.5,
+  "voice_speed": 1.08,
+  "trim_silences": true,
+  "scene_pad": 0.15,
+  "transition_seconds": 0.35
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "push_fuerte",
+   "narration": "Dicen que un rayo no cae dos veces en el mismo lugar. Este edificio lo desmiente.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🏙️"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.5,
+     "y": 0.4,
+     "w": 0.32,
+     "anim": "pop+shake",
+     "at": 0.05,
+     "z": 3,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "¿UNA SOLA VEZ?",
+     "fit": true,
+     "color": "#ffe14a"
+    }
+   ],
+   "bg_colors": [
+    "#5a6cff",
+    "#050a2a",
+    "#d8e0ff"
+   ],
+   "fx": "brillos"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "narration": "Es el Empire State, en Nueva York.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.8,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🏙️"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "Empire",
+     "z": 5,
+     "text": "EMPIRE STATE",
+     "fit": true,
+     "color": "#e6efff"
+    }
+   ],
+   "bg_colors": [
+    "#8fb0ff",
+    "#0a1840",
+    "#e6efff"
+   ],
+   "fx": "bokeh",
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "narration": "Según el Servicio Meteorológico, recibe rayos unas veinticinco veces al año.",
+   "layers": [
+    {
+     "asset": "calendario",
+     "x": 0.5,
+     "y": 0.42,
+     "w": 0.6,
+     "anim": "pop",
+     "at": 0.05,
+     "z": 2,
+     "month": "ene",
+     "day": "1"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.8,
+     "y": 0.7,
+     "w": 0.22,
+     "anim": "pop+bob",
+     "at": "veinticinco",
+     "z": 3,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.7,
+     "w": 0.5,
+     "anim": "pop",
+     "at": "veinticinco",
+     "z": 4,
+     "text": "~25 POR AÑO",
+     "color": "#ffe14a",
+     "fg": "#050a2a"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.4,
+     "anim": "pop",
+     "at": "Meteorológico",
+     "z": 5,
+     "text": "NWS",
+     "fit": true,
+     "color": "#d8e0ff"
+    }
+   ],
+   "bg_colors": [
+    "#2a3a8a",
+    "#050a2a",
+    "#b8c8ff"
+   ],
+   "fx": "polvo_luz",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "drift",
+   "narration": "Veinticinco veces. Casi dos por mes.",
+   "layers": [
+    {
+     "asset": "rayo",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+shake",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "Casi",
+     "z": 5,
+     "text": "CASI 2 POR MES",
+     "fit": true,
+     "color": "#fff8c0"
+    }
+   ],
+   "bg_colors": [
+    "#ffe14a",
+    "#3a2a00",
+    "#fff8c0"
+   ],
+   "fx": "brillos",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "push_fuerte",
+   "narration": "Una vez, en una sola tormenta, lo golpeó ocho veces en veinticuatro minutos.",
+   "layers": [
+    {
+     "asset": "reloj",
+     "x": 0.5,
+     "y": 0.46,
+     "w": 0.6,
+     "anim": "pop",
+     "at": 0.05,
+     "z": 2,
+     "hour": 3,
+     "min": 0
+    },
+    {
+     "asset": "rayo",
+     "x": 0.2,
+     "y": 0.72,
+     "w": 0.2,
+     "anim": "pop+shake",
+     "at": "ocho",
+     "z": 3,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.8,
+     "y": 0.72,
+     "w": 0.2,
+     "anim": "pop+shake",
+     "at": "veinticuatro",
+     "z": 3,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "ocho",
+     "z": 5,
+     "text": "8 EN 24 MIN",
+     "fit": true,
+     "color": "#ffe14a"
+    }
+   ],
+   "bg_colors": [
+    "#5a6cff",
+    "#050a2a",
+    "#d8e0ff"
+   ],
+   "fx": "brillos",
+   "transition": "flash"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "narration": "Y no es mala suerte: arriba de la torre hay una antena pensada como pararrayos.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.62,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "📡"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.18,
+     "anim": "pop+bounce",
+     "at": "antena",
+     "z": 4,
+     "color": "#ffe14a",
+     "rot": 90
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "pararrayos",
+     "z": 5,
+     "text": "PARARRAYOS",
+     "fit": true,
+     "color": "#eef0fa"
+    }
+   ],
+   "bg_colors": [
+    "#a0a8c0",
+    "#10162a",
+    "#eef0fa"
+   ],
+   "fx": "bokeh",
+   "transition": "slide"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "pull",
+   "narration": "Un pararrayos no evita el rayo: le da un camino seguro hacia el suelo.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.5,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "⚡"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.5,
+     "y": 0.75,
+     "w": 0.2,
+     "anim": "pop+bounce",
+     "at": "camino",
+     "z": 4,
+     "color": "#ffffff",
+     "rot": 90
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "camino",
+     "z": 5,
+     "text": "CAMINO SEGURO",
+     "fit": true,
+     "color": "#e0fff0"
+    }
+   ],
+   "bg_colors": [
+    "#7affc0",
+    "#06301e",
+    "#e0fff0"
+   ],
+   "fx": "brillos",
+   "transition": "wipe"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Así que el viejo dicho es falso.",
+   "layers": [
+    {
+     "asset": "marca",
+     "x": 0.5,
+     "y": 0.48,
+     "w": 0.6,
+     "anim": "pop+shake",
+     "at": 0.05,
+     "z": 2,
+     "kind": "no"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.87,
+     "w": 0.5,
+     "anim": "pop+shake",
+     "at": "viejo",
+     "z": 5,
+     "text": "MITO",
+     "fit": true,
+     "color": "#ffe0e0"
+    }
+   ],
+   "bg_colors": [
+    "#ff6b6b",
+    "#3a0808",
+    "#ffe0e0"
+   ],
+   "fx": "polvo_luz",
+   "transition": "cut"
+  },
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "drift",
+   "narration": "Los rayos pueden caer una y otra vez en el mismo sitio.",
+   "layers": [
+    {
+     "asset": "rayo",
+     "x": 0.3,
+     "y": 0.5,
+     "w": 0.3,
+     "anim": "pop+shake",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.7,
+     "y": 0.5,
+     "w": 0.3,
+     "anim": "pop+shake",
+     "at": "otra",
+     "z": 2,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.5,
+     "y": 0.68,
+     "w": 0.45,
+     "anim": "pop+shake",
+     "at": "mismo",
+     "z": 2,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "otra",
+     "z": 5,
+     "text": "¡VARIAS VECES!",
+     "fit": true,
+     "color": "#ffe14a"
+    }
+   ],
+   "bg_colors": [
+    "#5a6cff",
+    "#050a2a",
+    "#d8e0ff"
+   ],
+   "fx": "brillos",
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Eso sí: no te ampares bajo un árbol ni subas a una azotea en plena tormenta.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.48,
+     "w": 0.56,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "🌳"
+    },
+    {
+     "asset": "marca",
+     "x": 0.82,
+     "y": 0.28,
+     "w": 0.2,
+     "anim": "pop",
+     "at": "árbol",
+     "z": 5,
+     "kind": "no"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "azotea",
+     "z": 5,
+     "text": "MEJOR ADENTRO",
+     "fit": true,
+     "color": "#e6e9ff"
+    }
+   ],
+   "bg_colors": [
+    "#7a8cff",
+    "#0a0f40",
+    "#e6e9ff"
+   ],
+   "fx": "bokeh",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "push_fuerte",
+   "narration": "Un rayo sí cae dos veces… y hasta veinticinco al año.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🏙️"
+    },
+    {
+     "asset": "rayo",
+     "x": 0.5,
+     "y": 0.4,
+     "w": 0.32,
+     "anim": "pop+shake",
+     "at": 0.05,
+     "z": 3,
+     "color": "#ffe14a"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "¡Y MUCHAS MÁS!",
+     "fit": true,
+     "color": "#ffe14a"
+    }
+   ],
+   "bg_colors": [
+    "#5a6cff",
+    "#050a2a",
+    "#d8e0ff"
+   ],
+   "fx": "brillos",
+   "transition": "zoom_in"
+  }
+ ],
+ "meta": {
+  "titulo": "El rayo sí cae dos veces en el mismo lugar",
+  "tema": "hábitos y mitos / meteorología cotidiana",
+  "fuentes": [
+   "https://www.nyc.gov/site/em/ready/thunderstorms.page",
+   "https://www.livescience.com/13704-empire-state-building-lightning-strike.html"
+  ]
+ }
+}

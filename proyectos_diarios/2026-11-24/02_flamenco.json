@@ -1,0 +1,608 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave",
+  "caption_size": 92,
+  "sfx": "auto",
+  "sfx_volume": 0.5,
+  "voice_speed": 1.08,
+  "trim_silences": true,
+  "scene_pad": 0.15,
+  "transition_seconds": 0.35
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "narration": "Los flamencos no nacen rosados. Su color… se lo comen.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🦩"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.1,
+     "y": 0.66,
+     "w": 0.14,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 3,
+     "color": "#ffd23f"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.82,
+     "y": 0.76,
+     "w": 0.12,
+     "anim": "pop+bob",
+     "at": 0.5,
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "NO NACEN ROSADOS",
+     "fit": true,
+     "color": "#ffe0ee"
+    }
+   ],
+   "bg_colors": [
+    "#ff8fb8",
+    "#4a0a2e",
+    "#ffe0ee"
+   ],
+   "fx": "brillos"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "narration": "Al nacer, son blanco grisáceos, con plumón esponjoso.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.62,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "🐣"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.87,
+     "w": 0.6,
+     "anim": "pop",
+     "at": "grisáceos",
+     "z": 5,
+     "text": "GRISES",
+     "fit": true,
+     "color": "#f4f6fa"
+    }
+   ],
+   "bg_colors": [
+    "#d8dde6",
+    "#2a2f3a",
+    "#f4f6fa"
+   ],
+   "fx": "polvo_luz",
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "narration": "Y no comen camarones: sus padres les dan leche de buche.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.6,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🥛"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.87,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "leche",
+     "z": 5,
+     "text": "LECHE DE BUCHE",
+     "fit": true,
+     "color": "#fff8e0"
+    }
+   ],
+   "bg_colors": [
+    "#fff2c2",
+    "#6a4a10",
+    "#ffffff"
+   ],
+   "fx": "burbujas",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "narration": "Sale del buche, en la garganta, y la dan los dos padres.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.66,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "🦩"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.5,
+     "y": 0.3,
+     "w": 0.2,
+     "anim": "pop+bounce",
+     "at": "buche",
+     "z": 4,
+     "color": "#ffd23f",
+     "rot": 90
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.6,
+     "anim": "pop",
+     "at": "buche",
+     "z": 5,
+     "text": "EL BUCHE",
+     "fit": true,
+     "color": "#ffe0ee"
+    }
+   ],
+   "bg_colors": [
+    "#ff9ec6",
+    "#3a0a28",
+    "#ffe0ee"
+   ],
+   "fx": "bokeh",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "drift",
+   "narration": "Es rica en proteínas y grasas, y la dan hasta que la cría come sola.",
+   "layers": [
+    {
+     "asset": "corazon",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.55,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ff4f8b"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.86,
+     "anim": "pop",
+     "at": "proteínas",
+     "z": 5,
+     "text": "PROTEÍNAS Y GRASAS",
+     "fit": true,
+     "color": "#fff0f6"
+    }
+   ],
+   "bg_colors": [
+    "#ffd8e6",
+    "#5a1a3a",
+    "#fff0f6"
+   ],
+   "fx": "brillos",
+   "transition": "slide"
+  },
+  {
+   "type": "vector",
+   "bg": "olas",
+   "camera": "push",
+   "narration": "Ya mayores, filtran el agua con la cabeza al revés, buscando algas y crustáceos.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.6,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "🦐"
+    },
+    {
+     "asset": "burbuja",
+     "x": 0.22,
+     "y": 0.7,
+     "w": 0.14,
+     "anim": "pop+rise",
+     "at": "algas",
+     "z": 3,
+     "color": "#9ff0ff"
+    },
+    {
+     "asset": "burbuja",
+     "x": 0.8,
+     "y": 0.35,
+     "w": 0.12,
+     "anim": "pop+rise",
+     "at": "crustáceos",
+     "z": 3,
+     "color": "#9ff0ff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "cabeza",
+     "z": 5,
+     "text": "CABEZA AL REVÉS",
+     "fit": true,
+     "color": "#e0f6ff"
+    }
+   ],
+   "bg_colors": [
+    "#7fd8ff",
+    "#07305a",
+    "#e0f6ff"
+   ],
+   "fx": "burbujas",
+   "transition": "wipe"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "pull",
+   "narration": "Las algas microscópicas fabrican pigmentos llamados carotenoides.",
+   "layers": [
+    {
+     "asset": "germen",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.66,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "color": "#4ad060"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "carotenoides",
+     "z": 5,
+     "text": "CAROTENOIDES",
+     "fit": true,
+     "color": "#e6ffe9"
+    }
+   ],
+   "bg_colors": [
+    "#8be0a0",
+    "#08301a",
+    "#d8ffe0"
+   ],
+   "fx": "bokeh",
+   "transition": "flash"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "narration": "Los camarones de salmuera comen algas, y los flamencos comen camarones.",
+   "layers": [
+    {
+     "asset": "germen",
+     "x": 0.14,
+     "y": 0.5,
+     "w": 0.2,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "color": "#4ad060"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.27,
+     "y": 0.5,
+     "w": 0.08,
+     "anim": "pop",
+     "at": "algas",
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "emoji",
+     "x": 0.4,
+     "y": 0.5,
+     "w": 0.26,
+     "anim": "pop+bob",
+     "at": "camarones",
+     "z": 3,
+     "char": "🦐"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.57,
+     "y": 0.5,
+     "w": 0.08,
+     "anim": "pop",
+     "at": "flamencos",
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "emoji",
+     "x": 0.79,
+     "y": 0.5,
+     "w": 0.4,
+     "anim": "pop+bob",
+     "at": "flamencos",
+     "z": 3,
+     "char": "🦩"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 0.9,
+     "anim": "pop",
+     "at": "camarones",
+     "z": 5,
+     "text": "ALGA → CAMARÓN → FLAMENCO",
+     "fit": true,
+     "color": "#fff0e0"
+    }
+   ],
+   "bg_colors": [
+    "#ffb36b",
+    "#4a1a08",
+    "#ffe6c8"
+   ],
+   "fx": "brillos",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "drift",
+   "narration": "El cuerpo procesa esos pigmentos y las plumas se vuelven rosadas.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.74,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🦩"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.2,
+     "y": 0.3,
+     "w": 0.14,
+     "anim": "pop+bob",
+     "at": "plumas",
+     "z": 3,
+     "color": "#ff8fb8"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.8,
+     "y": 0.7,
+     "w": 0.14,
+     "anim": "pop+bob",
+     "at": "rosadas",
+     "z": 3,
+     "color": "#ff8fb8"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.5,
+     "anim": "pop+shake",
+     "at": "rosadas",
+     "z": 5,
+     "text": "¡ROSA!",
+     "fit": true,
+     "color": "#ffe0ee"
+    }
+   ],
+   "bg_colors": [
+    "#ff8fb8",
+    "#4a0a2e",
+    "#ffe0ee"
+   ],
+   "fx": "brillos",
+   "transition": "cut"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "push",
+   "narration": "Es el mismo tipo de pigmento de las zanahorias y los tomates maduros.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.3,
+     "y": 0.5,
+     "w": 0.4,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "🥕"
+    },
+    {
+     "asset": "emoji",
+     "x": 0.72,
+     "y": 0.52,
+     "w": 0.4,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 2,
+     "char": "🍅"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "mismo",
+     "z": 5,
+     "text": "MISMO PIGMENTO",
+     "fit": true,
+     "color": "#fff0d0"
+    }
+   ],
+   "bg_colors": [
+    "#ffb347",
+    "#5a2208",
+    "#fff0d0"
+   ],
+   "fx": "polvo_luz",
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "pull",
+   "narration": "Y el cambio no es rápido: tarda varios años.",
+   "layers": [
+    {
+     "asset": "calendario",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.55,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "month": "ene",
+     "day": "1"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "varios",
+     "z": 5,
+     "text": "VARIOS AÑOS",
+     "fit": true,
+     "color": "#f0e8ff"
+    }
+   ],
+   "bg_colors": [
+    "#c8b6ff",
+    "#1a0a4a",
+    "#f0e8ff"
+   ],
+   "fx": "bokeh",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "narration": "Los flamencos no son rosados… son lo que comen.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🦩"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.1,
+     "y": 0.66,
+     "w": 0.14,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 3,
+     "color": "#ffd23f"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.82,
+     "y": 0.76,
+     "w": 0.12,
+     "anim": "pop+bob",
+     "at": 0.5,
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "SON LO QUE COMEN",
+     "fit": true,
+     "color": "#ffe0ee"
+    }
+   ],
+   "bg_colors": [
+    "#ff8fb8",
+    "#4a0a2e",
+    "#ffe0ee"
+   ],
+   "fx": "brillos",
+   "transition": "zoom_in"
+  }
+ ],
+ "meta": {
+  "titulo": "Los flamencos no nacen rosados: su color se lo comen",
+  "tema": "naturaleza y animales / flamencos y carotenoides",
+  "fuentes": [
+   "https://nationalzoo.si.edu/animals/news/why-are-flamingos-pink-and-other-flamingo-facts"
+  ]
+ }
+}

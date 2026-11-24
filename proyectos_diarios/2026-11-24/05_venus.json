@@ -1,0 +1,494 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave",
+  "caption_size": 92,
+  "sfx": "auto",
+  "sfx_volume": 0.5,
+  "voice_speed": 1.08,
+  "trim_silences": true,
+  "scene_pad": 0.15,
+  "transition_seconds": 0.35
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push_fuerte",
+   "narration": "En Venus, un día dura más que un año. Y no es un error.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "scared"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.2,
+     "y": 0.46,
+     "w": 0.12,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.84,
+     "y": 0.78,
+     "w": 0.1,
+     "anim": "pop+bob",
+     "at": 0.5,
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "¿DÍA > AÑO?",
+     "fit": true,
+     "color": "#ffe0a0"
+    }
+   ],
+   "bg_colors": [
+    "#b07cff",
+    "#12042e",
+    "#f0e0ff"
+   ],
+   "fx": "brillos"
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pull",
+   "narration": "Venus da una vuelta completa al Sol en doscientos veinticinco días terrestres.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.5,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "neutral"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.5,
+     "y": 0.3,
+     "w": 0.14,
+     "anim": "pop",
+     "at": "vuelta",
+     "z": 3,
+     "color": "#ffd23f"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "doscientos",
+     "z": 5,
+     "text": "AÑO: 225 DÍAS",
+     "fit": true,
+     "color": "#f0e0ff"
+    }
+   ],
+   "bg_colors": [
+    "#3a1a6a",
+    "#080218",
+    "#d8c0ff"
+   ],
+   "fx": "brillos",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "drift",
+   "narration": "Pero tarda doscientos cuarenta y tres días terrestres en girar una sola vez sobre sí misma.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.5,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "neutral"
+    },
+    {
+     "asset": "reloj",
+     "x": 0.82,
+     "y": 0.3,
+     "w": 0.2,
+     "anim": "pop",
+     "at": "cuarenta",
+     "z": 3,
+     "hour": 6,
+     "min": 0
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "cuarenta",
+     "z": 5,
+     "text": "DÍA: 243 DÍAS",
+     "fit": true,
+     "color": "#ffe6d0"
+    }
+   ],
+   "bg_colors": [
+    "#ff9a5a",
+    "#3a1204",
+    "#ffe6d0"
+   ],
+   "fx": "polvo_luz",
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "push",
+   "narration": "Es decir, su día es dieciocho días terrestres más largo que su año.",
+   "layers": [
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.48,
+     "w": 0.8,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "text": "+18",
+     "color": "#7affc0",
+     "fg": "#06301e"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.9,
+     "anim": "pop",
+     "at": "dieciocho",
+     "z": 5,
+     "text": "DÍA MÁS LARGO QUE EL AÑO",
+     "fit": true,
+     "color": "#e0fff0"
+    }
+   ],
+   "bg_colors": [
+    "#7affc0",
+    "#06301e",
+    "#e0fff0"
+   ],
+   "fx": "bokeh",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pull",
+   "narration": "Cuando Venus termina su vuelta al Sol, todavía no ha terminado de girar sobre sí mismo.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.46,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "sad"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.5,
+     "y": 0.75,
+     "w": 0.3,
+     "anim": "pop+bounce",
+     "at": "todavía",
+     "z": 4,
+     "color": "#ffd23f",
+     "rot": 180
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "todavía",
+     "z": 5,
+     "text": "¡AÚN NO TERMINA!",
+     "fit": true,
+     "color": "#f0e0ff"
+    }
+   ],
+   "bg_colors": [
+    "#b07cff",
+    "#12042e",
+    "#f0e0ff"
+   ],
+   "fx": "brillos",
+   "transition": "slide"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Aquí en la Tierra, un día dura casi veinticuatro horas.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.46,
+     "w": 0.6,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🌍"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "veinticuatro",
+     "z": 5,
+     "text": "CASI 24 HORAS",
+     "fit": true,
+     "color": "#e0f0ff"
+    }
+   ],
+   "bg_colors": [
+    "#6ab8ff",
+    "#06265a",
+    "#e0f0ff"
+   ],
+   "fx": "burbujas",
+   "transition": "wipe"
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "drift",
+   "narration": "Y encima, Venus gira al revés que casi todos los planetas.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.5,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "happy"
+    },
+    {
+     "asset": "flecha",
+     "x": 0.5,
+     "y": 0.25,
+     "w": 0.3,
+     "anim": "pop+bounce",
+     "at": "revés",
+     "z": 4,
+     "color": "#ffffff",
+     "rot": 180
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "revés",
+     "z": 5,
+     "text": "GIRA AL REVÉS",
+     "fit": true,
+     "color": "#ffe0ec"
+    }
+   ],
+   "bg_colors": [
+    "#ff6b9a",
+    "#3a0618",
+    "#ffe0ec"
+   ],
+   "fx": "brillos",
+   "transition": "flash"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "narration": "Por eso, desde allá, el Sol saldría por el oeste.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.6,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "🌅"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "saldría",
+     "z": 5,
+     "text": "SOL POR EL OESTE",
+     "fit": true,
+     "color": "#fff8c0"
+    }
+   ],
+   "bg_colors": [
+    "#ffe14a",
+    "#4a3a00",
+    "#fff8c0"
+   ],
+   "fx": "polvo_luz",
+   "transition": "cut"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "pull",
+   "narration": "Un año corto, un día larguísimo y el sol por el lado equivocado.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.56,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "scared"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.2,
+     "y": 0.3,
+     "w": 0.14,
+     "anim": "pop+bob",
+     "at": "larguísimo",
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "equivocado",
+     "z": 5,
+     "text": "TODO AL REVÉS",
+     "fit": true,
+     "color": "#f4eaff"
+    }
+   ],
+   "bg_colors": [
+    "#c8a0ff",
+    "#1a0a3a",
+    "#f4eaff"
+   ],
+   "fx": "bokeh",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push_fuerte",
+   "narration": "En Venus, el día es más largo que el año.",
+   "layers": [
+    {
+     "asset": "esfera",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "color": "#ffb347",
+     "mood": "scared"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.2,
+     "y": 0.46,
+     "w": 0.12,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "estrella",
+     "x": 0.84,
+     "y": 0.78,
+     "w": 0.1,
+     "anim": "pop+bob",
+     "at": 0.5,
+     "z": 3,
+     "color": "#ffffff"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "DÍA MÁS LARGO QUE AÑO",
+     "fit": true,
+     "color": "#ffe0a0"
+    }
+   ],
+   "bg_colors": [
+    "#b07cff",
+    "#12042e",
+    "#f0e0ff"
+   ],
+   "fx": "brillos",
+   "transition": "zoom_in"
+  }
+ ],
+ "meta": {
+  "titulo": "En Venus, un día dura más que un año",
+  "tema": "lugares y espacio / rotación de Venus",
+  "fuentes": [
+   "https://science.nasa.gov/venus/venus-facts/"
+  ]
+ }
+}

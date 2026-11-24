@@ -1,0 +1,488 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave",
+  "caption_size": 92,
+  "sfx": "auto",
+  "sfx_volume": 0.5,
+  "voice_speed": 1.08,
+  "trim_silences": true,
+  "scene_pad": 0.15,
+  "transition_seconds": 0.35
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push_fuerte",
+   "narration": "El primer mensaje de texto decía Feliz Navidad. Y nadie pudo contestarlo.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.62,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "📱"
+    },
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.84,
+     "w": 0.7,
+     "anim": "pop",
+     "at": 0.4,
+     "z": 3,
+     "text": "MERRY CHRISTMAS",
+     "color": "#0b3a1e",
+     "fg": "#d8ffe8"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "NADIE PUDO CONTESTAR",
+     "fit": true,
+     "color": "#d8ffe8"
+    }
+   ],
+   "bg_colors": [
+    "#5bff9a",
+    "#032a14",
+    "#d8ffe8"
+   ],
+   "fx": "bokeh"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "narration": "Fue el tres de diciembre de mil novecientos noventa y dos.",
+   "layers": [
+    {
+     "asset": "calendario",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "month": "dic",
+     "day": "3"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "mil",
+     "z": 5,
+     "text": "3 · DIC · 1992",
+     "fit": true,
+     "color": "#ffe6e6"
+    }
+   ],
+   "bg_colors": [
+    "#ff8a8a",
+    "#3a0a0a",
+    "#ffe6e6"
+   ],
+   "fx": "polvo_luz",
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "push",
+   "narration": "Neil Papworth, un ingeniero de veintidós años, lo escribió en una computadora, no en un celular.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.66,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "💻"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.6,
+     "anim": "pop",
+     "at": "veintidós",
+     "z": 5,
+     "text": "22 AÑOS",
+     "fit": true,
+     "color": "#e6ebff"
+    }
+   ],
+   "bg_colors": [
+    "#9fb4ff",
+    "#0a1040",
+    "#e6ebff"
+   ],
+   "fx": "brillos",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "drift",
+   "narration": "Lo recibió Richard Jarvis, de Vodafone, en un teléfono móvil.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.66,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "📱"
+    },
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.28,
+     "w": 0.5,
+     "anim": "pop",
+     "at": "Vodafone",
+     "z": 4,
+     "text": "VODAFONE",
+     "color": "#e60000",
+     "fg": "#ffffff"
+    }
+   ],
+   "bg_colors": [
+    "#ff9a3c",
+    "#3a1a02",
+    "#ffe8c8"
+   ],
+   "fx": "polvo_luz",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "El mensaje decía solo: Merry Christmas.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.5,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "🎄"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.88,
+     "anim": "pop",
+     "at": "Merry",
+     "z": 5,
+     "text": "MERRY CHRISTMAS",
+     "fit": true,
+     "color": "#d8ffe8"
+    }
+   ],
+   "bg_colors": [
+    "#5bff9a",
+    "#032a14",
+    "#d8ffe8"
+   ],
+   "fx": "brillos",
+   "transition": "slide"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push_fuerte",
+   "narration": "Pero Jarvis no pudo responder, porque su teléfono no tenía manera de escribir.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.6,
+     "anim": "pop+shake",
+     "at": 0.05,
+     "z": 2,
+     "char": "📱"
+    },
+    {
+     "asset": "marca",
+     "x": 0.78,
+     "y": 0.34,
+     "w": 0.26,
+     "anim": "pop",
+     "at": "responder",
+     "z": 5,
+     "kind": "no"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "no",
+     "z": 5,
+     "text": "SIN RESPUESTA",
+     "fit": true,
+     "color": "#ffe0e0"
+    }
+   ],
+   "bg_colors": [
+    "#ff6b6b",
+    "#3a0808",
+    "#ffe0e0"
+   ],
+   "fx": "bokeh",
+   "transition": "cut"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "pull",
+   "narration": "Los celulares de entonces podían recibir mensajes, pero todavía no podían escribirlos ni enviarlos.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.62,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "📩"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "recibir",
+     "z": 5,
+     "text": "SOLO RECIBIR",
+     "fit": true,
+     "color": "#e6f8ff"
+    }
+   ],
+   "bg_colors": [
+    "#a8e0ff",
+    "#06304a",
+    "#e6f8ff"
+   ],
+   "fx": "burbujas",
+   "transition": "wipe"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "drift",
+   "narration": "Al principio, además, cada mensaje tenía un límite de ciento sesenta caracteres.",
+   "layers": [
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.8,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "text": "160",
+     "color": "#ffd23f",
+     "fg": "#3a2a00"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "límite",
+     "z": 5,
+     "text": "CARACTERES MÁXIMO",
+     "fit": true,
+     "color": "#fff6c0"
+    }
+   ],
+   "bg_colors": [
+    "#ffd23f",
+    "#4a3600",
+    "#fff6c0"
+   ],
+   "fx": "brillos",
+   "transition": "flash"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Por eso la gente empezó a abreviar palabras, y así nació el lenguaje de los mensajes.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.46,
+     "w": 0.6,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "💬"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "abreviar",
+     "z": 5,
+     "text": "XQ · TB · K TAL",
+     "fit": true,
+     "color": "#f0e8ff"
+    }
+   ],
+   "bg_colors": [
+    "#c8b6ff",
+    "#1a0a4a",
+    "#f0e8ff"
+   ],
+   "fx": "bokeh",
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "pull",
+   "narration": "Y hasta mil novecientos noventa y nueve no podías escribirle a alguien de otra compañía de celulares.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.24,
+     "y": 0.5,
+     "w": 0.4,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2,
+     "char": "📱"
+    },
+    {
+     "asset": "emoji",
+     "x": 0.78,
+     "y": 0.5,
+     "w": 0.4,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 2,
+     "char": "📱"
+    },
+    {
+     "asset": "marca",
+     "x": 0.52,
+     "y": 0.5,
+     "w": 0.2,
+     "anim": "pop",
+     "at": "compañía",
+     "z": 5,
+     "kind": "no"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "novecientos",
+     "z": 5,
+     "text": "HASTA 1999",
+     "fit": true,
+     "color": "#ffe0ee"
+    }
+   ],
+   "bg_colors": [
+    "#ff9ec6",
+    "#3a0a28",
+    "#ffe0ee"
+   ],
+   "fx": "brillos",
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push_fuerte",
+   "narration": "El primer mensaje de texto… se quedó sin respuesta.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.62,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2,
+     "char": "📱"
+    },
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.84,
+     "w": 0.7,
+     "anim": "pop",
+     "at": 0.4,
+     "z": 3,
+     "text": "MERRY CHRISTMAS",
+     "color": "#0b3a1e",
+     "fg": "#d8ffe8"
+    },
+    {
+     "asset": "texto",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.86,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4,
+     "text": "SE QUEDÓ SIN RESPUESTA",
+     "fit": true,
+     "color": "#d8ffe8"
+    }
+   ],
+   "bg_colors": [
+    "#5bff9a",
+    "#032a14",
+    "#d8ffe8"
+   ],
+   "fx": "bokeh",
+   "transition": "zoom_in"
+  }
+ ],
+ "meta": {
+  "titulo": "El primer mensaje de texto fue 'Merry Christmas'… y nadie pudo contestarlo",
+  "tema": "tecnología y nostalgia / primer SMS 1992",
+  "fuentes": [
+   "https://www.vodafone.com/news/newsroom/technology/25-anniversary-text-message",
+   "https://www.cbc.ca/news/science/text-message-anniversary-1.4430659",
+   "https://www.history.com/this-day-in-history/december-3/first-sms-text-message-sent"
+  ]
+ }
+}
