@@ -35,6 +35,7 @@ USOS = {
     "subida": "tensión que crece antes de una revelación",
     "latido": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
 }
+MOTION_KINDS = ("slide", "zoom", "flash", "wipe", "push", "whip", "zoom_in")   # transiciones que llevan whoosh
 ALIAS = {"swoosh": "whoosh", "woosh": "whoosh", "transicion": "whoosh", "hit": "impacto", "boom": "impacto",
          "clic": "click", "tick": "tic", "bell": "ding", "riser": "subida", "bubble": "pop", "aparece": "pop"}
 
@@ -311,8 +312,9 @@ def plan_events(scenes, starts, settings, tlen_s) -> tuple[list[tuple[float, str
                 else:
                     warns.append(f"Escena {i + 1}: efecto de sonido no entendido: {e!r}")
         if mode == "auto":
-            if i > 0 and getattr(sc, "transition", "cut") != "cut" and tlen_s > 0:
-                ev.append((t0 + tlen_s * 0.5, "whoosh", 1.0, False))
+            if i > 0 and tlen_s > 0 and getattr(sc, "transition", "cut") in MOTION_KINDS:
+                # whoosh solo en transiciones con movimiento; su golpe cae justo a la mitad de la transición
+                ev.append((t0 + tlen_s * 0.5, "whoosh_corto" if tlen_s <= 0.45 else "whoosh", 0.85, True))
             if sc.spec.get("sfx_auto", True):
                 try:
                     for e_ in sc.sfx_events():

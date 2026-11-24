@@ -12,6 +12,10 @@ from typing import Callable
 from PIL import Image
 
 from .core import CACHE_DIR, Encoder, ease, get_theme, mix_audio, mux, clamp
+import math
+
+import numpy as np
+
 from .scenes import SCENE_TYPES
 
 DEFAULT_SETTINGS = {
@@ -26,7 +30,8 @@ DEFAULT_SETTINGS = {
     "watermark": "", "whisper_model": "small", "language": "", "align_voice": "whisper",
 }
 
-TRANSITIONS = ["fade", "slide", "zoom", "flash", "wipe", "cut"]
+TRANSITIONS = ["fade", "slide", "zoom", "flash", "wipe", "cut", "push", "whip", "zoom_in"]
+MOTION_TRANSITIONS = ("slide", "zoom", "flash", "wipe", "push", "whip", "zoom_in")   # las que llevan whoosh
 
 
 class Cancelled(Exception):
@@ -59,9 +64,41 @@ class Ctx:
         return os.path.join(self.base_dir, p)
 
 
+def _mblur(img: Image.Image, k: int, vertical: bool) -> Image.Image:
+    """Desenfoque de movimiento a lo largo de un eje (da sensación de velocidad)."""
+    k = int(k) | 1
+    if k < 3:
+        return img
+    import cv2
+    a = np.asarray(img)
+    a = cv2.blur(a, (1, k) if vertical else (k, 1))
+    return Image.fromarray(a)
+
+
 def apply_transition(prev: Image.Image, cur: Image.Image, p: float, kind: str) -> Image.Image:
     p = ease("in_out", p)
     W, H = cur.size
+    if kind in ("push", "whip"):                       # empuje: la escena vieja sale y la nueva entra pegada, con desenfoque
+        vert = kind == "push"
+        n = H if vert else W
+        off = int(n * p)
+        blur = int(n * 0.07 * math.sin(math.pi * min(1.0, max(0.0, p))))
+        a, b = _mblur(prev, blur, vert), _mblur(cur, blur, vert)
+        out = Image.new("RGB", (W, H))
+        if vert:
+            out.paste(a, (0, -off))
+            out.paste(b, (0, H - off))
+        else:
+            out.paste(a, (-off, 0))
+            out.paste(b, (W - off, 0))
+        return out
+    if kind == "zoom_in":                               # atraviesa la escena: la vieja se agranda y se desvanece, la nueva llega desde cerca
+        def _z(img, sc):
+            w1, h1 = int(W * sc), int(H * sc)
+            return img.resize((w1, h1), Image.BILINEAR).crop(((w1 - W) // 2, (h1 - H) // 2, (w1 - W) // 2 + W, (h1 - H) // 2 + H))
+        a = _mblur(_z(prev, 1.0 + 0.5 * p), int(H * 0.02 * math.sin(math.pi * p)), True)
+        b = _z(cur, 1.35 - 0.35 * p)
+        return Image.blend(a, b, clamp((p - 0.15) / 0.7))
     if kind == "slide":
         out = Image.new("RGB", (W, H))
         out.paste(prev, (-int(W * p * 0.35), 0))

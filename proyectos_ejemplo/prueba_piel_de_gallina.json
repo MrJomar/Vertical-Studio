@@ -4,7 +4,10 @@
   "tts_engine": "edge",
   "caption_style": "suave",
   "sfx": "auto",
-  "sfx_volume": 0.5
+  "sfx_volume": 0.5,
+  "tts_rate": 8,
+  "scene_pad": 0.15,
+  "transition_seconds": 0.35
  },
  "scenes": [
   {
@@ -97,11 +100,12 @@
     "#ffd27a",
     "#7a2b12",
     "#fff1c2"
-   ]
+   ],
+   "transition": "zoom_in"
   },
   {
    "type": "vector",
-   "bg": "cuerpo",
+   "bg": "musculo",
    "camera": "push",
    "narration": "Debajo de tu piel hay un músculo diminuto.",
    "layers": [
@@ -137,43 +141,32 @@
      "z": 5
     }
    ],
-   "fx": "polvo_luz"
+   "fx": "polvo_luz",
+   "transition": "push"
   },
   {
    "type": "vector",
-   "bg": "cuerpo",
+   "bg": "cuadricula",
    "camera": "pan_left",
    "narration": "Tienes uno por cada pelo de tu cuerpo.",
    "layers": [
     {
      "asset": "piel",
-     "x": 0.3,
-     "y": 0.38,
-     "w": 0.46,
+     "count": 15,
+     "layout": "crowd",
+     "rows": 5,
+     "spread": [
+      0.06,
+      0.2,
+      0.94,
+      0.8
+     ],
+     "w": 0.3,
      "value": 0,
      "anim": "pop",
      "at": 0.1,
+     "stagger": 0.07,
      "z": 2
-    },
-    {
-     "asset": "piel",
-     "x": 0.7,
-     "y": 0.52,
-     "w": 0.46,
-     "value": 0,
-     "anim": "pop",
-     "at": 0.5,
-     "z": 3
-    },
-    {
-     "asset": "piel",
-     "x": 0.3,
-     "y": 0.66,
-     "w": 0.46,
-     "value": 0,
-     "anim": "pop",
-     "at": 0.9,
-     "z": 4
     },
     {
      "asset": "etiqueta",
@@ -186,11 +179,12 @@
      "z": 5
     }
    ],
-   "fx": "bokeh"
+   "fx": "bokeh",
+   "transition": "cut"
   },
   {
    "type": "vector",
-   "bg": "cuerpo",
+   "bg": "rayos",
    "camera": "push",
    "narration": "Cuando recibe una señal, se contrae…",
    "layers": [
@@ -217,11 +211,12 @@
      "z": 6
     }
    ],
-   "fx": "brillos"
+   "fx": "brillos",
+   "transition": "cut"
   },
   {
    "type": "vector",
-   "bg": "cuerpo",
+   "bg": "musculo",
    "camera": "push_fuerte",
    "narration": "y jala el pelo hacia arriba.",
    "layers": [
@@ -258,7 +253,8 @@
      "z": 7
     }
    ],
-   "fx": "polvo_luz"
+   "fx": "polvo_luz",
+   "transition": "cut"
   },
   {
    "type": "vector",
@@ -272,7 +268,7 @@
      "y": 0.4,
      "w": 0.6,
      "anim": "pop+pulse",
-     "at": "orden",
+     "at": 0.05,
      "z": 2,
      "glow": "#ff9ad5"
     },
@@ -301,7 +297,8 @@
     "#7a63ff",
     "#0a0a2a",
     "#ffe08a"
-   ]
+   ],
+   "transition": "push"
   },
   {
    "type": "vector",
@@ -336,7 +333,8 @@
     "#c08cff",
     "#1a0b33",
     "#ffb3ff"
-   ]
+   ],
+   "transition": "whip"
   },
   {
    "type": "vector",
@@ -394,11 +392,12 @@
     "#c08cff",
     "#1a0b33",
     "#ffb3ff"
-   ]
+   ],
+   "transition": "cut"
   },
   {
    "type": "vector",
-   "bg": "degradado",
+   "bg": "olas",
    "camera": "push",
    "narration": "Y atrapa aire entre el pelo, como un abrigo.",
    "layers": [
@@ -443,7 +442,8 @@
     "#8fd0ff",
     "#0b2a5e",
     "#d8f1ff"
-   ]
+   ],
+   "transition": "push"
   },
   {
    "type": "vector",
@@ -491,11 +491,12 @@
     "#f0c987",
     "#3b2410",
     "#fff0b0"
-   ]
+   ],
+   "transition": "zoom_in"
   },
   {
    "type": "vector",
-   "bg": "degradado",
+   "bg": "cuarto",
    "camera": "push",
    "narration": "Perdimos el pelo, pero se quedó el reflejo.",
    "layers": [
@@ -538,7 +539,8 @@
     "#f0c987",
     "#3b2410",
     "#fff0b0"
-   ]
+   ],
+   "transition": "push"
   },
   {
    "type": "vector",
@@ -577,11 +579,12 @@
     "#7a63ff",
     "#0a0a2a",
     "#ffe08a"
-   ]
+   ],
+   "transition": "whip"
   },
   {
    "type": "vector",
-   "bg": "espacio",
+   "bg": "cuadricula",
    "camera": "pull",
    "narration": "Cuando la música te emociona, tu cerebro libera dopamina.",
    "layers": [
@@ -591,7 +594,7 @@
      "y": 0.45,
      "w": 0.62,
      "anim": "pop+pulse",
-     "at": "cerebro",
+     "at": 0.05,
      "z": 2,
      "glow": "#ff9ad5"
     },
@@ -626,7 +629,8 @@
     "#7a63ff",
     "#0a0a2a",
     "#ffe08a"
-   ]
+   ],
+   "transition": "cut"
   },
   {
    "type": "vector",
@@ -640,7 +644,7 @@
      "y": 0.48,
      "w": 0.52,
      "anim": "pop+pulse",
-     "at": "instante",
+     "at": 0.05,
      "z": 2
     },
     {
@@ -671,28 +675,29 @@
     "#7a63ff",
     "#0a0a2a",
     "#ffe08a"
-   ]
+   ],
+   "transition": "push"
   },
   {
    "type": "vector",
-   "bg": "cuerpo",
+   "bg": "cuadricula",
    "camera": "push_fuerte",
    "narration": "No es frío ni magia:",
    "layers": [
     {
      "asset": "termometro",
-     "x": 0.28,
+     "x": 0.27,
      "y": 0.58,
-     "w": 0.2,
+     "w": 0.26,
      "value": 0.15,
      "anim": "pop",
      "z": 2
     },
     {
      "asset": "estrella",
-     "x": 0.7,
+     "x": 0.72,
      "y": 0.58,
-     "w": 0.3,
+     "w": 0.42,
      "color": "#ffd23f",
      "anim": "pop+spin",
      "at": "magia",
@@ -701,8 +706,8 @@
     {
      "asset": "marca",
      "kind": "no",
-     "x": 0.42,
-     "y": 0.42,
+     "x": 0.4,
+     "y": 0.4,
      "w": 0.15,
      "anim": "pop",
      "at": "frío",
@@ -719,38 +724,73 @@
      "z": 6
     }
    ],
-   "fx": "bokeh"
+   "fx": "bokeh",
+   "bg_colors": [
+    "#b9a7ff",
+    "#150b3a",
+    "#ffd23f"
+   ],
+   "transition": "zoom_in"
   },
   {
    "type": "vector",
-   "bg": "cuerpo",
+   "bg": "degradado",
    "camera": "push",
    "narration": "es un músculo diminuto heredado de ancestros peludos.",
    "layers": [
     {
      "asset": "piel",
      "x": 0.5,
-     "y": 0.56,
-     "w": 0.84,
+     "y": 0.3,
+     "w": 0.5,
      "value": 1,
      "anim": "pop",
-     "at": "músculo",
+     "at": 0.05,
      "z": 2
     },
     {
      "asset": "peludo",
      "erizado": 1,
      "mood": "happy",
-     "x": 0.82,
-     "y": 0.28,
-     "w": 0.28,
+     "x": 0.26,
+     "y": 0.68,
+     "w": 0.4,
      "var": 2,
      "anim": "pop+bob",
+     "at": "heredado",
+     "z": 3
+    },
+    {
+     "asset": "flecha",
+     "x": 0.5,
+     "y": 0.68,
+     "w": 0.14,
+     "rot": 0,
+     "color": "#ffd23f",
+     "anim": "pop+bounce",
      "at": "ancestros",
      "z": 5
+    },
+    {
+     "asset": "persona",
+     "x": 0.76,
+     "y": 0.72,
+     "w": 0.36,
+     "var": 3,
+     "style": "corto",
+     "mood": "happy",
+     "anim": "pop+bob",
+     "at": "ancestros",
+     "z": 3
     }
    ],
-   "fx": "polvo_luz"
+   "fx": "polvo_luz",
+   "bg_colors": [
+    "#f0c987",
+    "#3b2410",
+    "#fff0b0"
+   ],
+   "transition": "cut"
   },
   {
    "type": "vector",
@@ -796,7 +836,8 @@
     "#8fd0ff",
     "#0b2a5e",
     "#d8f1ff"
-   ]
+   ],
+   "transition": "push"
   }
  ]
 }

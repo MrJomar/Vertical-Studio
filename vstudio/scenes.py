@@ -102,6 +102,13 @@ class Scene:
                 narr, vz["engine"], vz["voice"] or A.DEFAULT_VOICE_ES, vz["rate"], vz["model"], vz["style"])
         if adur > 0:
             pad = 0.0 if getattr(self, "_master", False) else float(ctx.settings.get("scene_pad", 0.5))
+            if pad and self.words and ctx.settings.get("trim_silences", True):
+                try:     # la voz suele traer 0.2–0.5 s de silencio al final: la escena acaba cuando termina la última palabra
+                    last_end = max(float(w[2]) for w in self.words)
+                    if 0.2 < last_end < adur - 0.12:
+                        adur = last_end + 0.08
+                except (TypeError, ValueError, IndexError):
+                    pass
             self.duration = max(min_dur, adur + pad)
         else:
             self.duration = min_dur or self.default_duration()
