@@ -480,6 +480,9 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/kit":
                 from vstudio import svgkit
                 return self._json({"piezas": svgkit.scan()})
+            if path == "/api/kit_pending":
+                from vstudio import svgkit
+                return self._json({"pendientes": svgkit.pending_list()})
             if path == "/api/kit_prompt":
                 from vstudio import svgkit
                 return self._json({"prompt": svgkit.kit_prompt((q.get("style") or [""])[0])})
@@ -638,6 +641,32 @@ class Handler(BaseHTTPRequestHandler):
                 from . import voices as V
                 V.save({"img_key": ""})
                 return self._json(V.public())
+            if path == "/api/kit_generate":
+                from vstudio import svgkit
+                from . import voices as V
+                key = V.get_img_key()
+                if not key:
+                    return self._json({"ok": False, "error": "Falta la API key (Voces → API de imágenes y piezas SVG)."})
+                model = V.load().get("img_model") or V.IMG_MODEL_DEFAULT
+                desc = str(d.get("descripcion") or "").strip()
+                if len(desc) < 5:
+                    return self._json({"ok": False, "error": "Describe la pieza (qué debe dibujar)."})
+                try:
+                    r = svgkit.generate(desc, d.get("id") or "", key, model, tuple(d.get("ref") or ()))
+                    return self._json({"ok": True, "pieza": r})
+                except Exception as e:
+                    return self._json({"ok": False, "error": str(e)})
+            if path == "/api/kit_approve":
+                from vstudio import svgkit
+                try:
+                    nid = svgkit.approve(d.get("id", ""), d.get("nombre", ""), d.get("descripcion", ""), d.get("usos", ""))
+                    return self._json({"ok": True, "id": nid})
+                except Exception as e:
+                    return self._json({"ok": False, "error": str(e)})
+            if path == "/api/kit_reject":
+                from vstudio import svgkit
+                svgkit.reject(d.get("id", ""))
+                return self._json({"ok": True})
             if path == "/api/img_test":
                 from . import voices as V
                 import urllib.request as ur

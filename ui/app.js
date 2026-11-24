@@ -55,7 +55,7 @@ function renderEmpty(){
   const E=$("#empty");const ty=S.schema.types;
   E.innerHTML=`<h1>¿Qué video vamos a hacer hoy?</h1><p>Elige un tipo para empezar desde cero, o abre un ejemplo ya armado para ver cómo queda.</p>
   <div class="grid">${S.schema.order.map(k=>`<div class="tcard" data-add="${k}"><div class="ic">${icon(ty[k].icon,22)}</div><b>${esc(ty[k].label)}</b><span>${esc(ty[k].desc)}</span></div>`).join("")}</div>
-  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button></div>
+  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button><button class="btn" data-act="pieces">🧩 Piezas SVG</button></div>
   <div id="dash" style="margin-top:8px"></div>`;
   E.querySelectorAll("[data-add]").forEach(e=>e.onclick=()=>addScene(e.dataset.add));
   E.querySelectorAll("[data-act]").forEach(e=>e.onclick=()=>act(e.dataset.act));
@@ -401,10 +401,42 @@ async function saveProject(){
     if(r.path){S.path=r.path;markDirty(false);toast("Proyecto guardado")}}catch(e){toast(e.message,1)}}
 async function openProject(){try{const r=await jpost("/api/open_project",{});if(r.project){loadProject(r.project,r.path);voicePromptModal()}}catch(e){toast(e.message,1)}}
 
+async function piecesModal(){
+  const c=modal(`<div class="mh">🧩 Piezas SVG con Gemini<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb" id="pb"></div><div class="mf"><button class="btn primary" data-close>Listo</button></div>`,"md");
+  const b=c.querySelector("#pb");
+  const sugg=[];(S.project.scenes||[]).forEach(sc=>(sc.piezas_nuevas||[]).forEach(p=>sugg.push(p)));
+  const prev=svg=>"data:image/svg+xml;utf8,"+encodeURIComponent(svg.replace(/\{\{\s*[\w-]+\s*(?:\|([^}]*))?\}\}/g,(m,d)=>d||"0"));
+  const draw=async()=>{
+    const r=await jget("/api/kit_pending");
+    b.innerHTML=`<div class="hint">Describe la pieza, Gemini la dibuja y TÚ decides si entra al kit. Usa tu API key de «Voces → API de imágenes y piezas SVG».</div>
+    ${sugg.length?`<div class="sec">Piezas que pide este proyecto</div>${sugg.map((p,i)=>`<div class="frow" style="align-items:center;margin:3px 0"><div style="flex:1"><b>${esc(p.id)}</b> <span class="hint">${esc(p.descripcion)}</span></div><button class="btn small" data-sg="${i}">Usar</button></div>`).join("")}`:""}
+    <div class="sec">Pieza nueva</div>
+    <div class="fld"><label>Nombre corto (opcional)</label><input class="inp" id="pg_id" placeholder="ej.: estomago"></div>
+    <div class="fld"><label>¿Qué debe dibujar?</label><textarea class="inp" id="pg_d" rows="3" placeholder="Ej.: estómago humano translúcido visto de frente, con pared muscular y pliegues internos, tonos rosados"></textarea></div>
+    <div class="frow"><button class="btn primary" id="pg_go">Generar</button><span class="hint" id="pg_st"></span></div>
+    <div class="sec">Pendientes de aprobar</div>
+    ${r.pendientes.length?r.pendientes.map(p=>`<div class="card" style="padding:10px;margin:8px 0;border:1px solid var(--line,#333);border-radius:10px"><div class="frow" style="gap:12px;align-items:flex-start">
+      <div style="width:170px;height:200px;background:#10131a;border-radius:8px;display:flex;align-items:center;justify-content:center"><img src="${prev(p.svg)}" style="max-width:100%;max-height:100%"></div>
+      <div style="flex:1"><div class="fld"><label>Nombre</label><input class="inp" data-n="${esc(p.id)}" value="${esc(p.id.replace(/_/g," "))}"></div>
+      <div class="fld"><label>Para qué sirve (lo lee la IA diaria)</label><input class="inp" data-u="${esc(p.id)}" value="${esc(p.descripcion)}"></div>
+      <div class="hint">Partes: ${esc(p.grupos.join(", ")||"una sola pieza")}</div>
+      <div class="frow" style="margin-top:6px"><button class="btn primary small" data-ok="${esc(p.id)}">Aprobar y añadir al kit</button><button class="btn small danger" data-no="${esc(p.id)}">Descartar</button></div></div></div></div>`).join(""):`<div class="hint">Nada pendiente.</div>`}`;
+    b.querySelectorAll("[data-sg]").forEach(x=>x.onclick=()=>{const p=sugg[+x.dataset.sg];b.querySelector("#pg_id").value=p.id||"";b.querySelector("#pg_d").value=p.descripcion||""});
+    b.querySelector("#pg_go").onclick=async()=>{const st=b.querySelector("#pg_st");st.textContent="Dibujando… (puede tardar un minuto)";
+      try{const r=await jpost("/api/kit_generate",{id:b.querySelector("#pg_id").value,descripcion:b.querySelector("#pg_d").value});
+        if(!r.ok)throw new Error(r.error);draw()}catch(e){st.textContent="";toast(e.message,1)}};
+    b.querySelectorAll("[data-ok]").forEach(x=>x.onclick=async()=>{const id=x.dataset.ok;
+      const r=await jpost("/api/kit_approve",{id,nombre:b.querySelector(`[data-n="${id}"]`).value,usos:b.querySelector(`[data-u="${id}"]`).value,descripcion:b.querySelector(`[data-u="${id}"]`).value});
+      if(!r.ok)return toast(r.error,1);toast("Pieza «"+r.id+"» añadida al kit");draw()});
+    b.querySelectorAll("[data-no]").forEach(x=>x.onclick=async()=>{await jpost("/api/kit_reject",{id:x.dataset.no});draw()});
+  };
+  await draw();
+}
+
 function act(a){
   if(a==="new"){if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Empezar un proyecto nuevo?"))return;loadProject({settings:{theme:"oscuro"},scenes:[]},null)}
   else if(a==="home"){if(S.dirty&&!confirm("Volver al menú principal. Los cambios sin guardar se perderán. ¿Continuar?"))return;loadProject({settings:{...S.project.settings},scenes:[]},null)}
-  else if(a==="update")checkUpdates(true);else if(a==="voices")voicesModal();
+  else if(a==="update")checkUpdates(true);else if(a==="voices")voicesModal();else if(a==="pieces")piecesModal();
   else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();
   else if(a==="settings")settingsModal();else if(a==="export")exportModal();else if(a==="add")addModal();
   else if(a==="script")scriptModal();else if(a==="ai")aiModal();else if(a==="autoclip")autoclipModal()}

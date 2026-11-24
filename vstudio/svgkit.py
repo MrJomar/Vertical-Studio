@@ -135,3 +135,158 @@ def check_project_data(data):
             if isinstance(y, (int, float)) and (y - alto / 2 < -0.05 or y + alto / 2 > 1.05):
                 warns.append(f"Escena {n}: «{f}» se sale de la pantalla (y={y}, w={w})")
     return errs, warns, nuevas
+
+
+# --------------------------------------------------------------------------- piezas nuevas con Gemini (con aprobación)
+PRIV = DIRS[1]
+PEND = os.path.join(APP_DIR, "cache", "svg_pendientes")
+
+GEN_PROMPT = """Eres ilustrador vectorial. Dibuja UNA pieza SVG para animación explicativa vertical (videos cortos).
+Devuelve SOLO el código <svg>…</svg>, sin texto ni markdown.
+
+Reglas obligatorias:
+- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 W H"> con proporción adecuada al objeto (ej. 520x600). Sin width/height fijos.
+- Fondo transparente. NO dibujes fondo ni sombras al suelo.
+- Estilo: ilustración semitranslúcida, limpia, con degradados (linearGradient/radialGradient), brillos suaves y contornos finos; colores vivos sobre fondo oscuro. Más detalle que un icono plano (capas, vasos, reflejos), pero sin rellenos enormes.
+- Organiza el dibujo en grupos <g id="..."> de primer nivel con nombres cortos en español minúsculas (ej. aura, cuerpo, detalle, brillo). Esos ids permiten mostrar/ocultar partes.
+- Usa una variable de color con valor por defecto para el color principal: {{color|#4da3ff}} (se escribe dentro del atributo, p. ej. fill="{{color|#4da3ff}}").
+- Sin <script>, sin <image>, sin fuentes ni texto, sin referencias externas, sin animaciones SMIL/CSS. Filtros solo feGaussianBlur/feMerge.
+- Cuida que las curvas sean suaves y que el objeto quede centrado y completo dentro del viewBox con margen.
+
+Pieza a dibujar: """
+
+
+def sanitize_svg(txt):
+    """Extrae el <svg>, quita lo peligroso y valida que se pueda leer. Devuelve (svg, error)."""
+    m = re.search(r"<svg\b.*</svg>", txt or "", re.S | re.I)
+    if not m:
+        return "", "La respuesta no trae un SVG."
+    svg = m.group(0)
+    svg = re.sub(r"\[(https?://[^\]]+)\]\(\1\)", r"\1", svg)
+    svg = re.sub(r"<script\b.*?</script>", "", svg, flags=re.S | re.I)
+    svg = re.sub(r"<(image|foreignObject|iframe|use)\b[^>]*?(/>|>.*?</\1>)", "", svg, flags=re.S | re.I)
+    svg = re.sub(r"\son\w+\s*=\s*\"[^\"]*\"", "", svg, flags=re.I)
+    svg = re.sub(r"(href|xlink:href)\s*=\s*\"(?!#)[^\"]*\"", "", svg, flags=re.I)
+    if "xmlns=" not in svg.split(">", 1)[0]:
+        svg = svg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"', 1)
+    try:
+        clean = re.sub(r"\{\{\s*[\w-]+\s*(?:\|([^}]*))?\}\}", lambda x: x.group(1) or "0", svg)
+        root = ET.fromstring(clean)
+        if not root.get("viewBox"):
+            return "", "El SVG no trae viewBox."
+        if len(svg) > 400_000:
+            return "", "El SVG es demasiado grande."
+    except Exception as e:
+        return "", f"El SVG no es válido: {e}"
+    return svg, ""
+
+
+def _pid(s):
+    import unicodedata
+    s = unicodedata.normalize("NFD", str(s).lower())
+    s = re.sub(r"[^a-z0-9]+", "_", "".join(c for c in s if unicodedata.category(c) != "Mn")).strip("_")
+    return s[:40] or "pieza"
+
+
+def generate(desc, pid, key, model, ref_ids=()):
+    """Pide la pieza a Gemini y la deja PENDIENTE (no entra al kit hasta que la apruebes). Devuelve dict."""
+    import urllib.request as ur, urllib.error as ue
+    pid = _pid(pid or desc)
+    ref = ""
+    for it in scan():
+        if it["id"] in ref_ids:
+            with open(os.path.join(DIRS[0] if not it["privada"] else DIRS[1], it["id"] + ".svg"), encoding="utf-8") as fh:
+                ref += f"\nEjemplo de estilo deseado (pieza «{it['id']}»):\n{fh.read()[:6000]}\n"
+    body = json.dumps({"contents": [{"parts": [{"text": GEN_PROMPT + desc.strip() + ref}]}],
+                       "generationConfig": {"temperature": 0.7}}).encode()
+    req = ur.Request(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}",
+                     data=body, headers={"Content-Type": "application/json"})
+    try:
+        with ur.urlopen(req, timeout=180) as r:
+            data = json.loads(r.read().decode())
+    except ue.HTTPError as e:
+        raise RuntimeError({400: "La clave no es válida.", 403: "La clave no tiene permiso para ese modelo.",
+                            404: "Ese modelo no existe o no está disponible para tu clave.",
+                            429: "Se acabó el cupo por ahora (límite de la API)."}.get(e.code, f"Error {e.code} de Google."))
+    txt = "".join(p.get("text", "") for c in data.get("candidates", []) for p in c.get("content", {}).get("parts", []))
+    svg, err = sanitize_svg(txt)
+    if err:
+        raise RuntimeError(err)
+    os.makedirs(PEND, exist_ok=True)
+    n, base = pid, pid
+    existing = {i["id"] for i in scan()}
+    k = 2
+    while n in existing or os.path.exists(os.path.join(PEND, n + ".svg")):
+        n = f"{base}_{k}"; k += 1
+    with open(os.path.join(PEND, n + ".svg"), "w", encoding="utf-8") as fh:
+        fh.write(svg)
+    with open(os.path.join(PEND, n + ".json"), "w", encoding="utf-8") as fh:
+        json.dump({"descripcion": desc.strip()}, fh, ensure_ascii=False)
+    return pending_info(n)
+
+
+def pending_info(n):
+    p = os.path.join(PEND, n + ".svg")
+    with open(p, encoding="utf-8") as fh:
+        svg = fh.read()
+    try:
+        with open(os.path.join(PEND, n + ".json"), encoding="utf-8") as fh:
+            meta = json.load(fh)
+    except Exception:
+        meta = {}
+    root = ET.fromstring(re.sub(r"\{\{\s*[\w-]+\s*(?:\|([^}]*))?\}\}", lambda x: x.group(1) or "0", svg))
+    grupos = [c.get("id") for c in root if c.tag.split("}")[-1] == "g" and c.get("id")]
+    return {"id": n, "svg": svg, "grupos": grupos, "descripcion": meta.get("descripcion", "")}
+
+
+def pending_list():
+    if not os.path.isdir(PEND):
+        return []
+    out = []
+    for f in sorted(os.listdir(PEND)):
+        if f.endswith(".svg"):
+            try:
+                out.append(pending_info(f[:-4]))
+            except Exception:
+                pass
+    return out
+
+
+def approve(n, nombre="", descripcion="", usos="", w=None):
+    """Mueve la pieza pendiente al kit privado (cache/svg_privados) y la registra en su catalogo.json."""
+    n = _pid(n)
+    src = os.path.join(PEND, n + ".svg")
+    if not os.path.isfile(src):
+        raise RuntimeError("Esa pieza ya no está pendiente.")
+    info = pending_info(n)
+    os.makedirs(PRIV, exist_ok=True)
+    dst_id, k = n, 2
+    taken = {i["id"] for i in scan()}
+    while dst_id in taken:
+        dst_id = f"{n}_{k}"; k += 1
+    os.replace(src, os.path.join(PRIV, dst_id + ".svg"))
+    try:
+        os.remove(os.path.join(PEND, n + ".json"))
+    except OSError:
+        pass
+    cp = os.path.join(PRIV, "catalogo.json")
+    try:
+        with open(cp, encoding="utf-8") as fh:
+            cat = json.load(fh)
+    except Exception:
+        cat = {}
+    cat[dst_id] = {"nombre": nombre or dst_id.replace("_", " ").capitalize(),
+                   "descripcion": descripcion or info["descripcion"], "usos": usos or info["descripcion"],
+                   "w": w or [0.4, 0.8], "partes": {}}
+    with open(cp, "w", encoding="utf-8") as fh:
+        json.dump(cat, fh, ensure_ascii=False, indent=1)
+    return dst_id
+
+
+def reject(n):
+    n = _pid(n)
+    for ext in (".svg", ".json"):
+        try:
+            os.remove(os.path.join(PEND, n + ext))
+        except OSError:
+            pass

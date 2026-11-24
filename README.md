@@ -135,3 +135,6 @@ En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (
 El dibujo de cada cuadro es CPU; la GPU solo acelera la codificación final. NVIDIA → NVENC, AMD Radeon → AMF (h264_amf), si no hay → CPU x264. En «auto» se elige sola; puedes forzarla en Ajustes → Salida → Codificador.
 - v2.13.1: sonido «latido» (corazón). Continuo y acelerando: `"sfx": [{"tag":"latido","at":0.4,"dur":3,"bpm":90,"bpm_fin":140}]`.
 - v2.14.0: animación `latido` para el corazón (`"anim":"pop+latido","bpm":60,"bpm_fin":120`): la pieza pulsa lub-dub y, con `sfx` en auto, el sonido cae en cada pulsación.
+
+## Piezas SVG con Gemini y aprobación (v2.15)
+Botón **🧩 Piezas** (arriba o en el inicio): escribes qué debe dibujar (o tocas «Usar» en una pieza que pidió la IA diaria con `piezas_nuevas`), Gemini la dibuja con tu API key y aparece como **pendiente** con vista previa. Solo entra al kit si pulsas **Aprobar** (se guarda en `cache/svg_privados`, no se pierde al actualizar); si no, **Descartar**. Se limpia el SVG (sin scripts ni imágenes externas) antes de mostrarlo.
