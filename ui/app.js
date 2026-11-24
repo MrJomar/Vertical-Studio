@@ -311,15 +311,22 @@ async function voicesModal(){
 // al abrir un JSON: elegir qué voz usar
 async function voicePromptModal(){
   if(!S.project.scenes.some(s=>s.narration))return;
+  try{if(localStorage.getItem("vs_no_voice_ask")==="1")return}catch(e){}
   const cfg=await jget("/api/voice_config");const names=Object.keys(cfg.profiles);const st=S.project.settings;
+  // si ya hay perfil (del proyecto o por tipo de video) para todas las escenas con voz, no preguntar
+  if(st.voice_profile&&cfg.profiles[st.voice_profile])return;
+  const tipos=[...new Set(S.project.scenes.filter(s=>s.narration).map(s=>s.type))];
+  if(tipos.length&&tipos.every(t=>cfg.profiles[cfg.type_defaults[t]]))return;
   const c=modal(`<div class="mh">¿Con qué voz quieres este proyecto?<span class="sp"></span><button class="x" data-close>✕</button></div>
   <div class="mb"><div class="hint">El proyecto trae ${S.project.scenes.filter(s=>s.narration).length} narraciones. Elige cómo generar la voz:</div>
   <div class="fld"><label>Motor</label><select class="inp" id="vq_e">${ENGINES.map(e=>`<option value="${e[0]}" ${(st.tts_engine||"edge")===e[0]?"selected":""}>${esc(e[1])}</option>`).join("")}</select></div>
   <div class="fld"><label>Perfil de voz</label><select class="inp" id="vq_p"><option value="">— voz de los ajustes —</option>${names.map(n=>`<option ${st.voice_profile===n?"selected":""}>${esc(n)}</option>`).join("")}</select></div>
-  <div class="hint" id="vq_w"></div></div>
+  <div class="hint" id="vq_w"></div>
+  <label class="hint" style="display:block;margin-top:8px"><input type="checkbox" id="vq_no"> No volver a preguntar al abrir un proyecto</label></div>
   <div class="mf"><button class="btn" data-close>Dejar como viene</button><button class="btn" id="vq_more">Más opciones…</button><button class="btn primary" id="vq_ok">Aplicar</button></div>`,"sm");
   const upd=()=>{const e=c.querySelector("#vq_e").value,p=c.querySelector("#vq_p").value;c.querySelector("#vq_w").textContent=(e==="gemini"||(p&&cfg.profiles[p]&&cfg.profiles[p].engine==="gemini"))&&!cfg.has_key?"⚠ Gemini necesita tu API key (botón «Más opciones…»).":""};
   c.querySelector("#vq_e").onchange=upd;c.querySelector("#vq_p").onchange=upd;upd();
+  c.querySelector("#vq_no").onchange=e=>{try{localStorage.setItem("vs_no_voice_ask",e.target.checked?"1":"0")}catch(x){}};
   c.querySelector("#vq_ok").onclick=()=>{const e=c.querySelector("#vq_e").value,p=c.querySelector("#vq_p").value;st.tts_engine=e;if(p)st.voice_profile=p;else delete st.voice_profile;markDirty();closeModal();toast("Voz aplicada al proyecto")};
   c.querySelector("#vq_more").onclick=()=>{closeModal();voicesModal()};
 }
