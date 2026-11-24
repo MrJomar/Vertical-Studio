@@ -181,18 +181,78 @@ def gemini_models() -> dict:
     return {"models": names, "live": live}
 
 
-_IMPERATIVE = ("di ", "dilo", "lee ", "habla", "narra", "cuenta", "say ", "read ", "speak", "narrate")
-
-
 def style_prompt(style: str, text: str) -> str:
-    """Instrucción de estilo para Gemini TTS. Una sola palabra («Alegre:») la leía en voz alta; se convierte en una orden completa."""
-    st = (style or "").strip().rstrip(":.").strip()
-    if not st:
-        return text
-    low = st.lower()
-    if not low.startswith(_IMPERATIVE) and len(st.split()) <= 6:
-        st = f"Di de forma {low}"
-    return f"{st}:\n{text}"
+    """Estilo TAL COMO LO ESCRIBIÓ el usuario, seguido del texto (forma de la doc de Google: «Say cheerfully: Have a wonderful day!»).
+    No se añade ni se reescribe nada."""
+    st = (style or "").strip()
+    return f"{st}: {text}" if st else text
+
+
+_INTERACTIONS = {"bad": False}      # si la API de «interactions» falla una vez, no se vuelve a intentar en esta sesión
+
+
+def _find_audio(o):
+    """Busca en cualquier respuesta JSON un bloque de audio en base64 → (b64, mime)."""
+    if isinstance(o, dict):
+        d = o.get("data")
+        if isinstance(d, str) and len(d) > 2000:
+            return d, str(o.get("mime_type") or o.get("mimeType") or "")
+        for v in o.values():
+            r = _find_audio(v)
+            if r:
+                return r
+    elif isinstance(o, list):
+        for v in o:
+            r = _find_audio(v)
+            if r:
+                return r
+    return None
+
+
+def _write_pcm(b64: str, mime: str, out_wav: str) -> None:
+    import base64
+    import wave
+    pcm = base64.b64decode(b64)
+    rate = 24000
+    m = re.search(r"rate=(\d+)", mime or "")
+    if m:
+        rate = int(m.group(1))
+    with wave.open(out_wav, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(rate)
+        w.writeframes(pcm)
+
+
+def _gemini_interactions(text: str, voice: str, model: str, style: str, key: str, out_wav: str) -> bool:
+    """Modelos 3.8: el texto va TAL CUAL y el estilo va aparte (speech_metadata), así nunca se lee en voz alta.
+    Devuelve False si esta forma no funciona (el llamador usa generateContent)."""
+    if _INTERACTIONS["bad"]:
+        return False
+    body = {"model": model,
+            "input": [{"type": "user_input", "content": [{"type": "text", "text": text,
+                                                           "annotations": [{"type": "speech_metadata", "style": style}]}]}],
+            "response_format": {"type": "audio"},
+            "generation_config": {"speech_config": [{"voice": voice}]}}
+    req = urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/interactions",
+                                 data=json.dumps(body).encode(), method="POST",
+                                 headers={"x-goog-api-key": key, "Content-Type": "application/json", "Api-Revision": "2026-05-20"})
+    try:
+        with urllib.request.urlopen(req, timeout=180) as r:
+            data = json.loads(r.read())
+        found = _find_audio(data)
+        if not found:
+            raise ValueError("sin audio en la respuesta")
+        _write_pcm(found[0], found[1], out_wav)
+        return True
+    except urllib.error.HTTPError as e:
+        if e.code in (429, 500, 503):
+            raise RuntimeError(f"Gemini respondió {e.code}; reintenta en un momento.")
+        _INTERACTIONS["bad"] = True
+        return False
+    except Exception:
+        _INTERACTIONS["bad"] = True
+        return False
 
 
 def gemini_synthesize(text: str, voice: str, model: str, style: str, out_wav: str) -> None:
@@ -204,6 +264,8 @@ def gemini_synthesize(text: str, voice: str, model: str, style: str, out_wav: st
         raise RuntimeError("Falta la API key de Gemini (🎙 Voces → Gemini).")
     model = model or DEFAULT_GEMINI_MODEL
     voice = voice or "Kore"
+    if (style or "").strip() and "3.8" in model and _gemini_interactions(text, voice, model, (style or "").strip(), key, out_wav):
+        return
     prompt = style_prompt(style, text)
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 

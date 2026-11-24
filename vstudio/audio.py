@@ -13,6 +13,17 @@ Words = list  # [(texto, inicio, fin), ...]
 
 DEFAULT_VOICE_ES = "es-MX-JorgeNeural"
 
+# Alineación de subtítulos con la voz real (Whisper local). La fija Project.build desde los ajustes.
+ALIGN_CFG = {"on": True, "model": "small", "lang": "es"}
+
+
+def aligned_words(path, text, dur=None):
+    """Palabras del guion con tiempos medidos en el audio, o None (sin Whisper / desactivado / error)."""
+    if not ALIGN_CFG.get("on"):
+        return None
+    from . import align
+    return align.align_audio(str(path), text, ALIGN_CFG.get("model", "small"), ALIGN_CFG.get("lang") or "es", dur)
+
 
 def estimate_words(text: str, duration: float, start: float = 0.0, lead: float = 0.15, tail: float = 0.25) -> Words:
     """Reparte las palabras en el tiempo proporcional a su longitud (cuando no hay tiempos reales)."""
@@ -76,7 +87,15 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
     if audio.exists() and meta.exists():
         try:
             words = [tuple(w) for w in json.loads(meta.read_text("utf-8"))]
-            return str(audio), words, probe_duration(audio)
+            dur0 = probe_duration(audio)
+            mark = tdir / (key + ".al")
+            if engine == "gemini" and ALIGN_CFG.get("on") and not mark.exists():   # audio ya pagado: solo se mejoran los tiempos
+                aw = aligned_words(audio, text, dur0)
+                if aw:
+                    words = aw
+                    meta.write_text(json.dumps(words), "utf-8")
+                    mark.write_text("1")
+            return str(audio), words, dur0
         except Exception:
             pass
     words: Words = []
@@ -113,6 +132,11 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
     dur = probe_duration(audio)
     if dur <= 0:
         raise RuntimeError("No se generó audio de voz (revisa tu conexión o el motor de voz).")
+    if not words and engine == "gemini":
+        aw = aligned_words(audio, text, dur)
+        if aw:
+            words = aw
+            (tdir / (key + ".al")).write_text("1")
     if not words:
         words = estimate_words(text, dur)
     meta.write_text(json.dumps(words), "utf-8")

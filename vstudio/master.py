@@ -93,6 +93,24 @@ def boundaries(texts, path):
     return cuts
 
 
+def _cuts_from_words(aw, texts, e, thr, dur):
+    """Cortes entre escenas usando los tiempos reales: la pausa más larga entre la última palabra de una escena y la primera de la siguiente."""
+    gaps = _gaps(e, thr, 0.08)
+    cuts, i = [], 0
+    for t in texts[:-1]:
+        i += len(re.findall(r"\S+", t))
+        a_end, b_start = aw[i - 1][2], aw[i][1]
+        mid = (a_end + b_start) / 2
+        best, bl = None, 0.0
+        for g0, g1 in gaps:
+            if g1 >= a_end - 0.05 and g0 <= b_start + 0.05 and (g1 - g0) > bl:
+                best, bl = (g0 + g1) / 2, g1 - g0
+        c = best if best is not None else mid
+        c = min(max(c, a_end), max(a_end, b_start)) if b_start > a_end else (a_end + b_start) / 2
+        cuts.append(max(c, (cuts[-1] + 0.3) if cuts else 0.3))
+    return cuts
+
+
 def _slice(src, t0, t1, dst):
     run_quiet([ffmpeg_bin(), "-y", "-v", "error", "-ss", f"{t0:.3f}", "-to", f"{t1:.3f}", "-i", str(src),
                "-ac", "1", "-ar", "24000", str(dst)])
@@ -137,9 +155,11 @@ def plan(specs, settings, types, warn=None):
         vz = group[0][2]
         full = "\n".join(texts)
         path = synth_validated(full, vz)
-        cuts = boundaries(texts, path)
         dur = probe_duration(path)
         e, thr = energy(path)
+        aw = A.aligned_words(path, " ".join(texts), dur)      # tiempos reales con Whisper (None = se estiman)
+        cuts = _cuts_from_words(aw, texts, e, thr, dur) if aw else boundaries(texts, path)
+        pos = 0
         edges = [0.0] + cuts + [dur]
         tdir = CACHE_DIR / "tts"
         for k, (idx, narr, _vz) in enumerate(group):
@@ -147,6 +167,13 @@ def plan(specs, settings, types, warn=None):
             if not dst.exists():
                 _slice(path, edges[k], edges[k + 1], dst)
             d = probe_duration(dst)
+            ntok = len(re.findall(r"\S+", narr))
+            if aw:
+                ws = [(w, round(max(0.0, s0 - edges[k]), 3), round(min(d, max(s0 - edges[k] + 0.06, e0 - edges[k])), 3))
+                      for (w, s0, e0) in aw[pos:pos + ntok]]
+                pos += ntok
+                out[idx] = (str(dst), ws, d)
+                continue
             a, b = int(edges[k] / FRAME), min(len(e), int(edges[k + 1] / FRAME))
             voiced = np.where(e[a:b] > thr)[0]
             lead = float(voiced[0] * FRAME) if len(voiced) else 0.15

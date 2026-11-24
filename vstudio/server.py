@@ -69,7 +69,8 @@ SETTINGS_GROUPS = [
                 ("quality", "Calidad", "choice", "alta", ["borrador", "normal", "alta", "maxima"]),
                 ("fps", "Cuadros por segundo", "choice", 30, [24, 30, 60]),
                 ("whisper_model", "Modelo Whisper (subtítulos y clipping)", "choice", "small",
-                 ["tiny", "base", "small", "medium", "large-v3"])]),
+                 ["tiny", "base", "small", "medium", "large-v3"]),
+                ("align_voice", "Subtítulos de voz IA: tiempos reales con Whisper (local)", "choice", "whisper", ["whisper", "estimado"])]),
 ]
 
 

@@ -693,7 +693,7 @@ class MapScene(Scene):
         if self.mode == "route":
             self.hl_t = [0.4] * len(self.hl)
             self.custom_t = [0.4] * len(self.custom)
-        self.shade = shade_overlay(self.ctx.w, self.ctx.h, 0.45, 0.55)
+        self.shade = shade_overlay(self.ctx.w, self.ctx.h, 0.28, 0.4)
         self._setup_tiles()
 
     # ---- mapa real (teselas) ---------------------------------------------
@@ -741,6 +741,9 @@ class MapScene(Scene):
     # ---- cámara ----------------------------------------------------------
     def camera(self, t: float):
         cx, cy, span = self._camera_raw(t)
+        push = float(self.spec.get("push", 0.07))  # empuje lento continuo (da vida al plano, estilo documental)
+        if push and not (self.mode == "route" and getattr(self, "follow", False) and t > 1.4):
+            span *= 1.0 - push * clamp(t / max(self.duration, 0.1))
         half_h = span * self.ctx.h / self.ctx.w / 2
         if half_h < 0.5:  # no mostrar el vacío sobre/bajo el mapa si se puede evitar
             cy = min(max(cy, half_h), 1.0 - half_h)
@@ -1174,7 +1177,7 @@ SCENE_TYPES: dict[str, dict] = {
         ("overlays", "Íconos/cifras/fotos sobre el mapa (JSON)", "json", []),
         ("route_style", "Ruta: estilo", "choice", "arc", ["arc", "line"]),
         ("route_color", "Ruta: color (#rrggbb, p. ej. #f2ff2e)", "text", ""), ("route_width", "Ruta: grosor", "number", 6),
-        ("follow", "Ruta: la cámara sigue la punta", "bool", False), ("follow_zoom", "Zoom al seguir (menor = más cerca)", "number", 0.0),
+        ("push", "Empuje lento de cámara (0 = off)", "number", 0.07), ("follow", "Ruta: la cámara sigue la punta", "bool", False), ("follow_zoom", "Zoom al seguir (menor = más cerca)", "number", 0.0),
         ("tip_photo", "Avatar en la punta de la ruta (foto)", "file", ""), ("tip_name", "Nombre sobre el avatar", "text", ""),
         ("route_labels", "Rótulos sobre la ruta (JSON: [{\"frac\":0.5,\"text\":\"2 años\"}])", "json", []),
         ("arrows", "Flechas punteadas (JSON: [{\"from\":\"Lima\",\"to\":[53.7,-0.3],\"label\":\"Hull, UK\",\"at\":2}])", "json", []),

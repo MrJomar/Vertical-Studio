@@ -114,3 +114,9 @@ En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (
 - `python cli.py revisar proyecto.json` revisa ritmo (voz demasiado larga por escena, gancho largo), variedad (fondos/cámaras repetidos), kit SVG (piezas y partes que no existen, piezas fuera de pantalla, `at` que no es palabra exacta de la narración) y mapas (coordenadas imposibles, saltos de ruta, países que no reconoce, `follow_zoom` demasiado grande para la ruta).
 - `python cli.py revisar proyecto.json --prompt-mapas estilos/prompt_ia_diaria_mapas.txt` guarda el prompt de IA diaria para videos de mapas (el de vectorial es `python cli.py kit --prompt …`).
 - Proyectos de validación nuevos: `prueba_vectorial_susto.json` (14 escenas, solo piezas del kit) y `prueba_mapa_sin_mar.json` (11 escenas: Bolivia y Paraguay, zoom/países resaltados/rutas por río).
+
+## Novedades v2.11
+- **Voz Gemini**: el estilo ya no se reescribe como «Di de forma X:». Con modelos 3.x se envía como metadato de estilo; si la API no lo acepta, se usa el formato `estilo: texto` de Google. Solo se pronuncia tu texto.
+- **Subtítulos alineados**: con `align_voice: whisper` (Salida) se transcribe la voz localmente (faster-whisper) y los subtítulos muestran TU guion con los tiempos reales. Primera vez descarga el modelo. Si no está instalado, usa tiempos estimados.
+- **Mapas sin pixelado**: el estilo `natural` (NASA, máx. zoom 8) cambia solo a Esri satélite al acercarse más.
+- **Cámara**: empuje lento continuo (`push`, 0.07 por defecto, 0 = apagado) y sombreado más suave.

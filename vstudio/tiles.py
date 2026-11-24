@@ -55,6 +55,14 @@ class TileSource:
             self.name, self.url, self.ext, self.max, self.bg = style, p["url"], p["ext"], p["max"], p["bg"]
             self.attr = p["attr"]
         self.dir = CACHE_DIR / "tiles" / self.name
+        # híbrido: «natural» (NASA, máx. z8) pasa a Esri satélite al acercarse mucho, para que no se pixele
+        self.deep: "TileSource | None" = None
+        self.deep_from = self.max + 1
+        if style == "natural":
+            self.deep = TileSource("satelite")
+            self.deep_from = self.max + 1
+            self.max = self.deep.max
+            self.attr = self.attr + " · Esri, Maxar"
         self._mem: OrderedDict = OrderedDict()
         self._lock = threading.Lock()
         self.failed: set = set()
@@ -65,10 +73,17 @@ class TileSource:
     def _file(self, z: int, x: int, y: int) -> Path:
         return self.dir / str(z) / str(x) / f"{y}.{self.ext}"
 
+    def _src(self, z: int) -> "TileSource":
+        return self.deep if self.deep is not None and z >= self.deep_from else self
+
     def have(self, z: int, x: int, y: int) -> bool:
+        if self._src(z) is not self:
+            return self.deep.have(z, x, y)
         return self._file(z, x, y).exists()
 
     def fetch(self, z: int, x: int, y: int) -> bool:
+        if self._src(z) is not self:
+            return self.deep.fetch(z, x, y)
         f = self._file(z, x, y)
         if f.exists():
             return True
@@ -114,6 +129,8 @@ class TileSource:
 
     # ---- lectura ---------------------------------------------------------
     def get(self, z: int, x: int, y: int) -> np.ndarray | None:
+        if self._src(z) is not self:
+            return self.deep.get(z, x, y)
         key = (z, x, y)
         with self._lock:
             if key in self._mem:

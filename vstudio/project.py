@@ -23,7 +23,7 @@ DEFAULT_SETTINGS = {
     "map_style": "satelite", "map_tile_url": "", "map_attribution": True,
     "music": "", "music_volume": 0.12, "duck_music": True,
     "caption_size": 78, "caption_y": 0.80, "caption_font": "display", "caption_upper": True,
-    "watermark": "", "whisper_model": "small", "language": "",
+    "watermark": "", "whisper_model": "small", "language": "", "align_voice": "whisper",
 }
 
 TRANSITIONS = ["fade", "slide", "zoom", "flash", "wipe", "cut"]
@@ -116,6 +116,15 @@ class Project:
     def build(self, ctx: Ctx) -> list:
         out = []
         tops = 0
+        try:
+            from . import audio as _A
+            _A.ALIGN_CFG.update({"on": ctx.settings.get("align_voice", "whisper") != "estimado",
+                                 "model": ctx.settings.get("whisper_model", "small") or "small",
+                                 "lang": (ctx.settings.get("language") or "es")})
+            if _A.ALIGN_CFG["on"] and not _A.whisper_available():
+                ctx.warnings.append("Subtítulos: instala faster-whisper (pip install faster-whisper) para que sigan la voz real; por ahora van estimados.")
+        except Exception:
+            pass
         try:
             from . import master
             ctx.master = master.plan(self.scenes, ctx.settings, [x.get("type") for x in self.scenes],
