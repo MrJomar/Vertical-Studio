@@ -347,7 +347,10 @@
    "layers": [
     {
      "asset": "medidor",
-     "value": 3.8,
+     "value_from": 7,
+     "value_to": 3.8,
+     "value_dur": 1.6,
+     "value_step": 0.1,
      "label": "pH",
      "x": 0.5,
      "y": 0.45,
@@ -369,22 +372,13 @@
      "z": 4
     },
     {
-     "asset": "abeja",
-     "x": 0.2,
-     "y": 0.82,
-     "w": 0.24,
-     "anim": "pop+bob",
-     "at": "abejas",
-     "z": 3
-    },
-    {
      "asset": "texto",
      "text": "PERÓXIDO",
      "fit": true,
      "color": "#ffd23f",
-     "x": 0.66,
+     "x": 0.5,
      "y": 0.84,
-     "w": 0.5,
+     "w": 0.56,
      "anim": "pop",
      "at": "peróxido",
      "z": 5
@@ -521,13 +515,30 @@
    "narration": "Cada abeja hace en toda su vida solo un doceavo de cucharadita.",
    "layers": [
     {
-     "asset": "abeja",
+     "asset": "cuchara",
      "x": 0.5,
-     "y": 0.5,
-     "w": 0.7,
-     "anim": "pop+bob",
+     "y": 0.66,
+     "w": 0.86,
+     "anim": "pop",
      "at": 0.05,
      "z": 2
+    },
+    {
+     "asset": "abeja",
+     "count": 12,
+     "layout": "crowd",
+     "rows": 3,
+     "spread": [
+      0.12,
+      0.26,
+      0.88,
+      0.5
+     ],
+     "w": 0.2,
+     "anim": "pop+bob",
+     "stagger": 0.12,
+     "at": 0.1,
+     "z": 3
     },
     {
      "asset": "texto",
@@ -535,7 +546,7 @@
      "fit": true,
      "color": "#fff1c2",
      "x": 0.5,
-     "y": 0.86,
+     "y": 0.88,
      "w": 0.86,
      "anim": "pop",
      "at": "doceavo",
@@ -563,7 +574,7 @@
      "y": 0.46,
      "w": 0.46,
      "anim": "pop+bob",
-     "at": "bebés",
+     "at": 0.05,
      "z": 2
     },
     {

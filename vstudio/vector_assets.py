@@ -2161,7 +2161,36 @@ def a_germen(w, p):
     return out
 
 
+
+def a_cuchara(w, p):
+    """Cucharita metálica con miel en el cuenco (horizontal)."""
+    W, H = int(w), int(w * 0.5)
+    S = SS
+    Ws, Hs = W * S, H * S
+    miel = p.get("miel", True) not in (False, "false", 0, "0")
+    out = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(out)
+    lw = max(2, int(S * 2.4))
+    # mango
+    hm = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(hm).polygon([(Ws * 0.42, Hs * 0.44), (Ws * 0.9, Hs * 0.36), (Ws * 0.97, Hs * 0.42), (Ws * 0.97, Hs * 0.58), (Ws * 0.9, Hs * 0.64), (Ws * 0.42, Hs * 0.56)], fill=255)
+    out.alpha_composite(_grad(hm, (236, 240, 246), (150, 158, 172), 0.3, 0.7))
+    # cuenco
+    bm = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(bm).ellipse([Ws * 0.03, Hs * 0.12, Ws * 0.5, Hs * 0.88], fill=255)
+    out.alpha_composite(_grad(bm, (240, 244, 250), (140, 150, 168), 0.1, 0.9))
+    dr = ImageDraw.Draw(out)
+    dr.ellipse([Ws * 0.03, Hs * 0.12, Ws * 0.5, Hs * 0.88], outline=(90, 98, 115, 255), width=lw)
+    if miel:
+        dr.ellipse([Ws * 0.07, Hs * 0.18, Ws * 0.46, Hs * 0.8], fill=(236, 150, 26, 255))
+        dr.ellipse([Ws * 0.09, Hs * 0.2, Ws * 0.44, Hs * 0.6], fill=(255, 196, 70, 255))
+        dr.ellipse([Ws * 0.14, Hs * 0.26, Ws * 0.28, Hs * 0.38], fill=(255, 236, 170, 210))
+    dr.line([Ws * 0.5, Hs * 0.44, Ws * 0.92, Hs * 0.39], fill=(255, 255, 255, 200), width=lw)
+    return _fin(out, W, H)
+
+
 ASSETS = {
+    "cuchara": (a_cuchara, 0.5, "Cucharita metálica horizontal con miel", "miel: true|false"),
     "frasco": (a_frasco, 1.25, "Frasco de miel con tapa y etiqueta de panal", "nivel (0-1), cristal (0-1), burbujas (0-1: fermenta), tapa: true|false, color (tapa)"),
     "abeja": (a_abeja, 0.95, "Abeja simpática de frente con alas", "color"),
     "panal": (a_panal, 1.0, "Panal de hexágonos con miel", "tapados (0-1)"),
