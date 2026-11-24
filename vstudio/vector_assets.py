@@ -1113,7 +1113,15 @@ def a_svg(w, p):
         except Exception as e:
             raise RuntimeError("Falta el conversor de SVG: ejecuta  python -m pip install resvg-py  (o instalar.bat)") from e
     import io
-    svg = svg_prepare(_svg_text(p), p)
+    try:
+        txt = _svg_text(p)
+    except FileNotFoundError:        # pieza aún no creada: marcador visible en vez de romper el render
+        nom = str(p.get("file") or "pieza").replace("&", "").replace("<", "")
+        txt = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 600"><rect x="30" y="40" width="460" height="520" rx="40" '
+               'fill="#ffffff" fill-opacity=".06" stroke="#ffd23f" stroke-width="6" stroke-dasharray="26 18"/>'
+               '<circle cx="260" cy="240" r="70" fill="none" stroke="#ffd23f" stroke-width="8"/>'
+               '<path d="M225 240 h70 M260 205 v70" stroke="#ffd23f" stroke-width="8" stroke-linecap="round"/></svg>')
+    svg = svg_prepare(txt, p)
     try:
         png = resvg_py.svg_to_bytes(svg_string=svg, width=int(w))
     except Exception as e:

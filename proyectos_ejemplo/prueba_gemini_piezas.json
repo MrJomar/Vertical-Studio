@@ -1,0 +1,312 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "gemini",
+  "caption_style": "suave",
+  "sfx": "auto",
+  "sfx_volume": 0.5,
+  "align_voice": "whisper"
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "push",
+   "fx": "polvo_luz",
+   "narration": "¿Alguna vez te ha sonado el estómago en el momento más silencioso?",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "persona_sentada",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.9,
+     "anim": "pop+float",
+     "z": 1
+    },
+    {
+     "asset": "svg",
+     "file": "estomago",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.55,
+     "anim": "pop+pulse",
+     "z": 3,
+     "at": "estómago"
+    },
+    {
+     "asset": "texto",
+     "text": "¡GRRR!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.55,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "silencioso"
+    }
+   ],
+   "piezas_nuevas": [
+    {
+     "id": "estomago",
+     "descripcion": "Estómago humano translúcido visto de frente, con pared muscular rosada, pliegues internos y brillo; esófago arriba y duodeno abajo. Grupos: aura, pared, pliegues, brillo."
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "fx": "brillos",
+   "narration": "Ese ruido tiene nombre: se llama borborigmo.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "texto",
+     "text": "BORBORIGMO",
+     "color": "#7be0ff",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.9,
+     "anim": "pop+wobble",
+     "z": 4,
+     "at": "borborigmo"
+    },
+    {
+     "asset": "svg",
+     "file": "burbujas_gas",
+     "x": 0.5,
+     "y": 0.7,
+     "w": 0.5,
+     "anim": "pop+float",
+     "z": 2
+    }
+   ],
+   "piezas_nuevas": [
+    {
+     "id": "burbujas_gas",
+     "descripcion": "Grupo de 6 burbujas de aire de distintos tamaños, translúcidas, azul claro con reflejos blancos. Grupos: burbujas, brillo."
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "push",
+   "fx": "bokeh",
+   "narration": "No es solo hambre: ocurre cuando el intestino empuja aire y líquido.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "intestino",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.8,
+     "anim": "pop+float",
+     "z": 2,
+     "at": "intestino"
+    },
+    {
+     "asset": "svg",
+     "file": "burbujas_gas",
+     "x": 0.7,
+     "y": 0.72,
+     "w": 0.35,
+     "anim": "slide_up+float",
+     "z": 3,
+     "at": "aire"
+    }
+   ],
+   "piezas_nuevas": [
+    {
+     "id": "intestino",
+     "descripcion": "Intestino delgado enrollado en espiral, translúcido, tonos rosa y naranja, con pequeñas vellosidades y brillo suave. Grupos: aura, tubo, brillo."
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "musculo",
+   "camera": "pull",
+   "fx": "polvo_luz",
+   "narration": "Tu estómago se contrae como una pequeña bolsa de músculos.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "estomago",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.75,
+     "anim": "pop+pulse",
+     "z": 3,
+     "at": "músculos"
+    }
+   ],
+   "bg_colors": [
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "push_fuerte",
+   "fx": "brillos",
+   "narration": "Cuando llevas horas sin comer, el cerebro manda una señal de hambre.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "cerebro",
+     "x": 0.5,
+     "y": 0.4,
+     "w": 0.6,
+     "anim": "pop+pulse",
+     "z": 3,
+     "at": "cerebro"
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.5,
+     "y": 0.65,
+     "w": 0.4,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "señal"
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "push",
+   "fx": "polvo_luz",
+   "narration": "Y esa señal limpia el estómago, como un barrido de escoba.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "estomago",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+float",
+     "z": 2,
+     "at": "limpia"
+    },
+    {
+     "asset": "svg",
+     "file": "burbujas_gas",
+     "x": 0.5,
+     "y": 0.78,
+     "w": 0.4,
+     "anim": "slide_up+float",
+     "z": 3,
+     "at": "barrido"
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "pull",
+   "fx": "bokeh",
+   "narration": "Por eso suena más fuerte cuando está vacío.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "estomago",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+pulse",
+     "z": 3,
+     "at": "vacío"
+    },
+    {
+     "asset": "texto",
+     "text": "VACÍO",
+     "color": "#ff6b6b",
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.5,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "vacío"
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "camera": "push",
+   "fx": "polvo_luz",
+   "narration": "Pero también suena después de comer, mientras digieres.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "plato_comida",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.65,
+     "anim": "pop+float",
+     "z": 2,
+     "at": "comer"
+    },
+    {
+     "asset": "svg",
+     "file": "intestino",
+     "x": 0.5,
+     "y": 0.78,
+     "w": 0.5,
+     "anim": "slide_up",
+     "z": 3,
+     "at": "digieres"
+    }
+   ],
+   "piezas_nuevas": [
+    {
+     "id": "plato_comida",
+     "descripcion": "Plato hondo visto de frente con comida humeante (arroz, trozos de verdura) y vapor, estilo ilustración brillante. Grupos: plato, comida, vapor."
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "fx": "brillos",
+   "narration": "Así que no es vergüenza: es tu digestión trabajando.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "estomago",
+     "x": 0.5,
+     "y": 0.48,
+     "w": 0.6,
+     "anim": "pop+pulse",
+     "z": 3,
+     "at": "digestión"
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.74,
+     "y": 0.72,
+     "w": 0.35,
+     "anim": "pop+shake",
+     "z": 4,
+     "at": "trabajando"
+    }
+   ]
+  }
+ ]
+}

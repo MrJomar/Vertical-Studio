@@ -141,3 +141,4 @@ Botón **🧩 Piezas** (arriba o en el inicio): escribes qué debe dibujar (o to
 
 ## Rutas por caminos reales (v2.16)
 En una escena de mapa con `"mode":"route"` pon `"route_style":"road"` (carretera) o `"foot"` (a pie): la ruta sigue los caminos reales entre tus lugares (servicio público OSRM, necesita internet; se guarda en caché). Si un tramo no tiene ruta por tierra (mar, sin conexión), usa un arco solo en ese tramo y avisa. En la vista previa se muestra el arco; el camino real sale al renderizar.
+- v2.16.1: si una pieza SVG aún no existe, se dibuja un marcador amarillo en vez de romper el render. Proyecto de prueba `prueba_gemini_piezas` (¿por qué suena tu estómago?) con 4 piezas por crear.
