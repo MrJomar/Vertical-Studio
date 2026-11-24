@@ -33,6 +33,7 @@ USOS = {
     "tic": "reloj, cuenta atrás, tensión",
     "ding": "acierto, dato clave, aviso",
     "subida": "tensión que crece antes de una revelación",
+    "latido": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
 }
 ALIAS = {"swoosh": "whoosh", "woosh": "whoosh", "transicion": "whoosh", "hit": "impacto", "boom": "impacto",
          "clic": "click", "tick": "tic", "bell": "ding", "riser": "subida", "bubble": "pop", "aparece": "pop"}
@@ -128,6 +129,18 @@ def _gen(name: str, v: int = 0) -> np.ndarray:
         x += 0.25 * np.sin(2 * np.pi * np.cumsum(90 + 700 * t ** 3) / SR) * t ** 2
         x[-int(0.04 * SR):] *= np.linspace(1, 0, int(0.04 * SR))
         return _norm(x)
+    if name == "latido":
+        n = int(0.55 * SR)
+        x = np.zeros(n)
+        for off, amp, f0 in ((0.0, 1.0, 62 * fm), (0.17, 0.7, 52 * fm)):           # lub … dub
+            m = int(0.3 * SR)
+            tt = np.arange(m) / SR
+            f = f0 * (1 + 1.1 * np.exp(-tt * 30))
+            th = np.sin(2 * np.pi * np.cumsum(f) / SR) * _env_exp(m, 0.075)
+            th[:int(0.004 * SR)] *= np.linspace(0, 1, int(0.004 * SR))
+            o = int(off * SR)
+            x[o:o + m] += amp * th
+        return _norm(np.tanh(x * 1.4), 0.9)
     raise KeyError(name)
 
 
@@ -270,6 +283,22 @@ def plan_events(scenes, starts, settings, tlen_s) -> tuple[list[tuple[float, str
         raw = sc.spec.get("sfx")
         if raw not in (None, "", False):
             for e in (raw if isinstance(raw, list) else [raw]):
+                if isinstance(e, dict) and e.get("dur") and str(e.get("tag", "")).lower() in ("latido", "corazon", "heartbeat"):
+                    try:
+                        a0, dur = float(e.get("at", 0.0)), float(e["dur"])
+                        b0 = float(e.get("bpm", 80))
+                        b1 = float(e.get("bpm_fin", b0))
+                        vv = float(e.get("vol", 1.0))
+                    except (TypeError, ValueError):
+                        warns.append(f"Escena {i + 1}: latido mal escrito: {e!r}")
+                        continue
+                    t_l = 0.0
+                    while t_l < dur:
+                        fr = t_l / max(dur, 0.1)
+                        fade = min(1.0, (dur - t_l) / 0.8)                     # se apaga al final
+                        ev.append((t0 + a0 + t_l, "latido", vv * (0.7 + 0.3 * fr) * max(0.15, fade), True))
+                        t_l += 60.0 / max(30.0, b0 + (b1 - b0) * fr)
+                    continue
                 p = _parse(e, sc.duration)
                 if p and p[0]:
                     ev.append((t0 + max(0.0, p[1]), p[0], p[2], True))
@@ -318,7 +347,7 @@ def resolve_tracks(events, settings, total) -> tuple[list[tuple[str, float, floa
             continue
         k = n_used.get(tag, 0)
         n_used[tag] = k + 1
-        rel, info = lst[(k * 2 + (k // len(lst))) % len(lst)] if len(lst) > 1 else lst[0]
+        rel, info = lst[(k * 2 + (k // len(lst))) % len(lst)] if len(lst) > 1 and tag != "latido" else lst[0]
         jitter = ((k * 37) % 7 - 3) * 0.35                      # ±1 dB de variación determinista
         gain_db = target - info["rms_db"] + jitter
         gain_db = min(gain_db, -1.5 - info["peak_db"])          # nunca saturar

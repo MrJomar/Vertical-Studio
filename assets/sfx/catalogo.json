@@ -98,6 +98,39 @@
   "brillo": "grave",
   "trim": 0.0
  },
+ "latido.wav": {
+  "tag": "latido",
+  "uso": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
+  "mtime": 1795503684,
+  "dur": 0.466,
+  "hit": 0.008,
+  "rms_db": -10.4,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "latido_2.wav": {
+  "tag": "latido",
+  "uso": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
+  "mtime": 1795503684,
+  "dur": 0.467,
+  "hit": 0.007,
+  "rms_db": -10.4,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
+ "latido_3.wav": {
+  "tag": "latido",
+  "uso": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
+  "mtime": 1795503684,
+  "dur": 0.465,
+  "hit": 0.017,
+  "rms_db": -10.5,
+  "peak_db": -0.9,
+  "brillo": "grave",
+  "trim": 0.0
+ },
  "pop.wav": {
   "tag": "pop",
   "uso": "aparece una pieza o elemento",
