@@ -187,7 +187,7 @@
    "type": "vector",
    "bg": "rayos",
    "camera": "push",
-   "narration": "Cuando recibe una señal, se contrae…",
+   "narration": "Cuando recibe una señal, se contrae… y jala el pelo hacia arriba.",
    "layers": [
     {
      "asset": "piel",
@@ -196,9 +196,9 @@
      "w": 0.84,
      "value_from": 0,
      "value_to": 1,
-     "value_dur": 2.2,
+     "value_dur": 3.0,
      "value_step": 0.02,
-     "anim": "fade",
+     "anim": "pop",
      "at": 0.0,
      "z": 2
     },
@@ -210,25 +210,6 @@
      "anim": "pop+blink",
      "at": "señal",
      "z": 6
-    }
-   ],
-   "fx": "brillos",
-   "transition": "cut"
-  },
-  {
-   "type": "vector",
-   "bg": "musculo",
-   "camera": "push_fuerte",
-   "narration": "y jala el pelo hacia arriba.",
-   "layers": [
-    {
-     "asset": "piel",
-     "x": 0.5,
-     "y": 0.52,
-     "w": 0.84,
-     "value": 1,
-     "anim": "fade",
-     "z": 2
     },
     {
      "asset": "flecha",
@@ -254,7 +235,7 @@
      "z": 7
     }
    ],
-   "fx": "polvo_luz",
+   "fx": "brillos",
    "transition": "cut"
   },
   {
@@ -304,17 +285,17 @@
   {
    "type": "vector",
    "bg": "niebla",
-   "camera": "push",
-   "narration": "Mira a un gato asustado.",
+   "camera": "push_fuerte",
+   "narration": "Mira a un gato asustado. Se esponja para verse más grande y asustar.",
    "layers": [
     {
      "asset": "gato",
      "mood": "scared",
      "x": 0.5,
-     "y": 0.62,
-     "w": 0.8,
+     "y": 0.6,
+     "w": 0.78,
      "anim": "pop+wobble",
-     "at": "gato",
+     "at": 0.05,
      "z": 2
     },
     {
@@ -327,35 +308,10 @@
      "anim": "pop+shake",
      "at": "asustado",
      "z": 4
-    }
-   ],
-   "fx": "polvo_luz",
-   "bg_colors": [
-    "#c08cff",
-    "#1a0b33",
-    "#ffb3ff"
-   ],
-   "transition": "whip"
-  },
-  {
-   "type": "vector",
-   "bg": "niebla",
-   "camera": "push_fuerte",
-   "narration": "Se esponja para verse más grande y asustar.",
-   "layers": [
-    {
-     "asset": "gato",
-     "mood": "scared",
-     "x": 0.5,
-     "y": 0.54,
-     "w": 0.7,
-     "anim": "grow+shake",
-     "at": "esponja",
-     "z": 2
     },
     {
      "asset": "flecha",
-     "x": 0.14,
+     "x": 0.12,
      "y": 0.6,
      "w": 0.1,
      "rot": 180,
@@ -366,7 +322,7 @@
     },
     {
      "asset": "flecha",
-     "x": 0.86,
+     "x": 0.88,
      "y": 0.6,
      "w": 0.1,
      "rot": 0,
@@ -381,20 +337,20 @@
      "fit": true,
      "color": "#fff1c2",
      "x": 0.5,
-     "y": 0.85,
+     "y": 0.86,
      "w": 0.7,
      "anim": "pop",
      "at": "grande",
      "z": 6
     }
    ],
-   "fx": "brillos",
+   "fx": "polvo_luz",
    "bg_colors": [
     "#c08cff",
     "#1a0b33",
     "#ffb3ff"
    ],
-   "transition": "cut"
+   "transition": "whip"
   },
   {
    "type": "vector",
