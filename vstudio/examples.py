@@ -13,7 +13,7 @@ def _a(name: str) -> str:
 
 
 def _top():
-    return {"settings": {"theme": "neon", "tts_engine": "silencio", "watermark": "@tucanal"}, "scenes": [
+    return {"settings": {"theme": "neon", "watermark": "@tucanal"}, "scenes": [
         {"type": "title", "kicker": "Top 3", "title": "Los 3 barrios más antiguos", "subtitle": "Así se ve un Top",
          "narration": "Estos son los tres barrios más antiguos de la ciudad."},
         {"type": "top_item", "rank": "3", "title": "Coyoacán", "text": "Calles empedradas y plazas llenas de historia.",
@@ -25,20 +25,20 @@ def _top():
 
 
 def _map_zoom():
-    return {"settings": {"theme": "oscuro", "tts_engine": "silencio", "map_style": "satelite"}, "scenes": [
+    return {"settings": {"theme": "oscuro", "map_style": "satelite"}, "scenes": [
         {"type": "map", "title": "México", "mode": "zoom", "highlight": "México",
          "narration": "Empezamos en México, un país con más de dos mil años de historia.", "duration": 7}]}
 
 
 def _map_tour():
-    return {"settings": {"theme": "oscuro", "tts_engine": "silencio", "map_style": "satelite"}, "scenes": [
+    return {"settings": {"theme": "oscuro", "map_style": "satelite"}, "scenes": [
         {"type": "map", "title": "Gira por México", "mode": "tour", "duration": 12, "place_zoom": 0.012,
          "places": "Ciudad de México | 19.4326, -99.1332\nGuadalajara | 20.6597, -103.3496\nMonterrey | 25.6866, -100.3161",
          "narration": "Visitamos la capital, luego Guadalajara y terminamos en Monterrey."}]}
 
 
 def _map_route():
-    return {"settings": {"theme": "oscuro", "tts_engine": "silencio", "map_style": "oscuro"}, "scenes": [
+    return {"settings": {"theme": "oscuro", "map_style": "oscuro"}, "scenes": [
         {"type": "map", "title": "Ruta transatlántica", "mode": "route", "marker": "arrow", "duration": 9,
          "route_style": "arc", "places": "Lima | -12.05, -77.04\nBogotá | 4.71, -74.07\nMadrid | 40.42, -3.70",
          "narration": "De Lima a Bogotá y de ahí cruzamos el Atlántico hasta Madrid.",
@@ -47,7 +47,7 @@ def _map_route():
 
 
 def _map_expedicion():
-    return {"settings": {"theme": "oscuro", "tts_engine": "silencio", "map_style": "natural", "map_grade": "vivo",
+    return {"settings": {"theme": "oscuro", "map_style": "natural", "map_grade": "vivo",
                          "caption_style": "suave"}, "scenes": [
         {"type": "map", "mode": "route", "route_style": "line", "duration": 14, "follow": True, "follow_zoom": 0.3,
          "route_color": "#f2ff2e", "route_width": 11, "marker": "none", "tilt": 14, "intro": "blanco",
@@ -59,20 +59,20 @@ def _map_expedicion():
 
 
 def _broll():
-    return {"settings": {"theme": "papel", "tts_engine": "silencio"}, "scenes": [
+    return {"settings": {"theme": "papel"}, "scenes": [
         {"type": "broll", "title": "Una ciudad que no duerme", "media": [_a("foto1.jpg"), _a("foto2.jpg"), _a("foto3.jpg")],
          "narration": "Cada mañana la ciudad despierta con el ruido de los mercados, las campanas y el olor del café recién hecho.",
          "duration": 8}]}
 
 
 def _clip():
-    return {"settings": {"theme": "neon", "tts_engine": "silencio"}, "scenes": [
+    return {"settings": {"theme": "neon"}, "scenes": [
         {"type": "clip", "source": _a("clip_demo.mp4"), "start": "0", "end": "8", "fit": "blur",
          "hook": "Mira lo que pasa aquí", "captions": False}]}
 
 
 def _vector():
-    st = {"theme": "oscuro", "tts_engine": "silencio", "caption_style": "suave"}
+    st = {"theme": "oscuro", "caption_style": "suave"}
     return {"settings": st, "scenes": [
         {"type": "vector", "bg": "azulejos", "camera": "push", "fx": "humo,polvo_luz",
          "narration": "¿Por qué a veces huele a pescado? La culpable es la trimetilamina.",
