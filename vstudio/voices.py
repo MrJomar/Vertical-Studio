@@ -70,6 +70,26 @@ def get_img_key() -> str:
     return d.get("img_key") or d.get("gemini_key", "")
 
 
+def list_text_models(key: str) -> list[str]:
+    """Modelos de texto/código que tu clave puede usar con generateContent (los que sirven para dibujar SVG)."""
+    import urllib.request as ur
+    out, tok = [], ""
+    for _ in range(5):
+        url = f"https://generativelanguage.googleapis.com/v1beta/models?pageSize=100&key={key}" + (f"&pageToken={tok}" if tok else "")
+        with ur.urlopen(ur.Request(url), timeout=40) as r:
+            data = json.loads(r.read().decode())
+        for m in data.get("models", []):
+            n = m.get("name", "").split("/")[-1]
+            if "generateContent" in m.get("supportedGenerationMethods", []) and n.startswith("gemini") \
+                    and not any(x in n for x in ("tts", "live", "image", "audio", "embed", "transcribe", "omni", "translate", "robotics", "computer")):
+                out.append(n)
+        tok = data.get("nextPageToken", "")
+        if not tok:
+            break
+    # los «pro» primero (dibujan mejor), luego flash; lo más nuevo antes
+    return sorted(set(out), key=lambda n: (0 if "pro" in n else 1 if "flash" in n and "lite" not in n else 2, n), reverse=False)
+
+
 def save_profile(name: str, prof: dict) -> dict:
     name = re.sub(r"\s+", " ", str(name)).strip()[:40]
     if not name:

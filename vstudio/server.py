@@ -667,6 +667,18 @@ class Handler(BaseHTTPRequestHandler):
                 from vstudio import svgkit
                 svgkit.reject(d.get("id", ""))
                 return self._json({"ok": True})
+            if path == "/api/img_models":
+                from . import voices as V
+                import urllib.error as ue
+                key = d.get("key") or V.get_img_key()
+                if not key:
+                    return self._json({"ok": False, "error": "No hay API key."})
+                try:
+                    return self._json({"ok": True, "models": V.list_text_models(key)})
+                except ue.HTTPError as e:
+                    return self._json({"ok": False, "error": "La clave no es válida." if e.code in (400, 403) else f"Error {e.code} de Google."})
+                except Exception as e:
+                    return self._json({"ok": False, "error": f"No pude consultar los modelos: {e}"})
             if path == "/api/img_test":
                 from . import voices as V
                 import urllib.request as ur
