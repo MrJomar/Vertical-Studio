@@ -273,9 +273,9 @@ async function voicesModal(){
     <div class="fld"><label>Perfil de voz del proyecto (tiene prioridad sobre lo de arriba)</label><select class="inp" id="vprof"><option value="">— ninguno —</option>${names.map(n=>`<option ${st.voice_profile===n?"selected":""}>${esc(n)}</option>`).join("")}</select></div>
     <div class="sec">Guardar como perfil</div>
     <div class="frow"><input class="inp" id="pname2" placeholder="Nombre del perfil (ej.: Narrador serio)"><button class="btn" id="psave">Guardar</button></div>
-    <div class="hint">Guarda el motor, voz, modelo, estilo y velocidad de arriba.</div>
+    <div class="hint" id="phint">Guarda el motor, voz, modelo, estilo y velocidad de arriba. Si el nombre ya existe, lo actualiza.</div>
     <div class="sec">Mis perfiles</div>
-    ${names.length?names.map(n=>{const p=cfg.profiles[n];return `<div class="frow" style="align-items:center;margin:4px 0"><div style="flex:1"><b>${esc(n)}</b> <span class="hint">${esc(p.engine)} · ${esc(p.voice)}${p.model?" · "+esc(p.model):""}</span></div><button class="btn small" data-use="${esc(n)}">Usar aquí</button><button class="btn small danger" data-del="${esc(n)}">Borrar</button></div>`}).join(""):`<div class="hint">Aún no tienes perfiles.</div>`}
+    ${names.length?names.map(n=>{const p=cfg.profiles[n];return `<div class="frow" style="align-items:center;margin:4px 0"><div style="flex:1"><b>${esc(n)}</b> <span class="hint">${esc(p.engine)} · ${esc(p.voice)}${p.model?" · "+esc(p.model):""}</span></div><button class="btn small" data-edit="${esc(n)}">Editar</button><button class="btn small" data-use="${esc(n)}">Usar aquí</button><button class="btn small danger" data-del="${esc(n)}">Borrar</button></div>`}).join(""):`<div class="hint">Aún no tienes perfiles.</div>`}
     <div class="sec">Perfil por defecto según el tipo de video</div>
     ${["map","vector","broll","clip"].map(t=>`<div class="fld"><label>${esc((S.schema.types[t]||{label:t}).label)}</label><select class="inp" data-type="${t}"><option value="">— voz de los ajustes —</option>${names.map(n=>`<option ${cfg.type_defaults[t]===n?"selected":""}>${esc(n)}</option>`).join("")}</select></div>`).join("")}
     <div class="sec">Gemini (API key)</div>
@@ -290,6 +290,11 @@ async function voicesModal(){
     b.querySelector("#psave").onclick=async()=>{const n=b.querySelector("#pname2").value.trim();if(!n)return toast("Ponle nombre al perfil",1);
       try{await jpost("/api/voice_save",{profile_name:n,profile:PROJ_VOICE_ST});toast("Perfil guardado");draw()}catch(e){toast(e.message,1)}};
     b.querySelectorAll("[data-del]").forEach(x=>x.onclick=async()=>{if(!confirm("¿Borrar el perfil «"+x.dataset.del+"»?"))return;await jpost("/api/voice_save",{delete_profile:x.dataset.del});draw()});
+    b.querySelectorAll("[data-edit]").forEach(x=>x.onclick=async()=>{const n=x.dataset.edit,p=cfg.profiles[n];
+      Object.assign(PROJ_VOICE_ST,{engine:p.engine||"edge",voice:p.voice||"",model:p.model||"",style:p.style||"",rate:p.rate||0});
+      await voicePicker(b.querySelector("#vpk"),PROJ_VOICE_ST,()=>{});
+      b.querySelector("#pname2").value=n;b.querySelector("#phint").textContent="Editando «"+n+"»: cambia voz, estilo o velocidad arriba y pulsa Guardar para actualizarlo.";
+      b.scrollTop=0});
     b.querySelectorAll("[data-use]").forEach(x=>x.onclick=()=>{S.project.settings.voice_profile=x.dataset.use;markDirty();toast("Perfil «"+x.dataset.use+"» activo en este proyecto");draw()});
     b.querySelectorAll("[data-type]").forEach(x=>x.onchange=async()=>{const td={...cfg.type_defaults};if(x.value)td[x.dataset.type]=x.value;else delete td[x.dataset.type];await jpost("/api/voice_save",{type_defaults:td});cfg.type_defaults=td;toast("Guardado")});
     b.querySelector("#gsave").onclick=async()=>{const k=b.querySelector("#gkey").value.trim();if(!k)return;await jpost("/api/voice_save",{gemini_key:k});toast("API key guardada");draw()};
