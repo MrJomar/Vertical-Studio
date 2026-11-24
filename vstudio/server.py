@@ -474,6 +474,12 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/ai_prompt":
                 from .vector import ai_prompt
                 return self._json({"prompt": ai_prompt((q.get("style") or [""])[0])})
+            if path == "/api/kit":
+                from vstudio import svgkit
+                return self._json({"piezas": svgkit.scan()})
+            if path == "/api/kit_prompt":
+                from vstudio import svgkit
+                return self._json({"prompt": svgkit.kit_prompt((q.get("style") or [""])[0])})
             if path == "/api/styles":
                 from . import styles as ST
                 return self._json({"styles": ST.list_styles((q.get("tipo") or [None])[0])})

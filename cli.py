@@ -44,7 +44,36 @@ def main(argv=None):
     c.add_argument("--gemini-key", default=None)
     c.add_argument("-o", "--out", default="proyecto.json")
 
+    k = sub.add_parser("kit", help="Catálogo del kit SVG, prompt para la IA diaria y revisión de proyectos")
+    k.add_argument("--prompt", default=None, help="Guarda el prompt completo para la IA programada en este archivo")
+    k.add_argument("--check", default=None, help="Revisa un proyecto JSON contra el kit")
+
     a = ap.parse_args(argv)
+    if a.cmd == "kit":
+        from vstudio import svgkit
+        import os
+        if a.check:
+            errs, warns, nuevas = svgkit.check_project(a.check)
+            for e in errs:
+                print("ERROR:", e)
+            for w in warns:
+                print("Aviso:", w)
+            for n in nuevas:
+                print("Pieza nueva pedida:", n)
+            print("OK: el proyecto usa solo piezas del kit." if not errs else f"{len(errs)} error(es).")
+            return 1 if errs else 0
+        md = os.path.join(svgkit.DIRS[0], "CATALOGO.md")
+        with open(md, "w", encoding="utf-8") as fh:
+            fh.write(svgkit.markdown())
+        items = svgkit.scan()
+        print(f"{len(items)} piezas en el kit  ->  {md}")
+        for i in items:
+            print(" ", i["id"], "ERROR " + i["error"] if "error" in i else ("(sin descripción)" if i["sin_descripcion"] else ""))
+        if a.prompt:
+            with open(a.prompt, "w", encoding="utf-8") as fh:
+                fh.write(svgkit.kit_prompt())
+            print("Prompt para la IA programada guardado en", a.prompt)
+        return 0
     if a.cmd == "render":
         proj = Project.load(a.project)
         if a.encoder:

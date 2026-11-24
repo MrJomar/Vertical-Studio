@@ -100,3 +100,9 @@ Elemento `svg`: `{"asset":"svg","file":"pie","x":.5,"y":.6,"w":.8}` carga `asset
 
 ## Kit SVG (v2.7)
 `assets/svg/` ahora incluye: pie, pierna, nervio, cerebro, compresion, vena, corazon, reloj, chispas y persona_sentada. Se usan con el asset `svg` (`file`, `only`, `hide`). El proyecto `prueba_vectorial_pie_dormido.json` está recompuesto solo con piezas del kit.
+
+## Catálogo del kit y prompt de IA diaria (v2.8)
+- `python cli.py kit` genera `assets/svg/CATALOGO.md` leyendo cada SVG (partes, variables, proporciones) y las descripciones de `assets/svg/catalogo.json`.
+- `python cli.py kit --prompt estilos/prompt_ia_diaria.txt` guarda el prompt completo para una IA programada (Claude/ChatGPT): con el tema del día devuelve el proyecto JSON usando solo piezas del kit. También está en el botón «Copiar prompt de IA diaria (kit SVG)».
+- `python cli.py kit --check proyecto.json` revisa un proyecto: piezas que no existen, partes `only`/`hide` inválidas, piezas fuera de pantalla y `piezas_nuevas` pedidas.
+- Para añadir una pieza: guarda el `.svg` en `assets/svg/` y añade su entrada en `catalogo.json`.

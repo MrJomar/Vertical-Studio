@@ -33,7 +33,7 @@
 </linearGradient>
 <linearGradient id="gr_nervio_lat" x1="0%" y1="0%" x2="100%" y2="100%">
 <stop offset="0%" stop-color="#fff48f" />
-<stop offset="55%" stop-color="#ffd02b" />
+<stop offset="55%" stop-color="{{nervio|#ffd02b}}" />
 <stop offset="100%" stop-color="#e09e00" />
 </linearGradient>
 <filter id="flt_sombra_interior_lat" x="-15%" y="-15%" width="130%" height="130%">

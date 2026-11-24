@@ -337,7 +337,7 @@ function aiModal(){
   <div class="fld"><label>Estilo</label><select id="stl"><option value="">(sin estilo)</option></select></div>
   <div class="fld"><label>Guion</label><textarea id="sc" rows="7" placeholder="¿Por qué huele a pescado? La culpable es la trimetilamina…"></textarea></div>
   <div class="fld"><label>Clave de Gemini (gratis en aistudio.google.com; se guarda solo en este equipo)</label><input type="text" id="gk"></div>
-  <div class="frow" style="margin:6px 0 14px"><button class="btn small" id="cp">Copiar instrucciones para otra IA</button> <button class="btn small" id="cg">Copiar prompt para escribir el guion</button></div>
+  <div class="frow" style="margin:6px 0 14px"><button class="btn small" id="cp">Copiar instrucciones para otra IA</button> <button class="btn small" id="cg">Copiar prompt para escribir el guion</button> <button class="btn small" id="ck">Copiar prompt de IA diaria (kit SVG)</button></div>
   <div class="fld"><label>…o pega aquí el JSON de escenas que devolvió otra IA</label><textarea id="js" rows="4" class="code" style="min-height:90px"></textarea></div>
   <div class="hint" id="st"></div></div>
   <div class="mf"><button class="btn" data-close>Cancelar</button><button class="btn" id="add">Añadir JSON pegado</button><button class="btn primary" id="go">Generar con Gemini</button></div>`,"md");
@@ -345,6 +345,7 @@ function aiModal(){
   const stl=c.querySelector("#stl");jget("/api/styles?tipo=vector").then(r=>{(r.styles||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=x.nombre;stl.appendChild(o)});try{stl.value=localStorage.getItem("vs_stl")||(r.styles[0]||{}).id||""}catch(e){}}).catch(()=>{});
   c.querySelector("#cg").onclick=async()=>{const r=await jget("/api/script_prompt?style="+encodeURIComponent(stl.value)+"&tema="+encodeURIComponent(c.querySelector("#sc").value.slice(0,300)));try{await navigator.clipboard.writeText(r.prompt);toast("Prompt de guion copiado")}catch(e){c.querySelector("#js").value=r.prompt}};
   const addScenes=(sc)=>{if(!Array.isArray(sc))sc=sc.scenes||[sc];sc.forEach(x=>x.type="vector");const first=S.project.scenes.length;S.project.scenes.push(...sc);S.durs={};S.sel=first;markDirty();closeModal();renderList();renderForm();refresh();toast(sc.length+" escenas añadidas")};
+  c.querySelector("#ck").onclick=async()=>{const r=await jget("/api/kit_prompt?style="+encodeURIComponent(stl.value));try{await navigator.clipboard.writeText(r.prompt);toast("Prompt de IA diaria copiado")}catch(e){c.querySelector("#js").value=r.prompt}};
   c.querySelector("#cp").onclick=async()=>{const r=await jget("/api/ai_prompt?style="+encodeURIComponent(stl.value));try{await navigator.clipboard.writeText(r.prompt);toast("Instrucciones copiadas")}catch(e){c.querySelector("#js").value=r.prompt}};
   c.querySelector("#add").onclick=()=>{try{addScenes(JSON.parse(c.querySelector("#js").value))}catch(e){toast("JSON no válido: "+e.message,1)}};
   c.querySelector("#go").onclick=async()=>{const script=c.querySelector("#sc").value.trim(),key=gk.value.trim();if(!script||!key)return toast("Falta el guion o la clave",1);
