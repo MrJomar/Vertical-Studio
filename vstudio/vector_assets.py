@@ -1875,7 +1875,299 @@ def a_bebe(w, p):
     return _fin(out, W, H)
 
 
+
+def _clamp01(v, d=0.0):
+    try:
+        return max(0.0, min(1.0, float(v)))
+    except Exception:
+        return d
+
+
+def _clipto(layer, ref):
+    """Recorta layer (RGBA) con el alfa de ref (RGBA o L)."""
+    from PIL import ImageChops
+    m = ref if ref.mode == "L" else ref.getchannel("A")
+    layer.putalpha(ImageChops.multiply(layer.getchannel("A"), m))
+    return layer
+
+
+def a_frasco(w, p):
+    """Frasco de miel con tapa y etiqueta. nivel 0-1, cristal 0-1 (miel cristalizada), burbujas 0-1 (fermentando), tapa true|false."""
+    W, H = int(w), int(w * 1.25)
+    S = SS
+    Ws, Hs = W * S, H * S
+    nivel = _clamp01(p.get("nivel", 0.85))
+    cri = _clamp01(p.get("cristal", 0))
+    bub = _clamp01(p.get("burbujas", 0))
+    tapa = p.get("tapa", True) not in (False, "false", 0, "0")
+    lid = _c(p.get("color"), (205, 62, 50))
+    rnd = random.Random(11)
+
+    def shape(inset=0.0):
+        m = Image.new("L", (Ws, Hs), 0)
+        d = ImageDraw.Draw(m)
+        i = Ws * inset
+        d.rounded_rectangle([Ws * 0.12 + i, Hs * 0.2 + i, Ws * 0.88 - i, Hs * 0.97 - i], radius=Ws * 0.14, fill=255)
+        d.rectangle([Ws * 0.23 + i, Hs * 0.1, Ws * 0.77 - i, Hs * 0.3], fill=255)
+        return m
+
+    glass = shape(0)
+    inner = shape(0.03)
+    ytop = Hs * 0.97 - nivel * (Hs * 0.97 - Hs * 0.16)
+    cut = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(cut).rectangle([0, ytop, Ws, Hs], fill=255)
+    from PIL import ImageChops
+    hm = ImageChops.multiply(inner, cut)
+    top_c = (255, 205, 80) if cri < 0.5 else (244, 214, 128)
+    bot_c = (214, 118, 18) if cri < 0.5 else (226, 168, 66)
+    out = _canvas(W, H)
+    # fondo de vidrio
+    gl = Image.new("RGBA", (Ws, Hs), (225, 240, 255, 55))
+    out.alpha_composite(_clipto(gl, glass))
+    hon = _grad(hm, top_c, bot_c, ytop / Hs, 1.0)
+    out.alpha_composite(hon)
+    lay = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    dl = ImageDraw.Draw(lay)
+    # superficie
+    dl.ellipse([Ws * 0.15, ytop - Hs * 0.018, Ws * 0.85, ytop + Hs * 0.022], fill=(255, 230, 140, 200))
+    if bub > 0:
+        for _ in range(int(6 + 26 * bub)):
+            bx = rnd.uniform(0.17, 0.83) * Ws
+            by = rnd.uniform(ytop + Hs * 0.01, Hs * 0.94)
+            br = rnd.uniform(0.012, 0.034 + 0.01 * bub) * Ws
+            dl.ellipse([bx - br, by - br, bx + br, by + br], fill=(255, 245, 205, 150), outline=(255, 255, 255, 220), width=max(1, S))
+            dl.ellipse([bx - br * 0.5, by - br * 0.6, bx - br * 0.1, by - br * 0.2], fill=(255, 255, 255, 230))
+        for _ in range(int(8 * bub)):
+            bx = rnd.uniform(0.17, 0.83) * Ws
+            br = rnd.uniform(0.02, 0.04) * Ws
+            dl.ellipse([bx - br, ytop - br * 1.3, bx + br, ytop + br * 0.4], fill=(255, 248, 220, 235), outline=(255, 255, 255, 255), width=max(1, S))
+    if cri > 0:
+        for _ in range(int(900 * cri)):
+            gx = rnd.uniform(0.15, 0.85) * Ws
+            gy = rnd.uniform(max(ytop, Hs * 0.2), Hs * 0.95)
+            gr = rnd.uniform(0.004, 0.011) * Ws
+            col = rnd.choice([(255, 238, 170, 210), (236, 190, 90, 200), (255, 250, 214, 190)])
+            dl.ellipse([gx - gr, gy - gr, gx + gr, gy + gr], fill=col)
+    out.alpha_composite(_clipto(lay, inner))
+    dr = ImageDraw.Draw(out)
+    lw = max(2, int(S * 2.6))
+    # contorno de vidrio
+    edge = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(edge).rectangle([0, 0, Ws, Hs], fill=255)
+    ring = ImageChops.subtract(glass, shape(0.012))
+    out.alpha_composite(_clipto(Image.new("RGBA", (Ws, Hs), (255, 255, 255, 235)), ring))
+    # etiqueta con panal
+    dr.rounded_rectangle([Ws * 0.22, Hs * 0.5, Ws * 0.78, Hs * 0.8], radius=Ws * 0.04, fill=(255, 246, 222, 245), outline=(150, 92, 30, 255), width=lw)
+    cx, cy, rr = Ws * 0.5, Hs * 0.65, Ws * 0.1
+    for k, (ox, oy) in enumerate([(0, 0), (-1.75, 0), (1.75, 0), (-0.88, -1.5), (0.88, -1.5), (-0.88, 1.5), (0.88, 1.5)]):
+        pts = [(cx + ox * rr * 0.62 + rr * 0.58 * math.cos(math.radians(60 * i + 30)), cy + oy * rr * 0.62 + rr * 0.58 * math.sin(math.radians(60 * i + 30))) for i in range(6)]
+        dr.polygon(pts, fill=(255, 190, 40, 255) if k == 0 else (255, 214, 110, 255), outline=(150, 92, 30, 255))
+    # brillos
+    dr.rounded_rectangle([Ws * 0.17, Hs * 0.3, Ws * 0.215, Hs * 0.9], radius=Ws * 0.025, fill=(255, 255, 255, 105))
+    dr.rounded_rectangle([Ws * 0.81, Hs * 0.34, Ws * 0.835, Hs * 0.62], radius=Ws * 0.012, fill=(255, 255, 255, 70))
+    # tapa
+    if tapa:
+        dr.rounded_rectangle([Ws * 0.2, Hs * 0.025, Ws * 0.8, Hs * 0.135], radius=Ws * 0.035, fill=_shade(lid, 0.66) + (255,))
+        dr.rounded_rectangle([Ws * 0.2, Hs * 0.025, Ws * 0.8, Hs * 0.115], radius=Ws * 0.035, fill=lid + (255,), outline=_shade(lid, 0.5) + (255,), width=lw)
+        for k in range(9):
+            x = Ws * (0.255 + k * 0.061)
+            dr.line([x, Hs * 0.04, x, Hs * 0.108], fill=_shade(lid, 0.74) + (255,), width=max(2, int(S * 1.6)))
+        dr.rounded_rectangle([Ws * 0.24, Hs * 0.034, Ws * 0.3, Hs * 0.1], radius=Ws * 0.02, fill=_shade(lid, 1.35) + (190,))
+    else:
+        dr.ellipse([Ws * 0.23, Hs * 0.085, Ws * 0.77, Hs * 0.12], outline=(255, 255, 255, 235), width=lw)
+    return _fin(out, W, H)
+
+
+def a_abeja(w, p):
+    """Abejita de frente con alas translúcidas, rayas, antenas y sonrisa."""
+    W, H = int(w), int(w * 0.95)
+    S = SS
+    Ws, Hs = W * S, H * S
+    yel = _c(p.get("color"), (255, 200, 40))
+    out = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(out)
+    lw = max(2, int(S * 2.2))
+    # alas
+    wings = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    dw = ImageDraw.Draw(wings)
+    for sx in (-1, 1):
+        cx = Ws * (0.5 + sx * 0.28)
+        dw.ellipse([cx - Ws * 0.2, Hs * 0.12, cx + Ws * 0.2, Hs * 0.5], fill=(200, 232, 255, 150), outline=(255, 255, 255, 230), width=lw)
+        dw.ellipse([cx - Ws * 0.1, Hs * 0.18, cx - Ws * 0.02 if sx > 0 else cx + Ws * 0.0, Hs * 0.3], fill=(255, 255, 255, 120))
+    wings = wings.rotate(0)
+    out.alpha_composite(wings)
+    # aguijón
+    dr.polygon([(Ws * 0.46, Hs * 0.9), (Ws * 0.54, Hs * 0.9), (Ws * 0.5, Hs * 0.99)], fill=(40, 30, 24, 255))
+    # cuerpo
+    bw, bh = int(Ws * 0.5), int(Hs * 0.56)
+    body = sphere(int(bw / S), yel, spec=0.45, dark=0.55).resize((bw, bh), Image.LANCZOS)
+    bl = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    bl.alpha_composite(body, (int(Ws * 0.25), int(Hs * 0.4)))
+    st = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    ds = ImageDraw.Draw(st)
+    for k, y in enumerate((0.62, 0.78)):
+        ds.rounded_rectangle([Ws * 0.2, Hs * y, Ws * 0.8, Hs * (y + 0.07)], radius=Hs * 0.03, fill=(38, 28, 22, 245))
+    out.alpha_composite(bl)
+    out.alpha_composite(_clipto(st, bl))
+    dr = ImageDraw.Draw(out)
+    # antenas
+    for sx in (-1, 1):
+        dr.line([(Ws * (0.5 + sx * 0.07), Hs * 0.2), (Ws * (0.5 + sx * 0.14), Hs * 0.07)], fill=(40, 30, 24, 255), width=lw)
+        dr.ellipse([Ws * (0.5 + sx * 0.14) - Ws * 0.025, Hs * 0.07 - Ws * 0.025, Ws * (0.5 + sx * 0.14) + Ws * 0.025, Hs * 0.07 + Ws * 0.025], fill=(40, 30, 24, 255))
+    # cabeza
+    hd = int(Ws * 0.44)
+    head = sphere(int(hd / S), yel, spec=0.5, dark=0.6).resize((hd, hd), Image.LANCZOS)
+    out.alpha_composite(head, (int(Ws * 0.28), int(Hs * 0.16)))
+    dr = ImageDraw.Draw(out)
+    for sx in (-1, 1):
+        ex, ey = Ws * (0.5 + sx * 0.085), Hs * 0.35
+        dr.ellipse([ex - Ws * 0.055, ey - Ws * 0.06, ex + Ws * 0.055, ey + Ws * 0.06], fill=(30, 22, 20, 255))
+        dr.ellipse([ex - Ws * 0.03, ey - Ws * 0.04, ex, ey - Ws * 0.01], fill=(255, 255, 255, 255))
+        dr.ellipse([ex - Ws * 0.1 if sx < 0 else ex + Ws * 0.03, ey + Ws * 0.03, ex - Ws * 0.03 if sx < 0 else ex + Ws * 0.1, ey + Ws * 0.08], fill=(255, 140, 140, 140))
+    dr.arc([Ws * 0.45, Hs * 0.38, Ws * 0.55, Hs * 0.47], 15, 165, fill=(60, 30, 20, 255), width=lw)
+    return _fin(out, W, H)
+
+
+def a_panal(w, p):
+    """Panal de hexágonos con miel. tapados 0-1: fracción de celdas selladas con cera."""
+    W = H = int(w)
+    S = SS
+    Ws, Hs = W * S, H * S
+    tap = _clamp01(p.get("tapados", 0.35))
+    out = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(out)
+    r = Ws / (math.sqrt(3) * 4.6)
+    rnd = random.Random(5)
+    lw = max(2, int(S * 2.4))
+    for row in range(6):
+        for col in range(5):
+            cx = r * math.sqrt(3) * (col + 0.75 + (0.5 if row % 2 else 0))
+            cy = r * 1.1 + row * r * 1.5
+            if cx > Ws - r * 0.8 or cy > Hs - r * 0.9:
+                continue
+            pts = [(cx + r * math.cos(math.radians(60 * i + 30)), cy + r * math.sin(math.radians(60 * i + 30))) for i in range(6)]
+            inn = [(cx + r * 0.8 * math.cos(math.radians(60 * i + 30)), cy + r * 0.8 * math.sin(math.radians(60 * i + 30))) for i in range(6)]
+            dr.polygon(pts, fill=(176, 108, 22, 255))
+            if rnd.random() < tap:
+                dr.polygon(inn, fill=(246, 216, 140, 255))
+                dr.arc([cx - r * 0.5, cy - r * 0.55, cx + r * 0.2, cy + r * 0.05], 200, 290, fill=(255, 245, 205, 230), width=lw)
+            else:
+                dr.polygon(inn, fill=(255, 176, 30, 255))
+                dr.polygon([(cx - r * 0.5, cy - r * 0.15), (cx - r * 0.1, cy - r * 0.55), (cx + r * 0.1, cy - r * 0.4), (cx - r * 0.3, cy + r * 0.05)], fill=(255, 226, 120, 200))
+            dr.polygon(pts, outline=(118, 66, 10, 255))
+    return _fin(out, W, H)
+
+
+def a_vasija(w, p):
+    """Vasija de barro antigua con franja decorada."""
+    W, H = int(w), int(w * 1.15)
+    S = SS
+    Ws, Hs = W * S, H * S
+    col = _c(p.get("color"), (196, 112, 62))
+    prof = [(0.27, 0.03), (0.23, 0.1), (0.2, 0.2), (0.32, 0.3), (0.38, 0.45), (0.36, 0.65), (0.27, 0.85), (0.2, 0.97)]
+    left = [(Ws * (0.5 - a), Hs * b) for a, b in prof]
+    right = [(Ws * (0.5 + a), Hs * b) for a, b in reversed(prof)]
+    poly = _sm(left + right, 10)
+    m = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(m).polygon(poly, fill=255)
+    arr = np.asarray(m, np.float32) / 255
+    xs = (np.arange(Ws, dtype=np.float32) - Ws * 0.5) / (Ws * 0.36)
+    sh = 1.05 - 0.55 * (np.abs(xs + 0.18) ** 1.6)
+    sh = np.clip(sh, 0.35, 1.15)[None, :]
+    ys = np.linspace(1.05, 0.8, Hs, dtype=np.float32)[:, None]
+    c = np.array(col, np.float32)[None, None, :] * (sh * ys)[..., None]
+    img = Image.fromarray(np.dstack([np.clip(c, 0, 255), arr * 255]).astype(np.uint8), "RGBA")
+    dr = ImageDraw.Draw(img)
+    dk = _shade(col, 0.5) + (255,)
+    lw = max(2, int(S * 2.4))
+    dr.rounded_rectangle([Ws * 0.22, Hs * 0.0, Ws * 0.78, Hs * 0.055], radius=Ws * 0.03, fill=_shade(col, 0.85) + (255,), outline=dk, width=lw)
+    for y in (0.4, 0.58):
+        dr.line([Ws * 0.1, Hs * y, Ws * 0.9, Hs * y], fill=dk, width=lw)
+    for k in range(9):
+        x0 = Ws * (0.17 + k * 0.073)
+        dr.polygon([(x0, Hs * 0.58), (x0 + Ws * 0.0365, Hs * 0.41), (x0 + Ws * 0.073, Hs * 0.58)], fill=_shade(col, 0.62) + (255,))
+    out = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    for sx in (-1, 1):                                                         # asas
+        dr2 = ImageDraw.Draw(out)
+        ax = Ws * (0.5 + sx * 0.25)
+        dr2.arc([ax - Ws * 0.14 if sx < 0 else ax - Ws * 0.1, Hs * 0.2, ax + Ws * 0.1 if sx < 0 else ax + Ws * 0.14, Hs * 0.46], 90 if sx < 0 else 270, 270 if sx < 0 else 90, fill=_shade(col, 0.7) + (255,), width=int(Ws * 0.045))
+    out.alpha_composite(img)
+    hl = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    ImageDraw.Draw(hl).rounded_rectangle([Ws * 0.3, Hs * 0.34, Ws * 0.35, Hs * 0.62], radius=Ws * 0.025, fill=(255, 235, 205, 110))
+    out.alpha_composite(_clipto(hl, img))
+    return _fin(out, W, H)
+
+
+def a_piramide(w, p):
+    """Pirámide de piedra arenosa con hiladas de bloques (tamaño de fondo)."""
+    W, H = int(w), int(w * 0.62)
+    S = SS
+    Ws, Hs = W * S, H * S
+    col = _c(p.get("color"), (232, 186, 110))
+    img = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(img)
+    apex = (Ws * 0.5, Hs * 0.04)
+    dr.polygon([apex, (Ws * 0.5, Hs * 0.98), (Ws * 0.02, Hs * 0.98)], fill=col + (255,))
+    dr.polygon([apex, (Ws * 0.5, Hs * 0.98), (Ws * 0.98, Hs * 0.98)], fill=_shade(col, 0.68) + (255,))
+    ln = _shade(col, 0.52) + (200,)
+    for k in range(1, 9):
+        y = Hs * (0.04 + 0.94 * (k / 9) ** 1.0)
+        half = (y - Hs * 0.04) / (Hs * 0.94) * Ws * 0.48
+        dr.line([Ws * 0.5 - half, y, Ws * 0.5 + half, y], fill=ln, width=max(1, int(S * 1.3)))
+    dr.line([apex, (Ws * 0.5, Hs * 0.98)], fill=_shade(col, 0.5) + (255,), width=max(2, int(S * 1.8)))
+    return _fin(img, W, H)
+
+
+def a_germen(w, p):
+    """Microbio verde con carita. value 0-1: deshidratación (se encoge, se arruga, se pone triste y gris)."""
+    d = int(w)
+    S = SS
+    v = _clamp01(p.get("value", 0))
+    k = 1.0 - 0.34 * v
+    col = _c(p.get("color"), (110, 200, 90))
+    mix = np.array(col, np.float32) * (1 - 0.55 * v) + np.array((150, 130, 90), np.float32) * (0.55 * v)
+    col = tuple(int(x) for x in mix)
+    out = Image.new("RGBA", (d, d), (0, 0, 0, 0))
+    bd = max(8, int(d * 0.74 * k))
+    body = sphere(bd, col, spec=0.3 * (1 - v) + 0.05, dark=0.5)
+    big = _canvas(bd, bd)
+    dr = ImageDraw.Draw(big)
+    r = bd * S / 2
+    if v > 0.05:
+        rnd = random.Random(3)
+        for _ in range(int(4 + 12 * v)):
+            a = rnd.uniform(0, 2 * math.pi)
+            r0 = r * rnd.uniform(0.62, 0.98)
+            x0, y0 = r + r0 * math.cos(a), r + r0 * math.sin(a)
+            dr.arc([x0 - r * 0.28, y0 - r * 0.28, x0 + r * 0.28, y0 + r * 0.28], math.degrees(a) + 100, math.degrees(a) + 220, fill=_shade(col, 0.5) + (int(200 * v),), width=max(2, int(S * 2)))
+    # cara
+    for sx in (-1, 1):
+        x = r + sx * r * 0.34
+        if v < 0.7:
+            dr.ellipse([x - r * 0.2, r * 0.58, x + r * 0.2, r * 0.98], fill=(255, 255, 255, 255))
+            dr.ellipse([x - r * 0.1, r * 0.68 + r * 0.1 * v, x + r * 0.1, r * 0.92 + r * 0.1 * v], fill=(24, 20, 20, 255))
+            dr.ellipse([x - r * 0.07, r * 0.7, x - r * 0.01, r * 0.78], fill=(255, 255, 255, 255))
+        else:
+            dr.line([x - r * 0.14, r * 0.68, x + r * 0.14, r * 0.92], fill=(24, 20, 20, 255), width=max(3, int(S * 3)))
+            dr.line([x - r * 0.14, r * 0.92, x + r * 0.14, r * 0.68], fill=(24, 20, 20, 255), width=max(3, int(S * 3)))
+    if v < 0.3:
+        dr.arc([r * 0.6, r * 1.1, r * 1.4, r * 1.55], 15, 165, fill=(24, 20, 20, 255), width=max(3, int(S * 2.6)))
+    elif v < 0.7:
+        dr.line([r * 0.7, r * 1.35, r * 1.3, r * 1.35], fill=(24, 20, 20, 255), width=max(3, int(S * 2.6)))
+    else:
+        dr.arc([r * 0.6, r * 1.3, r * 1.4, r * 1.75], 195, 345, fill=(24, 20, 20, 255), width=max(3, int(S * 2.6)))
+    body.alpha_composite(_fin(big, bd, bd))
+    out.alpha_composite(body, ((d - bd) // 2, (d - bd) // 2))
+    return out
+
+
 ASSETS = {
+    "frasco": (a_frasco, 1.25, "Frasco de miel con tapa y etiqueta de panal", "nivel (0-1), cristal (0-1), burbujas (0-1: fermenta), tapa: true|false, color (tapa)"),
+    "abeja": (a_abeja, 0.95, "Abeja simpática de frente con alas", "color"),
+    "panal": (a_panal, 1.0, "Panal de hexágonos con miel", "tapados (0-1)"),
+    "vasija": (a_vasija, 1.15, "Vasija de barro antigua con franja decorada", "color"),
+    "piramide": (a_piramide, 0.62, "Pirámide de piedra arenosa", "color"),
+    "germen": (a_germen, 1.0, "Microbio verde con carita; value 0-1 = deshidratación (se encoge y se arruga)", "value (0-1), color"),
     "esfera": (a_esfera, 1.0, "Bola con carita (personaje base)", "color, mood: neutral|happy|angry|sad|scared|none"),
     "villano": (a_villano, 1.0, "Bolita azul enmascarada con capa y brazos", "color, cape"),
     "bacteria_mala": (a_bacteria_mala, 1.0, "Bacteria morada con picos y cara de enojo", "color, mood"),

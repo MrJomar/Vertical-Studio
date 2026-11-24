@@ -1,0 +1,662 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave",
+  "caption_size": 92,
+  "sfx": "auto",
+  "sfx_volume": 0.5,
+  "voice_speed": 1.08,
+  "trim_silences": true,
+  "scene_pad": 0.15,
+  "transition_seconds": 0.35
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "narration": "Hay un alimento que casi nunca caduca… pero su historia más famosa no está comprobada.",
+   "layers": [
+    {
+     "asset": "panal",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 1.25,
+     "alpha": 0.22,
+     "anim": "fade",
+     "at": 0.0,
+     "z": 0
+    },
+    {
+     "asset": "frasco",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.66,
+     "anim": "pop+float",
+     "at": 0.0,
+     "z": 2
+    },
+    {
+     "asset": "abeja",
+     "x": 0.2,
+     "y": 0.4,
+     "w": 0.2,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 3
+    },
+    {
+     "asset": "abeja",
+     "x": 0.82,
+     "y": 0.78,
+     "w": 0.16,
+     "anim": "pop+bob",
+     "at": 0.5,
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "¿CADUCA?",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.8,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#ffc247",
+    "#5a2a05",
+    "#fff1c2"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "pull",
+   "narration": "Dicen que hallaron miel de tres mil años, comestible, en tumbas egipcias. Nadie ha documentado que alguien la probara.",
+   "layers": [
+    {
+     "asset": "piramide",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.9,
+     "anim": "pop",
+     "at": 0.05,
+     "z": 1
+    },
+    {
+     "asset": "vasija",
+     "x": 0.5,
+     "y": 0.72,
+     "w": 0.4,
+     "anim": "pop+bob",
+     "at": "miel",
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "3,000 AÑOS",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.9,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "años",
+     "z": 5
+    },
+    {
+     "asset": "texto",
+     "text": "¿Y LA PRUEBA?",
+     "fit": true,
+     "color": "#ffffff",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.8,
+     "anim": "pop+shake",
+     "at": "documentado",
+     "z": 6
+    }
+   ],
+   "fx": "polvo_luz",
+   "bg_colors": [
+    "#f0c27a",
+    "#4a2410",
+    "#ffe9b0"
+   ],
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "narration": "Lo comprobado: restos de miel de unos cinco mil quinientos años, en vasijas de Georgia.",
+   "layers": [
+    {
+     "asset": "vasija",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.62,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "etiqueta",
+     "text": "GEORGIA",
+     "color": "#8a4b12",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.4,
+     "anim": "pop",
+     "at": "Georgia",
+     "z": 4
+    },
+    {
+     "asset": "texto",
+     "text": "5,500 AÑOS",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "quinientos",
+     "z": 5
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#d9a066",
+    "#3a1b0c",
+    "#ffe0b0"
+   ],
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "push",
+   "narration": "¿Por qué dura tanto? Casi no tiene agua.",
+   "layers": [
+    {
+     "asset": "abeja",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "¿POR QUÉ DURA TANTO?",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.87,
+     "w": 0.86,
+     "anim": "pop",
+     "at": "dura",
+     "z": 5
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#ffd27a",
+    "#7a3a08",
+    "#fff6d0"
+   ],
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "drift",
+   "narration": "El néctar trae hasta setenta por ciento de agua, y las abejas lo secan a cerca de dieciocho.",
+   "layers": [
+    {
+     "asset": "panal",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.86,
+     "anim": "pop",
+     "at": 0.05,
+     "z": 1
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.3,
+     "y": 0.6,
+     "w": 0.1,
+     "anim": "pop+rise",
+     "at": "agua",
+     "z": 3
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.52,
+     "y": 0.66,
+     "w": 0.1,
+     "anim": "pop+rise",
+     "at": "secan",
+     "z": 3
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.72,
+     "y": 0.6,
+     "w": 0.1,
+     "anim": "pop+rise",
+     "at": "secan",
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "70 % → 18 %",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.9,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "setenta",
+     "z": 5
+    }
+   ],
+   "fx": "burbujas",
+   "bg_colors": [
+    "#ffd27a",
+    "#7a3a08",
+    "#fff6d0"
+   ],
+   "transition": "cut"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "narration": "Sin agua, los microbios se deshidratan y no pueden crecer.",
+   "layers": [
+    {
+     "asset": "germen",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.66,
+     "value_from": 0,
+     "value_to": 1,
+     "value_dur": 2.2,
+     "value_step": 0.05,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.22,
+     "y": 0.5,
+     "w": 0.1,
+     "anim": "pop+rise",
+     "at": "deshidratan",
+     "z": 3
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.8,
+     "y": 0.45,
+     "w": 0.1,
+     "anim": "pop+rise",
+     "at": "deshidratan",
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "SE DESHIDRATAN",
+     "fit": true,
+     "color": "#e6ffe9",
+     "x": 0.5,
+     "y": 0.88,
+     "w": 0.8,
+     "anim": "pop",
+     "at": "deshidratan",
+     "z": 5
+    }
+   ],
+   "bg_colors": [
+    "#8be0a0",
+    "#08301a",
+    "#d8ffe0"
+   ],
+   "transition": "slide"
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "pull",
+   "narration": "Además es ácida, y una enzima de las abejas produce un poco de peróxido.",
+   "layers": [
+    {
+     "asset": "medidor",
+     "value": 3.8,
+     "label": "pH",
+     "x": 0.5,
+     "y": 0.45,
+     "w": 0.84,
+     "anim": "pop",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "pH 3 – 4.5",
+     "fit": true,
+     "color": "#e6fbff",
+     "x": 0.5,
+     "y": 0.68,
+     "w": 0.7,
+     "anim": "pop",
+     "at": "ácida",
+     "z": 4
+    },
+    {
+     "asset": "abeja",
+     "x": 0.2,
+     "y": 0.82,
+     "w": 0.24,
+     "anim": "pop+bob",
+     "at": "abejas",
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "PERÓXIDO",
+     "fit": true,
+     "color": "#ffd23f",
+     "x": 0.66,
+     "y": 0.84,
+     "w": 0.5,
+     "anim": "pop",
+     "at": "peróxido",
+     "z": 5
+    }
+   ],
+   "fx": "bokeh",
+   "bg_colors": [
+    "#9fe3ff",
+    "#0b2a5e",
+    "#e6fbff"
+   ],
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "narration": "Pero si se humedece, puede fermentar.",
+   "layers": [
+    {
+     "asset": "frasco",
+     "nivel": 0.85,
+     "tapa": false,
+     "burbujas": 1,
+     "x": 0.5,
+     "y": 0.58,
+     "w": 0.66,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.3,
+     "y": 0.28,
+     "w": 0.09,
+     "anim": "fall",
+     "at": "humedece",
+     "z": 4
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.52,
+     "y": 0.24,
+     "w": 0.09,
+     "anim": "fall",
+     "at": "humedece",
+     "z": 4
+    },
+    {
+     "asset": "gota",
+     "color": "#4aa8ff",
+     "x": 0.72,
+     "y": 0.28,
+     "w": 0.09,
+     "anim": "fall",
+     "at": "humedece",
+     "z": 4
+    },
+    {
+     "asset": "texto",
+     "text": "¡FERMENTA!",
+     "fit": true,
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.9,
+     "w": 0.7,
+     "anim": "pop+shake",
+     "at": "fermentar",
+     "z": 5
+    }
+   ],
+   "fx": "burbujas",
+   "bg_colors": [
+    "#ffc247",
+    "#5a2a05",
+    "#fff1c2"
+   ],
+   "transition": "zoom_in"
+  },
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "drift",
+   "narration": "Y si se pone arenosa, no se echó a perder: solo se cristalizó.",
+   "layers": [
+    {
+     "asset": "frasco",
+     "cristal": 1,
+     "x": 0.5,
+     "y": 0.56,
+     "w": 0.66,
+     "anim": "pop+float",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "marca",
+     "kind": "ok",
+     "x": 0.84,
+     "y": 0.32,
+     "w": 0.2,
+     "anim": "pop",
+     "at": "cristalizó",
+     "z": 6
+    },
+    {
+     "asset": "texto",
+     "text": "SOLO SE CRISTALIZÓ",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.9,
+     "w": 0.84,
+     "anim": "pop",
+     "at": "arenosa",
+     "z": 5
+    }
+   ],
+   "fx": "polvo_luz",
+   "bg_colors": [
+    "#ffe7b0",
+    "#6a3b10",
+    "#fff8e0"
+   ],
+   "transition": "whip"
+  },
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "pull",
+   "narration": "Cada abeja hace en toda su vida solo un doceavo de cucharadita.",
+   "layers": [
+    {
+     "asset": "abeja",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+bob",
+     "at": 0.05,
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "1/12 DE CUCHARADITA",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 0.86,
+     "anim": "pop",
+     "at": "doceavo",
+     "z": 5
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#ffd54a",
+    "#7a4a00",
+    "#fff6c0"
+   ],
+   "transition": "push"
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "push",
+   "narration": "Y no se la des a bebés menores de un año: riesgo de botulismo.",
+   "layers": [
+    {
+     "asset": "emoji",
+     "char": "👶",
+     "x": 0.5,
+     "y": 0.46,
+     "w": 0.46,
+     "anim": "pop+bob",
+     "at": "bebés",
+     "z": 2
+    },
+    {
+     "asset": "frasco",
+     "x": 0.8,
+     "y": 0.72,
+     "w": 0.3,
+     "anim": "pop",
+     "at": 0.05,
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "MENORES DE 1 AÑO: NO",
+     "fit": true,
+     "color": "#fff1c2",
+     "x": 0.5,
+     "y": 0.9,
+     "w": 0.86,
+     "anim": "pop",
+     "at": "año",
+     "z": 5
+    }
+   ],
+   "bg_colors": [
+    "#ffb88a",
+    "#4a1a10",
+    "#ffe0d0"
+   ],
+   "transition": "wipe"
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "narration": "Sellada y seca, la miel casi nunca caduca.",
+   "layers": [
+    {
+     "asset": "panal",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 1.25,
+     "alpha": 0.22,
+     "anim": "fade",
+     "at": 0.0,
+     "z": 0
+    },
+    {
+     "asset": "frasco",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.66,
+     "anim": "pop+float",
+     "at": 0.0,
+     "z": 2
+    },
+    {
+     "asset": "abeja",
+     "x": 0.2,
+     "y": 0.4,
+     "w": 0.2,
+     "anim": "pop+bob",
+     "at": 0.3,
+     "z": 3
+    },
+    {
+     "asset": "abeja",
+     "x": 0.82,
+     "y": 0.78,
+     "w": 0.16,
+     "anim": "pop+bob",
+     "at": 0.5,
+     "z": 3
+    },
+    {
+     "asset": "texto",
+     "text": "CASI NUNCA",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.27,
+     "w": 0.8,
+     "anim": "pop+shake",
+     "at": 0.12,
+     "z": 4
+    }
+   ],
+   "fx": "brillos",
+   "bg_colors": [
+    "#ffc247",
+    "#5a2a05",
+    "#fff1c2"
+   ],
+   "transition": "zoom_in"
+  }
+ ]
+}
