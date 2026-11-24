@@ -586,8 +586,8 @@
     {
      "asset": "pie",
      "x": 0.5,
-     "y": 0.52,
-     "w": 0.95,
+     "y": 0.56,
+     "w": 0.88,
      "anim": "slide_left+float",
      "spark": 1,
      "z": 2
@@ -596,8 +596,8 @@
      "asset": "cartel",
      "text": "PESADO",
      "x": 0.5,
-     "y": 0.26,
-     "w": 0.6,
+     "y": 0.2,
+     "w": 0.5,
      "at": "pesado",
      "anim": "drop",
      "z": 6
@@ -906,8 +906,8 @@
     {
      "asset": "pie",
      "x": 0.5,
-     "y": 0.56,
-     "w": 0.9,
+     "y": 0.58,
+     "w": 0.84,
      "spark": 1,
      "glow": "#ffd23f",
      "anim": "float",

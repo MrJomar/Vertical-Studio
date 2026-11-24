@@ -947,63 +947,109 @@ def a_nervio(w, p):
     return im
 
 
-def _leg_paths(W, H):
-    thigh = [(.14 * W, .2 * H), (.36 * W, .18 * H), (.58 * W, .21 * H)]
-    shin = [(.58 * W, .21 * H), (.62 * W, .48 * H), (.65 * W, .72 * H)]
-    return thigh, shin
+def _closed(pts, n=10):
+    P = list(pts)
+    Q = [P[-1]] + P + [P[0], P[1]]
+    out = []
+    for i in range(1, len(Q) - 2):
+        for k in range(n):
+            t = k / n
+            out.append(tuple(0.5 * ((2 * Q[i][j]) + (-Q[i - 1][j] + Q[i + 1][j]) * t +
+                                    (2 * Q[i - 1][j] - 5 * Q[i][j] + 4 * Q[i + 1][j] - Q[i + 2][j]) * t * t +
+                                    (-Q[i - 1][j] + 3 * Q[i][j] - 3 * Q[i + 1][j] + Q[i + 2][j]) * t ** 3) for j in (0, 1)))
+    return out
 
 
-def a_pierna(w, p):
-    """Pierna sentada, vista de lado, translucida (cristal) con arteria, vena y nervio por dentro."""
-    W, H = int(w), int(w * 1.05)
-    big = _canvas(W, H)
-    dr = ImageDraw.Draw(big)
+def _glass_shape(W, H, outline, glass, extra=None):
+    """Silueta rellena tipo cristal: degradado, borde claro, brillo superior. outline en fracciones (x, y)."""
+    from PIL import ImageFilter
     S = SS
-    thigh, shin = _leg_paths(W * S, H * S)
-    fw = W * S * 0.27
-    foot = [(.65 * W * S, .72 * H * S), (.72 * W * S, .84 * H * S), (.88 * W * S, .85 * H * S)]
-    glass = _c(p.get("color"), (70, 130, 210))
-    _glass(dr, [thigh, shin], fw, fill=glass, alpha=110)
-    _glass(dr, [foot], fw * 0.62, fill=glass, alpha=110)
-    cen = _sm([thigh[0], thigh[1], thigh[2], shin[1], shin[2], foot[1], foot[2]], 10)
+    pts = [(x * W * S, y * H * S) for x, y in _closed(outline)]
+    mask = Image.new("L", (W * S, H * S), 0)
+    ImageDraw.Draw(mask).polygon(pts, fill=255)
+    yy = np.linspace(0, 1, H * S, dtype=np.float32)[:, None, None]
+    top = np.array(_shade(glass, 1.45), np.float32)
+    bot = np.array(_shade(glass, 0.8), np.float32)
+    rgb = top * (1 - yy) + bot * yy
+    rgb = np.broadcast_to(rgb, (H * S, W * S, 3)).astype(np.uint8)
+    im = Image.fromarray(np.dstack([rgb, np.full((H * S, W * S), 255, np.uint8)]), "RGBA")
+    im.putalpha(mask.point(lambda v: int(v * 0.62)))
+    big = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    big.alpha_composite(im)
+    dr = ImageDraw.Draw(big)
+    dr.line(pts + [pts[0]], fill=(185, 232, 255, 245), width=int(S * 5), joint="curve")
+    hl = Image.new("L", mask.size, 0)                                  # brillo interior suave en el borde superior
+    ImageDraw.Draw(hl).line(pts[: len(pts) // 2], fill=120, width=int(S * 9))
+    hl = hl.filter(ImageFilter.GaussianBlur(S * 4))
+    hl = Image.composite(hl, Image.new("L", mask.size, 0), mask)
+    white = Image.new("RGBA", mask.size, (230, 250, 255, 0))
+    white.putalpha(hl)
+    big.alpha_composite(white)
+    return big, mask
 
-    def off(path, d):
-        o = []
-        for i, (x, y) in enumerate(path):
-            a, b = path[max(0, i - 1)], path[min(len(path) - 1, i + 1)]
-            dx, dy = b[0] - a[0], b[1] - a[1]
-            n = math.hypot(dx, dy) or 1
-            o.append((x - dy / n * d, y + dx / n * d))
-        return o
-    dr.line(off(cen, fw * 0.18), fill=(230, 50, 60, 255), width=int(S * 5), joint="curve")
-    dr.line(off(cen, -fw * 0.18), fill=(60, 110, 240, 255), width=int(S * 5), joint="curve")
-    nerve = float(p.get("nerve", 1) or 0)
+
+def _offset(path, d):
+    o = []
+    for i, (x, y) in enumerate(path):
+        a, b = path[max(0, i - 1)], path[min(len(path) - 1, i + 1)]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        n = math.hypot(dx, dy) or 1
+        o.append((x - dy / n * d, y + dx / n * d))
+    return o
+
+
+def _vessels(big, cen, gap, nerve=1.0, S=SS):
+    dr = ImageDraw.Draw(big)
+    dr.line(_offset(cen, gap), fill=(230, 50, 60, 255), width=int(S * 5), joint="curve")
+    dr.line(_offset(cen, -gap), fill=(70, 120, 245, 255), width=int(S * 5), joint="curve")
     if nerve:
-        dr.line(cen, fill=(255, 214, 63, int(255 * min(1, nerve))), width=int(S * 4), joint="curve")
-    for i in range(0, len(cen), 7):                      # glóbulos
-        x, y = off(cen, fw * 0.18)[i]
-        dr.ellipse([x - S * 4, y - S * 3, x + S * 4, y + S * 3], fill=(255, 120, 130, 255))
-    im = _fin(big, W, H)
-    return _aura(im, (120, 200, 255), W * 0.03, 0.5)
+        dr.line(cen, fill=(255, 214, 63, int(255 * min(1, nerve))), width=int(S * 5), joint="curve")
+    red = _offset(cen, gap)
+    for i in range(3, len(red), 9):
+        x, y = red[i]
+        dr.ellipse([x - S * 5, y - S * 4, x + S * 5, y + S * 4], fill=(255, 130, 140, 255))
+
+
+_FOOT = [(.10, .0), (.14, .22), (.08, .46), (.06, .70), (.12, .86), (.30, .88), (.42, .80), (.55, .87), (.78, .90),
+         (.93, .88), (.99, .80), (.98, .68), (.90, .60), (.78, .52), (.62, .42), (.50, .30), (.42, .12), (.40, .0)]
 
 
 def a_pie(w, p):
-    """Pie de lado, translucido, con nervio dorado por dentro (spark enciende chispas)."""
+    """Pie de lado, de cristal, con talón, arco, dedos y nervio dorado por dentro (spark enciende chispas)."""
     W, H = int(w), int(w * 0.6)
-    big = _canvas(W, H)
-    dr = ImageDraw.Draw(big)
     S = SS
     glass = _c(p.get("color"), (70, 130, 210))
-    path = [(.12 * W * S, .12 * H * S), (.16 * W * S, .55 * H * S), (.36 * W * S, .78 * H * S), (.62 * W * S, .78 * H * S), (.9 * W * S, .8 * H * S)]
-    _glass(dr, [path], H * S * 0.34, fill=glass, alpha=115)
-    dr.line(_sm(path, 10), fill=(255, 214, 63, 255), width=int(S * 4), joint="curve")
-    for k in range(5):
-        x = (.72 + k * .045) * W * S
-        dr.line([(x, .72 * H * S), (x + S * 4, .88 * H * S)], fill=(190, 230, 255, 220), width=int(S * 2))
+    big, _m = _glass_shape(W, H, _FOOT, glass)
+    dr = ImageDraw.Draw(big)
+    for cx, cy, rw, rh in ((.945, .76, .04, .055), (.885, .79, .032, .045), (.83, .81, .029, .04), (.775, .83, .026, .036)):   # dedos
+        dr.ellipse([(cx - rw) * W * S, (cy - rh) * H * S, (cx + rw) * W * S, (cy + rh) * H * S], outline=(185, 232, 255, 230), width=int(S * 3))
+    dr.ellipse([.935 * W * S, .66 * H * S, .985 * W * S, .74 * H * S], fill=(235, 250, 255, 220))    # uña
+    cen = _sm([(.25 * W * S, 0), (.26 * W * S, .34 * H * S), (.34 * W * S, .62 * H * S), (.50 * W * S, .72 * H * S), (.72 * W * S, .74 * H * S), (.92 * W * S, .72 * H * S)], 10)
+    _vessels(big, cen, W * S * 0.018, 1.0)
     im = _fin(big, W, H)
     if p.get("spark") in (True, "1", 1, "true", "si"):
         im = _aura(im, (255, 214, 63), W * 0.04, 0.9)
     return _aura(im, (120, 200, 255), W * 0.03, 0.45)
+
+
+_LEG = [(.04, .10), (.30, .08), (.56, .11), (.68, .15), (.73, .28), (.74, .52), (.76, .72), (.79, .79), (.90, .83), (.98, .86),
+        (.98, .92), (.70, .94), (.52, .93), (.50, .82), (.51, .62), (.48, .44), (.40, .36), (.22, .34), (.05, .30)]
+
+
+def a_pierna(w, p):
+    """Pierna sentada vista de lado: muslo, rodilla, espinilla y pie, de cristal con arteria, vena y nervio."""
+    W, H = int(w), int(w * 1.05)
+    S = SS
+    glass = _c(p.get("color"), (70, 130, 210))
+    big, _m = _glass_shape(W, H, _LEG, glass)
+    dr = ImageDraw.Draw(big)
+    dr.ellipse([.60 * W * S, .13 * H * S, .70 * W * S, .26 * H * S], outline=(185, 232, 255, 200), width=int(S * 3))       # rótula
+    dr.ellipse([.945 * W * S, .87 * H * S, .985 * W * S, .93 * H * S], fill=(235, 250, 255, 220))
+    cen = _sm([(.08 * W * S, .20 * H * S), (.34 * W * S, .20 * H * S), (.58 * W * S, .22 * H * S), (.63 * W * S, .40 * H * S),
+               (.63 * W * S, .68 * H * S), (.68 * W * S, .84 * H * S), (.88 * W * S, .90 * H * S)], 10)
+    _vessels(big, cen, W * S * 0.022, float(p.get("nerve", 1) or 0))
+    im = _fin(big, W, H)
+    return _aura(im, (120, 200, 255), W * 0.03, 0.5)
 
 
 ASSETS = {
