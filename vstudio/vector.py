@@ -692,11 +692,12 @@ class VectorScene(Scene):
                 spr = spr.filter(ImageFilter.GaussianBlur(max(0.5, bl * spr.width * 0.05)))
             if L.get("glow"):
                 gc = parse_color(L["glow"], (255, 255, 200))
-                ga = spr.getchannel("A").filter(ImageFilter.GaussianBlur(max(2, spr.width * 0.09)))
-                halo = Image.new("RGBA", spr.size, tuple(gc[:3]) + (0,))
+                m = int(max(4, spr.width * 0.28))      # margen para que el aura no se corte en el borde del sprite
+                pad = Image.new("L", (spr.width + 2 * m, spr.height + 2 * m), 0)
+                pad.paste(spr.getchannel("A"), (m, m))
+                ga = pad.filter(ImageFilter.GaussianBlur(max(2, spr.width * 0.09)))
+                halo = Image.new("RGBA", pad.size, tuple(gc[:3]) + (0,))
                 halo.putalpha(ga.point([min(255, int(i * 1.6 * al)) for i in range(256)]))
-                if al < 0.99:
-                    pass
                 self._clip_paste(img, halo, x, y)
             if al < 0.99:
                 a_ch = spr.getchannel("A").point([int(i * al) for i in range(256)])

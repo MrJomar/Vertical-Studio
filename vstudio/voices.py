@@ -170,6 +170,20 @@ def gemini_models() -> dict:
     return {"models": names, "live": live}
 
 
+_IMPERATIVE = ("di ", "dilo", "lee ", "habla", "narra", "cuenta", "say ", "read ", "speak", "narrate")
+
+
+def style_prompt(style: str, text: str) -> str:
+    """Instrucción de estilo para Gemini TTS. Una sola palabra («Alegre:») la leía en voz alta; se convierte en una orden completa."""
+    st = (style or "").strip().rstrip(":.").strip()
+    if not st:
+        return text
+    low = st.lower()
+    if not low.startswith(_IMPERATIVE) and len(st.split()) <= 6:
+        st = f"Di de forma {low}"
+    return f"{st}:\n{text}"
+
+
 def gemini_synthesize(text: str, voice: str, model: str, style: str, out_wav: str) -> None:
     """Genera audio con Gemini TTS y lo guarda como WAV (PCM 24 kHz, 16 bit, mono)."""
     import base64
@@ -179,7 +193,7 @@ def gemini_synthesize(text: str, voice: str, model: str, style: str, out_wav: st
         raise RuntimeError("Falta la API key de Gemini (🎙 Voces → Gemini).")
     model = model or DEFAULT_GEMINI_MODEL
     voice = voice or "Kore"
-    prompt = f"{style.strip()}:\n{text}" if style and style.strip() else text
+    prompt = style_prompt(style, text)
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
     def body(form: int) -> dict:

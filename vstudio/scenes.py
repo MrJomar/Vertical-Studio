@@ -91,6 +91,9 @@ class Scene:
                         self.warnings.append(f"Whisper falló, uso tiempos estimados: {e}")
                 if not self.words:
                     self.words = A.estimate_words(narr, adur)
+        elif narr and getattr(ctx, "master", {}).get(self.index):
+            self.audio, self.words, adur = ctx.master[self.index]
+            self._master = True
         elif narr:
             st = ctx.settings
             from . import voices as V
@@ -98,7 +101,8 @@ class Scene:
             self.audio, self.words, adur = A.synthesize(
                 narr, vz["engine"], vz["voice"] or A.DEFAULT_VOICE_ES, vz["rate"], vz["model"], vz["style"])
         if adur > 0:
-            self.duration = max(min_dur, adur + float(ctx.settings.get("scene_pad", 0.5)))
+            pad = 0.0 if getattr(self, "_master", False) else float(ctx.settings.get("scene_pad", 0.5))
+            self.duration = max(min_dur, adur + pad)
         else:
             self.duration = min_dur or self.default_duration()
 

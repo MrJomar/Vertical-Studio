@@ -88,3 +88,6 @@ Para publicar una versión nueva, sube `__version__` en `vstudio/__init__.py`.
 
 ## Estilos de guion (v2.4)
 La carpeta `estilos/` guarda lo aprendido de los videos de referencia (estructura, ritmo, recursos) como `.json` (el programa lo usa) y `.md` (guía con ejemplo). En *Animación con IA* eliges un estilo: se añade al prompt de escenas y puedes copiar el **prompt para escribir el guion** en ese estilo. Estilos propios privados: `cache/estilos_privados/*.json` (el actualizador no los toca).
+
+## Voz maestra (v2.4.2)
+Con Gemini, todo el guion se envía en **una sola llamada** y el audio se corta por escenas en las pausas más cercanas al punto donde termina cada una: misma entonación y ritmo en todo el video, y menos peticiones. Cada audio se valida (existe, tiene voz, duración coherente) y se reintenta hasta 3 veces. Se desactiva con `"master_audio": false` en los ajustes del proyecto. El estilo de voz de una palabra («Alegre») ahora se envía como orden completa («Di de forma alegre:») para que no se lea en voz alta.

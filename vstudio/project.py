@@ -44,6 +44,7 @@ class Ctx:
         self.top_total = 0
         self.warnings: list[str] = []
         self.report = lambda msg, frac: None
+        self.master: dict = {}
 
     def resolve(self, p) -> str | None:
         if not p:
@@ -115,6 +116,13 @@ class Project:
     def build(self, ctx: Ctx) -> list:
         out = []
         tops = 0
+        try:
+            from . import master
+            ctx.master = master.plan(self.scenes, ctx.settings, [x.get("type") for x in self.scenes],
+                                     warn=lambda m: m not in ctx.warnings and ctx.warnings.append(m))
+        except Exception as e:   # sin voz maestra se usa la voz por escena (y el error real lo da esa llamada)
+            ctx.master = {}
+            ctx.warnings.append(f"Voz maestra no disponible: {e}")
         for i, spec in enumerate(self.scenes):
             info = SCENE_TYPES.get(spec.get("type"))
             if not info:

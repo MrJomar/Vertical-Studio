@@ -84,7 +84,14 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
         words = asyncio.run(_edge_async(text, voice or DEFAULT_VOICE_ES, f"{int(rate):+d}%", str(audio)))
     elif engine == "gemini":
         from . import voices as _V
-        _V.gemini_synthesize(text, voice, model, style, str(audio))
+        from . import master as _M
+        for _try in range(3):             # genera y valida; reintenta si el audio sale vacío o raro
+            _V.gemini_synthesize(text, voice, model, style, str(audio))
+            ok, why = _M.validate(str(audio), text)
+            if ok:
+                break
+            if _try == 2:
+                raise RuntimeError(f"Gemini no devolvió un audio válido: {why}")
         if rate:  # velocidad con ffmpeg (atempo 0.5–2)
             tmp = str(audio) + ".t.wav"
             run_quiet([ffmpeg_bin(), "-y", "-v", "error", "-i", str(audio), "-filter:a",
