@@ -1,0 +1,310 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave"
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "azulejos",
+   "camera": "push",
+   "fx": "humo,polvo_luz",
+   "narration": "¿Por qué a veces huele a pescado? La culpable es la trimetilamina.",
+   "layers": [
+    {
+     "asset": "hielo",
+     "x": 0.5,
+     "y": 0.86,
+     "w": 1.05,
+     "anim": "fade",
+     "z": 1
+    },
+    {
+     "asset": "pez",
+     "x": 0.5,
+     "y": 0.72,
+     "w": 0.78,
+     "anim": "slide_left+float",
+     "z": 2
+    },
+    {
+     "asset": "humo",
+     "x": 0.45,
+     "y": 0.6,
+     "w": 1.0,
+     "at": "huele",
+     "anim": "fade+drift",
+     "color": "#7ad84a",
+     "z": 3,
+     "alpha": 0.8
+    },
+    {
+     "asset": "olor",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.3,
+     "at": "huele",
+     "anim": "fade+float",
+     "z": 4
+    },
+    {
+     "asset": "banda",
+     "x": 0.5,
+     "y": 0.94,
+     "w": 1.0,
+     "anim": "slide_up",
+     "text": "PESCADERÍA",
+     "z": 6
+    },
+    {
+     "asset": "hielo",
+     "x": 0.1,
+     "y": 0.99,
+     "w": 0.7,
+     "blur": 0.6,
+     "z": 8
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "camera": "drift",
+   "fx": "humo,bokeh,bokeh_frente",
+   "narration": "Es una molécula con cara de villano que se escapa al aire.",
+   "layers": [
+    {
+     "asset": "molecula",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.7,
+     "anim": "pop+float",
+     "glow": "#b8ff7a"
+    },
+    {
+     "asset": "etiqueta",
+     "x": 0.5,
+     "y": 0.8,
+     "w": 0.4,
+     "at": "molécula",
+     "text": "N(CH₃)₃",
+     "color": "#1d7a2a",
+     "anim": "pop"
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "olas",
+   "camera": "pull",
+   "fx": "bokeh",
+   "narration": "Normalmente la vagina está ácida y esas bacterias buenas la protegen.",
+   "layers": [
+    {
+     "asset": "bacteria_buena",
+     "count": 14,
+     "spread": [
+      0.08,
+      0.25,
+      0.92,
+      0.95
+     ],
+     "w": 0.24,
+     "anim": "pop+drift",
+     "at": 0.1,
+     "rot_var": 70
+    },
+    {
+     "asset": "medidor",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.72,
+     "at": "ácida",
+     "anim": "pop",
+     "value": 4,
+     "z": 9
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "olas",
+   "bg_colors": [
+    "#7a6ad8",
+    "#2a1a6a",
+    "#a89cff"
+   ],
+   "fx": "bokeh,bokeh_frente",
+   "narration": "Pero si el pH sube, las bacterias malas invaden y el olor aparece.",
+   "layers": [
+    {
+     "asset": "bacteria_mala",
+     "count": 14,
+     "spread": [
+      0.1,
+      0.22,
+      0.9,
+      0.92
+     ],
+     "w": 0.22,
+     "anim": "pop+drift",
+     "at": "bacterias",
+     "rot_var": 25
+    },
+    {
+     "asset": "medidor",
+     "x": 0.5,
+     "y": 0.62,
+     "w": 0.72,
+     "anim": "pop",
+     "value_from": 4,
+     "value_to": 8,
+     "value_dur": 2.5,
+     "at": 0.3,
+     "z": 9
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "olas",
+   "bg_colors": [
+    "#c2506f",
+    "#3a0f28",
+    "#ffb0c8"
+   ],
+   "camera": "push",
+   "narration": "Entonces llega una pastilla y las bacterias malas salen huyendo.",
+   "layers": [
+    {
+     "asset": "bacteria_mala",
+     "count": 12,
+     "spread": [
+      0.1,
+      0.25,
+      0.9,
+      0.9
+     ],
+     "w": 0.2,
+     "anim": "pop+drift",
+     "at": 0.1,
+     "rot_var": 25,
+     "react": "pastilla",
+     "rfrom": [
+      0.5,
+      0.5
+     ],
+     "rdist": 0.22,
+     "react_mood": "scared",
+     "react_fade": true
+    },
+    {
+     "asset": "pastilla",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.5,
+     "at": "pastilla",
+     "anim": "drop+wobble",
+     "z": 9,
+     "rot": -25,
+     "glow": "#ffffff"
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuarto",
+   "fx": "corazones,brillos",
+   "narration": "Y después de tener relaciones, aparece el cartel de no molestar.",
+   "layers": [
+    {
+     "asset": "puerta",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.55,
+     "anim": "fade"
+    },
+    {
+     "asset": "luz",
+     "x": 0.5,
+     "y": 0.8,
+     "w": 0.7,
+     "anim": "fade",
+     "z": 0.5,
+     "color": "#ff6a9a"
+    },
+    {
+     "asset": "cartel",
+     "x": 0.62,
+     "y": 0.58,
+     "w": 0.32,
+     "at": "cartel",
+     "anim": "drop+wobble",
+     "z": 5
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "niebla",
+   "bg_colors": [
+    "#6a5ad8",
+    "#1a1060",
+    "#c8b8ff"
+   ],
+   "fx": "bokeh",
+   "narration": "Las bacterias se juntan y forman una cara enojada.",
+   "layers": [
+    {
+     "asset": "bacteria_mala",
+     "count": 48,
+     "spread": [
+      0.08,
+      0.28,
+      0.92,
+      0.88
+     ],
+     "w": 0.1,
+     "anim": "pop+drift",
+     "at": 0.1,
+     "shape": "cara",
+     "form": "juntan",
+     "form_dur": 1.4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "push",
+   "narration": "Tranquila: le pasa a muchas, y un médico lo puede tratar.",
+   "layers": [
+    {
+     "asset": "persona",
+     "count": 15,
+     "spread": [
+      0.1,
+      0.45,
+      0.9,
+      0.9
+     ],
+     "layout": "grid",
+     "cols": 5,
+     "w": 0.2,
+     "anim": "pop",
+     "stagger": 0.1
+    },
+    {
+     "asset": "pastilla",
+     "x": 0.5,
+     "y": 0.3,
+     "w": 0.4,
+     "at": "médico",
+     "anim": "drop+float",
+     "rot": -20
+    }
+   ]
+  }
+ ]
+}

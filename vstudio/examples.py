@@ -51,7 +51,7 @@ def _map_expedicion():
                          "caption_style": "suave"}, "scenes": [
         {"type": "map", "mode": "route", "route_style": "line", "duration": 14, "follow": True, "follow_zoom": 0.3,
          "route_color": "#f2ff2e", "route_width": 11, "marker": "none", "tilt": 14, "intro": "blanco",
-         "tip_photo": str(ASSETS / "foto1.jpg"), "tip_name": "El caminante", "highlight": "Colombia:#2a7bff",
+         "tip_photo": "examples/assets/foto1.jpg", "tip_name": "El caminante", "highlight": "Colombia:#2a7bff",
          "places": "Ushuaia | -54.8, -68.3\nLima | -12.05, -77.04\nBogotá | 4.71, -74.07\nCiudad de México | 19.43, -99.13\nAnchorage | 61.2, -149.9",
          "route_labels": [{"frac": 0.3, "text": "2 años"}, {"frac": 0.8, "text": "28 años", "style": "etiqueta", "size": 0.2}],
          "arrows": [{"from": "Ushuaia", "to": [53.74, -0.33], "label": "Hull, UK", "at": 0.6, "dur": 1.6}],
