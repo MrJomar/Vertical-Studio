@@ -1,0 +1,122 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "map_style": "natural",
+  "map_grade": "vivo",
+  "caption_style": "suave"
+ },
+ "scenes": [
+  {
+   "type": "map",
+   "narration": "Solo dos países de América no tienen mar.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Bolivia:#f59e0b, Paraguay:#22c55e"
+  },
+  {
+   "type": "map",
+   "narration": "El primero es Bolivia, en el corazón de Sudamérica, entre los Andes y la selva.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Bolivia:#f59e0b"
+  },
+  {
+   "type": "map",
+   "narration": "El segundo es Paraguay, un país con ríos enormes, pero sin una sola playa de mar.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Paraguay:#22c55e"
+  },
+  {
+   "type": "map",
+   "narration": "Pero Bolivia no siempre fue así. Hasta mil ochocientos setenta y nueve, tenía costa en el Pacífico.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Bolivia:#f59e0b"
+  },
+  {
+   "type": "map",
+   "narration": "Eran unos cuatrocientos kilómetros de litoral, alrededor del puerto de Antofagasta.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "places": "Antofagasta | -23.65, -70.40"
+  },
+  {
+   "type": "map",
+   "narration": "Tras la Guerra del Pacífico, Chile se quedó con esa franja, y Bolivia quedó encerrada.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Chile:#ef4444, Bolivia:#f59e0b"
+  },
+  {
+   "type": "map",
+   "narration": "Aun así, Bolivia mantiene una armada, que navega en el lago Titicaca y en sus ríos.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "places": "Lago Titicaca | -15.84, -69.33"
+  },
+  {
+   "type": "map",
+   "narration": "Cada veintitrés de marzo celebra el Día del Mar, en recuerdo de lo que perdió.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Bolivia:#f59e0b, Chile:#ef4444",
+   "places": "Antofagasta | -23.65, -70.40"
+  },
+  {
+   "type": "map",
+   "narration": "Paraguay, en cambio, sale al océano por los ríos Paraguay y Paraná, rumbo al Atlántico.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "route",
+   "follow": true,
+   "follow_zoom": 0.03,
+   "route_style": "line",
+   "route_color": "#f2ff2e",
+   "route_width": 11,
+   "marker": "none",
+   "tilt": 14,
+   "places": "Asunción | -25.26, -57.58\nCorrientes | -27.47, -58.83\nRosario | -32.95, -60.65\nBuenos Aires | -34.60, -58.38",
+   "route_labels": [
+    {
+     "frac": 0.5,
+     "text": "Hidrovía",
+     "style": "etiqueta",
+     "size": 0.3
+    }
+   ]
+  },
+  {
+   "type": "map",
+   "narration": "Después cruzan el Río de la Plata, y por fin llegan al Atlántico.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "route",
+   "follow": true,
+   "follow_zoom": 0.012,
+   "route_style": "line",
+   "route_color": "#38bdf8",
+   "route_width": 11,
+   "marker": "none",
+   "tilt": 14,
+   "places": "Buenos Aires | -34.60, -58.38\nMontevideo | -34.90, -56.19\nPunta del Este | -34.95, -54.95"
+  },
+  {
+   "type": "map",
+   "narration": "Dos países sin costa, que aprendieron a llegar al océano por otros caminos.",
+   "duration": 1.5,
+   "intro": "blanco",
+   "mode": "zoom",
+   "highlight": "Bolivia:#f59e0b, Paraguay:#22c55e"
+  }
+ ]
+}

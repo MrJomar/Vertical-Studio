@@ -102,10 +102,13 @@ def kit_prompt(style=""):
 
 
 def check_project(path):
-    """Revisa un proyecto JSON contra el kit: piezas que no existen, partes (only/hide) inválidas, ancho fuera de rango.
-    Devuelve (errores, avisos, piezas_nuevas)."""
     with open(path, encoding="utf-8") as fh:
-        data = json.load(fh)
+        return check_project_data(json.load(fh))
+
+
+def check_project_data(data):
+    """Revisa un proyecto contra el kit: piezas que no existen, partes (only/hide) inválidas, ancho fuera de rango.
+    Devuelve (errores, avisos, piezas_nuevas)."""
     kit = {i["id"]: i for i in scan() if "error" not in i}
     errs, warns, nuevas = [], [], []
     scenes = data["scenes"] if isinstance(data, dict) else data

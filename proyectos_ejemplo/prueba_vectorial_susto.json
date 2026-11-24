@@ -1,0 +1,505 @@
+{
+ "settings": {
+  "theme": "oscuro",
+  "tts_engine": "edge",
+  "caption_style": "suave"
+ },
+ "scenes": [
+  {
+   "type": "vector",
+   "bg": "rayos",
+   "camera": "push_fuerte",
+   "fx": "brillos",
+   "narration": "Un grito detrás de ti, y tu corazón se dispara.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.62,
+     "at": "corazón",
+     "anim": "pop+pulse",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "¡BU!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.5,
+     "at": "grito",
+     "anim": "pop+shake",
+     "z": 4
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.74,
+     "y": 0.74,
+     "w": 0.4,
+     "at": "dispara",
+     "anim": "pop+shake",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "pull",
+   "fx": "bokeh,polvo_luz",
+   "narration": "Un segundo antes, estabas sentado, tranquilo.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "persona_sentada",
+     "x": 0.5,
+     "y": 0.6,
+     "w": 0.98,
+     "anim": "slide_up+float",
+     "z": 2
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pan_right",
+   "fx": "brillos",
+   "narration": "Pero tu cerebro detectó el peligro antes de que tú lo entendieras.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "cerebro",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.9,
+     "anim": "pop+pulse",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.76,
+     "y": 0.26,
+     "w": 0.4,
+     "at": "peligro",
+     "anim": "pop+shake",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "drift",
+   "fx": "bokeh",
+   "narration": "En menos de un segundo, manda una señal de alarma por todo el cuerpo.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "cerebro",
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.42,
+     "anim": "float",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "nervio",
+     "x": 0.5,
+     "y": 0.64,
+     "w": 0.3,
+     "at": "señal",
+     "anim": "pop+shake",
+     "z": 3
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.5,
+     "y": 0.66,
+     "w": 0.7,
+     "at": "alarma",
+     "anim": "pop+shake",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "fx": "corazones,bokeh",
+   "narration": "Entonces se libera adrenalina, la hormona de la urgencia.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "vena",
+     "x": 0.5,
+     "y": 0.55,
+     "w": 1.25,
+     "only": "tubo",
+     "z": 1
+    },
+    {
+     "asset": "svg",
+     "file": "vena",
+     "x": 0.5,
+     "y": 0.55,
+     "w": 1.25,
+     "only": "globulos",
+     "at": "adrenalina",
+     "anim": "slide_left",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "ADRENALINA",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.26,
+     "w": 0.9,
+     "at": "adrenalina",
+     "anim": "pop",
+     "z": 4
+    }
+   ],
+   "bg_colors": [
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "musculo",
+   "camera": "pull",
+   "fx": "bokeh,polvo_luz",
+   "narration": "Tu corazón late más rápido y más fuerte, para mandar más sangre.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.5,
+     "y": 0.36,
+     "w": 0.55,
+     "anim": "pop+pulse",
+     "z": 3
+    },
+    {
+     "asset": "svg",
+     "file": "vena",
+     "x": 0.5,
+     "y": 0.72,
+     "w": 1.25,
+     "only": "tubo",
+     "z": 1
+    },
+    {
+     "asset": "svg",
+     "file": "vena",
+     "x": 0.5,
+     "y": 0.72,
+     "w": 1.25,
+     "only": "globulos",
+     "at": "sangre",
+     "anim": "slide_left",
+     "z": 2
+    }
+   ],
+   "bg_colors": [
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "musculo",
+   "camera": "pan_left",
+   "fx": "humo,bokeh",
+   "narration": "Esa sangre se va a tus músculos, listos para correr o pelear.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "pierna_xray",
+     "x": 0.5,
+     "y": 0.7,
+     "w": 0.5,
+     "anim": "slide_up",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "¡CORRE!",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.24,
+     "w": 0.7,
+     "at": "correr",
+     "anim": "pop+shake",
+     "z": 4
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.8,
+     "y": 0.5,
+     "w": 0.4,
+     "at": "pelear",
+     "anim": "pop+shake",
+     "z": 4
+    }
+   ],
+   "bg_colors": [
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push",
+   "fx": "brillos,bokeh",
+   "narration": "Respiras más rápido y tus sentidos se agudizan.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "persona_sentada",
+     "x": 0.5,
+     "y": 0.58,
+     "w": 0.95,
+     "only": "cuerpo,vasos,nervio",
+     "anim": "pop+float",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.9,
+     "at": "agudizan",
+     "anim": "pop+shake",
+     "z": 4
+    }
+   ],
+   "bg_colors": [
+    "#12306b",
+    "#050a1f",
+    "#7fd0ff"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "drift",
+   "fx": "bokeh",
+   "narration": "Todo esto pasa en un instante, sin que tú lo decidas.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "reloj",
+     "x": 0.5,
+     "y": 0.46,
+     "w": 0.62,
+     "anim": "pop+wobble",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "EN SEGUNDOS",
+     "color": "#ffffff",
+     "x": 0.5,
+     "y": 0.78,
+     "w": 0.85,
+     "at": "instante",
+     "anim": "pop",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuerpo",
+   "camera": "pull",
+   "fx": "bokeh,polvo_luz",
+   "narration": "Pero si ves que no era nada, el cuerpo no se apaga de golpe.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.55,
+     "anim": "pop+pulse",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "NO ERA NADA",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.85,
+     "at": "nada",
+     "anim": "pop",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "cuadricula",
+   "camera": "push",
+   "fx": "bokeh",
+   "narration": "Tu corazón tarda varios minutos en volver a su ritmo normal.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "reloj",
+     "x": 0.5,
+     "y": 0.4,
+     "w": 0.6,
+     "at": "minutos",
+     "anim": "pop+wobble",
+     "z": 3
+    },
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.5,
+     "y": 0.76,
+     "w": 0.4,
+     "anim": "float+pulse",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "MINUTOS",
+     "color": "#ffd23f",
+     "x": 0.5,
+     "y": 0.2,
+     "w": 0.7,
+     "at": "minutos",
+     "anim": "pop",
+     "z": 4
+    }
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "degradado",
+   "camera": "push_fuerte",
+   "fx": "brillos",
+   "narration": "Por eso, después de un susto, sigues con el pecho agitado.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.5,
+     "y": 0.52,
+     "w": 0.6,
+     "anim": "shake+pulse",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "chispas",
+     "x": 0.8,
+     "y": 0.28,
+     "w": 0.35,
+     "at": "agitado",
+     "anim": "pop+shake",
+     "z": 4
+    }
+   ],
+   "bg_colors": [
+    "#8a1830",
+    "#240610",
+    "#ff7a86"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pan_right",
+   "fx": "bokeh,polvo_luz",
+   "narration": "Respirar lento le avisa a tu cuerpo que ya pasó el peligro.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "persona_sentada",
+     "x": 0.5,
+     "y": 0.58,
+     "w": 0.9,
+     "only": "cuerpo,vasos,nervio",
+     "anim": "float",
+     "z": 2
+    },
+    {
+     "asset": "texto",
+     "text": "CALMA",
+     "color": "#7dffcf",
+     "x": 0.5,
+     "y": 0.22,
+     "w": 0.6,
+     "at": "lento",
+     "anim": "pop",
+     "z": 4
+    }
+   ],
+   "bg_colors": [
+    "#0b3b3a",
+    "#03121a",
+    "#7dffcf"
+   ]
+  },
+  {
+   "type": "vector",
+   "bg": "espacio",
+   "camera": "pull",
+   "fx": "corazones,brillos",
+   "narration": "Así que, la próxima vez que te asustes, agradécele a tu cerebro.",
+   "duration": 1.5,
+   "layers": [
+    {
+     "asset": "svg",
+     "file": "cerebro",
+     "x": 0.5,
+     "y": 0.5,
+     "w": 0.85,
+     "anim": "pop+float",
+     "z": 2
+    },
+    {
+     "asset": "svg",
+     "file": "corazon",
+     "x": 0.78,
+     "y": 0.78,
+     "w": 0.3,
+     "anim": "pop+pulse",
+     "z": 3
+    }
+   ]
+  }
+ ]
+}

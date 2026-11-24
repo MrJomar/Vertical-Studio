@@ -48,7 +48,23 @@ def main(argv=None):
     k.add_argument("--prompt", default=None, help="Guarda el prompt completo para la IA programada en este archivo")
     k.add_argument("--check", default=None, help="Revisa un proyecto JSON contra el kit")
 
+    rv = sub.add_parser("revisar", help="Revisa un proyecto: ritmo, variedad, kit SVG, mapas y coordenadas")
+    rv.add_argument("project")
+    rv.add_argument("--prompt-mapas", default=None, help="Guarda el prompt de IA diaria para videos de mapas en este archivo")
+
     a = ap.parse_args(argv)
+    if a.cmd == "revisar":
+        from vstudio import review
+        if a.prompt_mapas:
+            with open(a.prompt_mapas, "w", encoding="utf-8") as fh:
+                fh.write(review.map_prompt())
+            print("Prompt de mapas guardado en", a.prompt_mapas)
+        res = review.review_file(a.project)
+        for lvl, msg in res:
+            print(("ERROR: " if lvl == "error" else "Aviso: ") + msg)
+        ne = sum(1 for l, _ in res if l == "error")
+        print("Revisión: sin problemas." if not res else f"Revisión: {ne} error(es), {len(res) - ne} aviso(s).")
+        return 1 if ne else 0
     if a.cmd == "kit":
         from vstudio import svgkit
         import os

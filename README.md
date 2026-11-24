@@ -109,3 +109,8 @@ Elemento `svg`: `{"asset":"svg","file":"pie","x":.5,"y":.6,"w":.8}` carga `asset
 
 ## API de imágenes y piezas (v2.9)
 En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (opcional; si está vacía usa la de Gemini), modelo (por defecto `gemini-2.5-pro`) y botón «Probar conexión». Se guarda en `cache/voices.json`, nunca dentro de los proyectos. Es la base del generador automático de piezas.
+
+## Revisión automática y proyectos de validación (v2.10)
+- `python cli.py revisar proyecto.json` revisa ritmo (voz demasiado larga por escena, gancho largo), variedad (fondos/cámaras repetidos), kit SVG (piezas y partes que no existen, piezas fuera de pantalla, `at` que no es palabra exacta de la narración) y mapas (coordenadas imposibles, saltos de ruta, países que no reconoce, `follow_zoom` demasiado grande para la ruta).
+- `python cli.py revisar proyecto.json --prompt-mapas estilos/prompt_ia_diaria_mapas.txt` guarda el prompt de IA diaria para videos de mapas (el de vectorial es `python cli.py kit --prompt …`).
+- Proyectos de validación nuevos: `prueba_vectorial_susto.json` (14 escenas, solo piezas del kit) y `prueba_mapa_sin_mar.json` (11 escenas: Bolivia y Paraguay, zoom/países resaltados/rutas por río).
