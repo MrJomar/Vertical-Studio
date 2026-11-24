@@ -670,7 +670,7 @@ class MapScene(Scene):
             wide = max(final[2] * 5.0, 0.38)
             wide = min(wide, 0.9)
             start = (cxy[0], cxy[1], wide)
-            travel = clamp(0.5 * (D - 0.5), 1.2, 3.4)
+            travel = clamp(0.35 * (D - 0.5), 0.8, 2.2)  # zoom rápido y con fuerza
             if final[2] >= wide * 0.9:
                 self.kfs = [(0.0, final, 0.0)]
                 t_rev = 0.5
@@ -848,7 +848,12 @@ class MapScene(Scene):
             maxp = max(maxp, max(act.values()))
         if union.any() and s.get("dim_outside", True):
             soft = cv2.GaussianBlur(union, (0, 0), 7)
-            img = img * (1 - 0.58 * min(1.0, maxp) * (1 - soft))[..., None]
+            out_w = (1 - soft)[..., None] * min(1.0, maxp)
+            ds = float(s.get("desat_outside", 0.7))  # entorno en grises, país de color (estilo Geo Chris)
+            if ds > 0:
+                gray = img.mean(axis=2, keepdims=True)
+                img = img * (1 - ds * out_w) + gray * (ds * out_w)
+            img = img * (1 - 0.45 * out_w)
         out = np.clip(img, 0, 255).astype(np.uint8)
         # contornos con brillo
         for feats, probs, _ in layers:
@@ -1177,7 +1182,7 @@ SCENE_TYPES: dict[str, dict] = {
         ("overlays", "Íconos/cifras/fotos sobre el mapa (JSON)", "json", []),
         ("route_style", "Ruta: estilo", "choice", "arc", ["arc", "line"]),
         ("route_color", "Ruta: color (#rrggbb, p. ej. #f2ff2e)", "text", ""), ("route_width", "Ruta: grosor", "number", 6),
-        ("push", "Empuje lento de cámara (0 = off)", "number", 0.07), ("follow", "Ruta: la cámara sigue la punta", "bool", False), ("follow_zoom", "Zoom al seguir (menor = más cerca)", "number", 0.0),
+        ("push", "Empuje lento de cámara (0 = off)", "number", 0.07), ("desat_outside", "Entorno en grises (0-1)", "number", 0.7), ("follow", "Ruta: la cámara sigue la punta", "bool", False), ("follow_zoom", "Zoom al seguir (menor = más cerca)", "number", 0.0),
         ("tip_photo", "Avatar en la punta de la ruta (foto)", "file", ""), ("tip_name", "Nombre sobre el avatar", "text", ""),
         ("route_labels", "Rótulos sobre la ruta (JSON: [{\"frac\":0.5,\"text\":\"2 años\"}])", "json", []),
         ("arrows", "Flechas punteadas (JSON: [{\"from\":\"Lima\",\"to\":[53.7,-0.3],\"label\":\"Hull, UK\",\"at\":2}])", "json", []),
