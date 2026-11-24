@@ -283,7 +283,7 @@ async function voicesModal(){
     <div class="hint">Se guarda solo en este equipo (cache/voices.json) y nunca va dentro de tus proyectos.</div></div>
     <div class="sec">API de imágenes y piezas SVG</div>
     <div class="fld"><label>API key para generar piezas e imágenes ${cfg.has_img_key?`<span class="hint">(guardada ${esc(cfg.img_key_hint)})</span>`:`<span class="hint">(vacía: usa la de Gemini de arriba)</span>`}</label><div class="frow"><input class="inp" id="ikey" type="password" placeholder="${cfg.has_img_key?"•••• (escribe para reemplazar)":"Opcional: otra API key"}"><button class="btn" id="isave">Guardar</button>${cfg.has_img_key?`<button class="btn danger" id="iclear">Quitar</button>`:""}</div></div>
-    <div class="fld"><label>Modelo</label><div class="frow"><input class="inp" id="imodel" value="${esc(cfg.img_model||"gemini-2.5-pro")}" placeholder="gemini-2.5-pro"><button class="btn" id="imsave">Guardar</button><button class="btn" id="itest">Probar conexión</button><button class="btn" id="imlist">Ver modelos de mi clave</button></div><div id="imlst" class="hint"></div>
+    <div class="fld"><label>Modelo</label><div class="frow"><select class="inp" id="imodel"><option value="${esc(cfg.img_model||"")}">${esc(cfg.img_model||"(elige un modelo)")}</option></select><button class="btn" id="imsave">Guardar</button><button class="btn" id="itest">Probar conexión</button><button class="btn" id="imlist">Actualizar lista</button></div><div id="imlst" class="hint"></div>
     <div class="hint">Se usa para pedir piezas nuevas del kit. Es la API, con su propio cupo: no es lo mismo que tu plan de la app de Gemini.</div><div class="hint" id="ires"></div></div>`;
     await voicePicker(b.querySelector("#vpk"),PROJ_VOICE_ST,()=>applyProjVoice(PROJ_VOICE_ST));
     b.querySelector("#vprof").onchange=e=>{S.project.settings.voice_profile=e.target.value||undefined;if(!e.target.value)delete S.project.settings.voice_profile;markDirty()};
@@ -302,12 +302,16 @@ async function voicesModal(){
     b.querySelector("#isave").onclick=async()=>{const k=b.querySelector("#ikey").value.trim();if(!k)return;await jpost("/api/voice_save",{img_key:k});toast("API key de imágenes guardada");draw()};
     const ic=b.querySelector("#iclear");if(ic)ic.onclick=async()=>{await jpost("/api/img_clear_key",{});draw()};
     b.querySelector("#imsave").onclick=async()=>{await jpost("/api/voice_save",{img_model:b.querySelector("#imodel").value.trim()});toast("Modelo guardado")};
-    b.querySelector("#imlist").onclick=async()=>{const o=b.querySelector("#imlst");o.textContent="Consultando…";
+    const loadModels=async(quiet)=>{const o=b.querySelector("#imlst"),sel=b.querySelector("#imodel");if(!quiet)o.textContent="Consultando…";
       try{const r=await jpost("/api/img_models",{key:b.querySelector("#ikey").value.trim()});if(!r.ok)throw new Error(r.error);
-        o.innerHTML="Toca uno para usarlo: "+r.models.map(m=>`<a href="#" data-m="${esc(m)}" style="margin-right:10px">${esc(m)}</a>`).join("");
-        o.querySelectorAll("[data-m]").forEach(a=>a.onclick=async e=>{e.preventDefault();b.querySelector("#imodel").value=a.dataset.m;await jpost("/api/voice_save",{img_model:a.dataset.m});toast("Modelo «"+a.dataset.m+"» guardado")})}
-      catch(e){o.textContent="✖ "+e.message}};
-    b.querySelector("#itest").onclick=async()=>{const o=b.querySelector("#ires");o.textContent="Probando…";try{const r=await jpost("/api/img_test",{key:b.querySelector("#ikey").value.trim(),model:b.querySelector("#imodel").value.trim()});o.textContent=r.ok?"✔ Conectado con "+r.model:"✖ "+r.error}catch(e){o.textContent="✖ "+e.message}};
+        const cur=cfg.img_model||"";const list=[...new Set([...(cur?[cur]:[]),...r.models])];
+        sel.innerHTML=list.map(m=>`<option value="${esc(m)}"${m===cur?" selected":""}>${esc(m)}${m===cur?"  (actual)":""}</option>`).join("");
+        o.textContent=r.models.length+" modelos disponibles con tu clave.";}
+      catch(e){o.textContent=quiet?"":"✖ "+e.message}};
+    b.querySelector("#imlist").onclick=()=>loadModels(false);
+    b.querySelector("#imodel").onchange=async e=>{cfg.img_model=e.target.value;await jpost("/api/voice_save",{img_model:e.target.value});toast("Modelo «"+e.target.value+"» guardado")};
+    loadModels(true);
+    b.querySelector("#itest").onclick=async()=>{const o=b.querySelector("#ires");o.textContent="Probando…";try{const r=await jpost("/api/img_test",{key:b.querySelector("#ikey").value.trim(),model:b.querySelector("#imodel").value});o.textContent=r.ok?"✔ Conectado con "+r.model:"✖ "+r.error}catch(e){o.textContent="✖ "+e.message}};
   };
   window.PROJ_VOICE_ST=PROJ_VOICE();
   await draw();
