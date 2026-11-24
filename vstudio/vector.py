@@ -470,6 +470,12 @@ class VectorScene(Scene):
     def sfx_events(self) -> list:
         tags = {"reloj": "tic", "chispas": "ding"}
         ev = []
+        from . import sfx as SX
+        for L in self.layers:                              # corazón que late: el sonido cae en cada pulsación
+            if "latido" in L["anim_l"]:
+                d = float(L.get("latido_dur") or max(0.5, self.duration - L["start"] - 0.2))
+                b0 = float(L.get("bpm", 80))
+                ev += SX.latido_beats(L["start"], d, b0, float(L.get("bpm_fin", b0)))
         last = -9.0
         for L in sorted(self.layers, key=lambda d: d["start"]):
             if L["start"] > 0.12 and L["start"] - last > 0.8 and float(L.get("w", 0.3) or 0.3) >= 0.3:
@@ -664,6 +670,14 @@ class VectorScene(Scene):
                     rot += math.sin(wob * 31) * 2.5 * amp
                 elif a == "pulse":
                     sc *= 1 + 0.07 * amp * math.sin(wob * 4 + ph)
+                elif a == "latido":      # lub-dub sincronizado con el sonido «latido»
+                    b0 = float(L.get("bpm", 80))
+                    b1 = float(L.get("bpm_fin", b0))
+                    dd = max(0.5, float(L.get("latido_dur") or max(0.5, self.duration - L["start"] - 0.2)))
+                    ph_b = (b0 * min(lt, dd) + (b1 - b0) * min(lt, dd) ** 2 / (2 * dd) + b1 * max(0.0, lt - dd)) / 60.0
+                    fb = ph_b % 1.0
+                    bump = math.exp(-(min(fb, 1 - fb) / 0.06) ** 2) + 0.55 * math.exp(-((fb - 0.3) / 0.07) ** 2)
+                    sc *= 1 + 0.13 * amp * bump
                 elif a == "spin":
                     rot += wob * 90 * amp + math.degrees(ph) * (L["count"] > 1)
                 elif a == "wobble":
@@ -770,7 +784,7 @@ Formato de cada escena (responde SOLO un arreglo JSON, sin texto extra):
 
 Cada capa: {{"asset":"nombre","x":0-1,"y":0-1 (centro, fracción del alto/ancho),"w":0.05-1 (ancho como fracción del ancho de pantalla),
  "at":"palabra de la narración que lo hace aparecer" (o segundos), "out":"palabra o segundos en que desaparece" (opcional),
- "anim":"pop+float" (entradas: pop, fade, grow, slide_left, slide_right, slide_up, slide_down, drop; movimiento continuo: float, bounce, shake, pulse, spin, wobble, drift, fall, rise, blink),
+ "anim":"pop+float" (entradas: pop, fade, grow, slide_left, slide_right, slide_up, slide_down, drop; movimiento continuo: float, bounce, shake, pulse, latido (corazón: con "bpm" y "bpm_fin"; suena solo con sfx auto), spin, wobble, drift, fall, rise, blink),
  "count":N con "spread":[x0,y0,x1,y1] y "layout":"random|grid|line" para enjambres/multitudes, "rot":grados,"flip":true,"z":orden (mayor = encima),
  más los parámetros propios del elemento}}.
 Para el medidor puedes animar la aguja con "value_from", "value_to" y "value_dur".

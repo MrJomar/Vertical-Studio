@@ -271,6 +271,17 @@ def _parse(ev, scene_dur):
     return None
 
 
+def latido_beats(t0: float, dur: float, b0: float, b1: float, vol: float = 1.0) -> list[tuple[float, str, float, bool]]:
+    """Latidos repetidos desde t0 durante dur s, acelerando de b0 a b1 (lpm). Cada golpe cae en phase entero (igual que la pieza animada)."""
+    out, tl = [], 0.0
+    while tl < dur:
+        fr = tl / max(dur, 0.1)
+        fade = min(1.0, (dur - tl) / 0.8)
+        out.append((t0 + tl, "latido", vol * (0.7 + 0.3 * fr) * max(0.15, fade), True))
+        tl += 60.0 / max(30.0, b0 + (b1 - b0) * fr)
+    return out
+
+
 def plan_events(scenes, starts, settings, tlen_s) -> tuple[list[tuple[float, str, float]], list[str]]:
     """Devuelve ([(t_global, tag, vol_rel)], avisos). starts[i] = inicio global (s) de la escena i."""
     mode = str(settings.get("sfx", "manual") or "off").lower()
@@ -292,12 +303,7 @@ def plan_events(scenes, starts, settings, tlen_s) -> tuple[list[tuple[float, str
                     except (TypeError, ValueError):
                         warns.append(f"Escena {i + 1}: latido mal escrito: {e!r}")
                         continue
-                    t_l = 0.0
-                    while t_l < dur:
-                        fr = t_l / max(dur, 0.1)
-                        fade = min(1.0, (dur - t_l) / 0.8)                     # se apaga al final
-                        ev.append((t0 + a0 + t_l, "latido", vv * (0.7 + 0.3 * fr) * max(0.15, fade), True))
-                        t_l += 60.0 / max(30.0, b0 + (b1 - b0) * fr)
+                    ev.extend(latido_beats(t0 + a0, dur, b0, b1, vv))
                     continue
                 p = _parse(e, sc.duration)
                 if p and p[0]:
@@ -309,8 +315,11 @@ def plan_events(scenes, starts, settings, tlen_s) -> tuple[list[tuple[float, str
                 ev.append((t0 + tlen_s * 0.5, "whoosh", 1.0, False))
             if sc.spec.get("sfx_auto", True):
                 try:
-                    for t, tag in sc.sfx_events():
-                        ev.append((t0 + t, tag, 1.0, False))
+                    for e_ in sc.sfx_events():
+                        if len(e_) >= 4:
+                            ev.append((t0 + e_[0], e_[1], e_[2], bool(e_[3])))
+                        else:
+                            ev.append((t0 + e_[0], e_[1], 1.0, False))
                 except Exception:
                     pass
     ev.sort(key=lambda e: e[0])

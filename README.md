@@ -134,3 +134,4 @@ En Ajustes → voz, sección «API de imágenes y piezas SVG»: API key propia (
 ## GPU (v2.13)
 El dibujo de cada cuadro es CPU; la GPU solo acelera la codificación final. NVIDIA → NVENC, AMD Radeon → AMF (h264_amf), si no hay → CPU x264. En «auto» se elige sola; puedes forzarla en Ajustes → Salida → Codificador.
 - v2.13.1: sonido «latido» (corazón). Continuo y acelerando: `"sfx": [{"tag":"latido","at":0.4,"dur":3,"bpm":90,"bpm_fin":140}]`.
+- v2.14.0: animación `latido` para el corazón (`"anim":"pop+latido","bpm":60,"bpm_fin":120`): la pieza pulsa lub-dub y, con `sfx` en auto, el sonido cae en cada pulsación.
