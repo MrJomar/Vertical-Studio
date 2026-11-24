@@ -585,7 +585,10 @@ class VectorScene(Scene):
             cw, ch = c.w / sc, c.h / sc
             x0 = min(max(0, (c.w - cw) / 2 + ox * c.w), c.w - cw)
             y0 = min(max(0, (c.h - ch) / 2 + oy * c.h), c.h - ch)
-            out = out.crop((int(x0), int(y0), int(x0 + cw), int(y0 + ch))).resize((c.w, c.h), Image.BILINEAR)
+            # zoom y desplazamiento con precisión de sub-píxel (recortar a píxeles enteros hacía temblar toda la escena)
+            M = np.array([[sc, 0.0, (0.5 - x0) * sc - 0.5], [0.0, sc, (0.5 - y0) * sc - 0.5]], np.float32)
+            out = Image.fromarray(cv2.warpAffine(np.asarray(out), M, (c.w, c.h), flags=cv2.INTER_LINEAR,
+                                                 borderMode=cv2.BORDER_REPLICATE), "RGB")
         return out
 
     def _positions(self, L: dict):
@@ -751,12 +754,12 @@ class VectorScene(Scene):
             spr = sprite(L["asset"], wpx, params, L.get("shadow", L["asset"] not in ("texto", "hielo", "banda", "olor", "agua", "svg")))
             if L.get("flip"):
                 spr = spr.transpose(Image.FLIP_LEFT_RIGHT)
-            ws = max(2, int(spr.width * sc * base_w / max(wpx, 1)))
-            hs = max(2, int(spr.height * sc * base_w / max(wpx, 1)))
-            if (ws, hs) != spr.size:
-                spr = spr.resize((ws, hs), Image.BILINEAR)
-            if abs(rot) > 0.3:
-                spr = spr.rotate(-rot, Image.BICUBIC, expand=True)
+            kk = sc * base_w / max(wpx, 1)
+            if spr.width * kk < 2 or spr.height * kk < 2:
+                continue
+            # escala, giro y posición en UNA sola transformación con precisión de sub-píxel (sin redondeos por cuadro)
+            spr, ox_, oy_ = self._xform(spr, kk, rot, x, y)
+            cx2, cy2 = ox_ + spr.width / 2, oy_ + spr.height / 2
             bl = float(L.get("blur", 0) or 0)
             if bl > 0:
                 spr = spr.filter(ImageFilter.GaussianBlur(max(0.5, bl * spr.width * 0.05)))
@@ -768,12 +771,29 @@ class VectorScene(Scene):
                 ga = pad.filter(ImageFilter.GaussianBlur(max(2, spr.width * 0.09)))
                 halo = Image.new("RGBA", pad.size, tuple(gc[:3]) + (0,))
                 halo.putalpha(ga.point([min(255, int(i * 1.6 * al)) for i in range(256)]))
-                self._clip_paste(img, halo, x, y)
+                self._clip_paste(img, halo, cx2, cy2)
             if al < 0.99:
                 a_ch = spr.getchannel("A").point([int(i * al) for i in range(256)])
                 spr = spr.copy()
                 spr.putalpha(a_ch)
-            self._clip_paste(img, spr, x, y)
+            self._clip_paste(img, spr, cx2, cy2)
+
+    @staticmethod
+    def _xform(spr0, k, rot, x, y):
+        """Escala k + giro rot (grados, horario) + centrado en (x, y) fraccionarios, en una sola pasada.
+        Devuelve (imagen, x_izq, y_arriba) con coordenadas enteras para pegar."""
+        w0, h0 = spr0.size
+        th = math.radians(rot)
+        cs, sn = math.cos(th), math.sin(th)
+        wo = abs(w0 * k * cs) + abs(h0 * k * sn)
+        ho = abs(w0 * k * sn) + abs(h0 * k * cs)
+        Wo, Ho = int(math.ceil(wo)) + 4, int(math.ceil(ho)) + 4
+        ox, oy = math.floor(x - Wo / 2), math.floor(y - Ho / 2)
+        fx, fy = x - ox, y - oy
+        a, b, d, e = cs / k, sn / k, -sn / k, cs / k
+        coef = (a, b, w0 / 2 - a * fx - b * fy, d, e, h0 / 2 - d * fx - e * fy)
+        out = spr0.convert("RGBa").transform((Wo, Ho), Image.AFFINE, coef, Image.BILINEAR).convert("RGBA")
+        return out, ox, oy
 
     @staticmethod
     def _clip_paste(img, spr, x, y) -> None:
