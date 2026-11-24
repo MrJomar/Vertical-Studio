@@ -356,3 +356,39 @@ def polyline_partial(pts: np.ndarray, frac: float) -> tuple[np.ndarray, tuple[fl
     out = np.vstack([pts[: i + 1], tip[None]])
     ang = math.atan2(pts[i + 1][1] - pts[i][1], pts[i + 1][0] - pts[i][0])
     return out, (float(tip[0]), float(tip[1])), ang
+
+
+def road_route(a, b, profile: str = "driving", n_max: int = 160):
+    """Ruta real por caminos entre dos puntos del mundo (x,y) usando el servicio público OSRM (necesita internet).
+    Devuelve puntos (N,2) en coordenadas del mundo, o None si no hay ruta/conexión. Se guarda en caché."""
+    import hashlib, json, urllib.request
+    from .core import CACHE_DIR
+    lon1, lat1 = world_to_lonlat(*a)
+    lon2, lat2 = world_to_lonlat(*b)
+    key = hashlib.md5(f"{profile}{lon1:.4f},{lat1:.4f};{lon2:.4f},{lat2:.4f}".encode()).hexdigest()
+    f = CACHE_DIR / "routes" / f"{key}.json"
+    coords = None
+    if f.exists():
+        try:
+            coords = json.loads(f.read_text("utf-8"))
+        except Exception:
+            coords = None
+    if coords is None:
+        url = (f"https://router.project-osrm.org/route/v1/{profile}/{lon1:.5f},{lat1:.5f};{lon2:.5f},{lat2:.5f}"
+               "?overview=full&geometries=geojson")
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "VerticalStudio/2"})
+            with urllib.request.urlopen(req, timeout=25) as r:
+                data = json.loads(r.read().decode())
+            coords = data["routes"][0]["geometry"]["coordinates"]
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(json.dumps(coords), "utf-8")
+        except Exception:
+            return None
+    if len(coords) < 2:
+        return None
+    arr = np.array(coords, float)
+    if len(arr) > n_max:
+        arr = arr[np.linspace(0, len(arr) - 1, n_max).astype(int)]
+    x, y = to_world(arr[:, 0], arr[:, 1])
+    return np.column_stack([x, y])

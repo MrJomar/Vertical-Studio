@@ -651,17 +651,26 @@ class MapScene(Scene):
             pts = [np.array(p["xy"]) for p in self.places]
             style = s.get("route_style", "arc")
             segs_ = []
+            seg_start = [0]
             for a, b in zip(pts, pts[1:]):
-                arc = geo.bezier_arc(a, b, 0.18 if style == "arc" else 0.0)
+                arc = None
+                if style in ("road", "foot") and not c.preview:
+                    arc = geo.road_route(a, b, "driving" if style == "road" else "foot")
+                    if arc is None:
+                        self.warnings.append("Ruta por caminos no disponible (¿sin internet o cruza el mar?): usé un arco en ese tramo.")
+                if arc is None:
+                    arc = geo.bezier_arc(a, b, 0.18 if style in ("arc", "road", "foot") else 0.0)
+                else:
+                    arc = np.vstack([a, arc[1:-1], b])
                 segs_.append(arc if not segs_ else arc[1:])
+                seg_start.append(sum(len(x) for x in segs_) - 1)
             self.route_pts = np.vstack(segs_)
             seg_len = np.hypot(*np.diff(self.route_pts, axis=0).T)
             cum = np.concatenate([[0], np.cumsum(seg_len)])
             total = cum[-1] or 1e-9
             self.r0, self.r1 = 1.0, max(2.0, D - 0.9)
             per_seg = len(self.route_pts) // max(1, len(pts) - 1)
-            self.pin_frac = [0.0] + [float(cum[min(len(cum) - 1, k * (len(self.route_pts) - 1) // (len(pts) - 1))] / total)
-                                     for k in range(1, len(pts))]
+            self.pin_frac = [0.0] + [float(cum[min(len(cum) - 1, seg_start[k])] / total) for k in range(1, len(pts))]
             xs, ys = self.route_pts[:, 0], self.route_pts[:, 1]
             rb = (xs.min(), ys.min(), xs.max(), ys.max())
             fit = (float((rb[0] + rb[2]) / 2), float((rb[1] + rb[3]) / 2),
@@ -1190,7 +1199,7 @@ SCENE_TYPES: dict[str, dict] = {
         ("places", "Lugares: uno por línea, «Nombre» o «Nombre | lat, lon | foto opcional»", "multiline", ""),
         ("geojson", "GeoJSON propio (barrios, colonias, estados…)", "file", ""),
         ("overlays", "Íconos/cifras/fotos sobre el mapa (JSON)", "json", []),
-        ("route_style", "Ruta: estilo", "choice", "arc", ["arc", "line"]),
+        ("route_style", "Ruta: estilo (road = por carreteras reales, foot = a pie; necesita internet)", "choice", "arc", ["arc", "line", "road", "foot"]),
         ("route_color", "Ruta: color (#rrggbb, p. ej. #f2ff2e)", "text", ""), ("route_width", "Ruta: grosor", "number", 6),
         ("push", "Empuje lento de cámara (0 = off)", "number", 0.07), ("desat_outside", "Entorno en grises (0-1)", "number", 0.7), ("follow", "Ruta: la cámara sigue la punta", "bool", False), ("follow_zoom", "Zoom al seguir (menor = más cerca)", "number", 0.0),
         ("tip_photo", "Avatar en la punta de la ruta (foto)", "file", ""), ("tip_name", "Nombre sobre el avatar", "text", ""),

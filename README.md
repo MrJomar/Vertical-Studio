@@ -138,3 +138,6 @@ El dibujo de cada cuadro es CPU; la GPU solo acelera la codificación final. NVI
 
 ## Piezas SVG con Gemini y aprobación (v2.15)
 Botón **🧩 Piezas** (arriba o en el inicio): escribes qué debe dibujar (o tocas «Usar» en una pieza que pidió la IA diaria con `piezas_nuevas`), Gemini la dibuja con tu API key y aparece como **pendiente** con vista previa. Solo entra al kit si pulsas **Aprobar** (se guarda en `cache/svg_privados`, no se pierde al actualizar); si no, **Descartar**. Se limpia el SVG (sin scripts ni imágenes externas) antes de mostrarlo.
+
+## Rutas por caminos reales (v2.16)
+En una escena de mapa con `"mode":"route"` pon `"route_style":"road"` (carretera) o `"foot"` (a pie): la ruta sigue los caminos reales entre tus lugares (servicio público OSRM, necesita internet; se guarda en caché). Si un tramo no tiene ruta por tierra (mar, sin conexión), usa un arco solo en ese tramo y avisa. En la vista previa se muestra el arco; el camino real sale al renderizar.
