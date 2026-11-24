@@ -93,9 +93,10 @@ class Scene:
                     self.words = A.estimate_words(narr, adur)
         elif narr:
             st = ctx.settings
+            from . import voices as V
+            vz = V.resolve(s, st, self.type, warn=lambda m: m not in self.warnings and self.warnings.append(m))
             self.audio, self.words, adur = A.synthesize(
-                narr, s.get("tts_engine") or st.get("tts_engine", "edge"),
-                s.get("voice") or st.get("voice", A.DEFAULT_VOICE_ES), int(s.get("rate", st.get("tts_rate", 0))))
+                narr, vz["engine"], vz["voice"] or A.DEFAULT_VOICE_ES, vz["rate"], vz["model"], vz["style"])
         if adur > 0:
             self.duration = max(min_dur, adur + float(ctx.settings.get("scene_pad", 0.5)))
         else:

@@ -58,8 +58,8 @@ async def _edge_async(text: str, voice: str, rate: str, out: str):
     return words
 
 
-def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, rate: int = 0
-               ) -> tuple[str | None, Words, float]:
+def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, rate: int = 0,
+               model: str = "", style: str = "") -> tuple[str | None, Words, float]:
     """Devuelve (ruta_audio|None, palabras, duración). Cachea por texto/voz."""
     text = (text or "").strip()
     if not text:
@@ -70,7 +70,7 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
         return None, estimate_words(text, d), d
     tdir = CACHE_DIR / "tts"
     tdir.mkdir(parents=True, exist_ok=True)
-    key = hash_key(engine, voice, rate, text)
+    key = hash_key(engine, voice, rate, text, model if engine == "gemini" else "", style if engine == "gemini" else "")
     ext = ".mp3" if engine == "edge" else ".wav"
     audio, meta = tdir / (key + ext), tdir / (key + ".json")
     if audio.exists() and meta.exists():
@@ -82,6 +82,14 @@ def synthesize(text: str, engine: str = "edge", voice: str = DEFAULT_VOICE_ES, r
     words: Words = []
     if engine == "edge":
         words = asyncio.run(_edge_async(text, voice or DEFAULT_VOICE_ES, f"{int(rate):+d}%", str(audio)))
+    elif engine == "gemini":
+        from . import voices as _V
+        _V.gemini_synthesize(text, voice, model, style, str(audio))
+        if rate:  # velocidad con ffmpeg (atempo 0.5–2)
+            tmp = str(audio) + ".t.wav"
+            run_quiet([ffmpeg_bin(), "-y", "-v", "error", "-i", str(audio), "-filter:a",
+                       f"atempo={max(0.5, min(2.0, 1 + rate / 100.0)):.3f}", tmp])
+            os.replace(tmp, str(audio))
     elif engine in ("sapi", "pyttsx3", "offline"):
         import pyttsx3
         eng = pyttsx3.init()

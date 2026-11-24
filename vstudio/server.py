@@ -184,6 +184,8 @@ DIALOGS = Dialogs()
 
 # ----------------------------------------------------------------------------- trabajos
 class Job:
+    name = ""
+
     def __init__(self):
         self.id = secrets.token_hex(6)
         self.state = "running"
@@ -196,6 +198,29 @@ class Job:
 
 
 JOBS: dict[str, Job] = {}
+RECENT_FILE = CACHE_DIR / "recent.json"
+
+
+def _recent() -> list:
+    try:
+        items = json.loads(RECENT_FILE.read_text("utf-8"))
+    except Exception:
+        items = []
+    return [i for i in items if os.path.isfile(i.get("path", ""))][:24]
+
+
+def _recent_add(path: str, prj: dict, rendered: str = "") -> None:
+    try:
+        items = [i for i in _recent() if i["path"] != path]
+        old = next((i for i in _recent() if i["path"] == path), {})
+        scs = prj.get("scenes") or []
+        items.insert(0, {"path": path, "name": Path(path).stem, "ts": time.time(), "scenes": len(scs),
+                         "types": sorted({s.get("type", "") for s in scs}),
+                         "last_render": rendered or old.get("last_render", ""), "rendered_ts": time.time() if rendered else old.get("rendered_ts", 0)})
+        RECENT_FILE.parent.mkdir(parents=True, exist_ok=True)
+        RECENT_FILE.write_text(json.dumps(items[:30], ensure_ascii=False), "utf-8")
+    except Exception:
+        pass
 
 
 def start_job(fn) -> Job:
@@ -449,6 +474,27 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/ai_prompt":
                 from .vector import ai_prompt
                 return self._json({"prompt": ai_prompt()})
+            if path == "/api/voices":
+                from . import voices as V
+                eng = (q.get("engine") or ["edge"])[0]
+                return self._json({"voices": V.list_voices(eng), "config": V.public(),
+                                   "gemini": V.gemini_models() if eng == "gemini" else None})
+            if path == "/api/voice_config":
+                from . import voices as V
+                return self._json(V.public())
+            if path == "/api/voice_audio":
+                f = os.path.basename((q.get("f") or [""])[0])
+                fp = CACHE_DIR / "tts" / f
+                if not f or not fp.exists():
+                    return self._json({"error": "no existe"}, 404)
+                return _send_file(self, fp)
+            if path == "/api/jobs":
+                return self._json({"jobs": [{"id": j.id, "state": j.state, "stage": j.stage, "frac": j.frac, "error": j.error,
+                                             "elapsed": time.time() - j.started, "name": getattr(j, "name", ""),
+                                             "out": (j.result or {}).get("path") if isinstance(j.result, dict) else None}
+                                            for j in sorted(JOBS.values(), key=lambda j: -j.started)[:30]]})
+            if path == "/api/recent":
+                return self._json({"recent": _recent()})
             if path == "/api/update_check":
                 from . import updater
                 return self._json(updater.check())
@@ -501,10 +547,17 @@ class Handler(BaseHTTPRequestHandler):
                                      d.get("initial", ""), d.get("ext", ".mp4"))
                 return self._json({"paths": paths})
             if path == "/api/open_project":
-                ps = DIALOGS.pick("file", "json", "Abrir proyecto")
+                if d.get("path"):
+                    ps = [d["path"]]
+                    if not os.path.isfile(ps[0]):
+                        return self._json({"error": "El archivo ya no existe."}, 404)
+                else:
+                    ps = DIALOGS.pick("file", "json", "Abrir proyecto")
                 if not ps:
                     return self._json({"cancelled": True})
-                return self._json({"path": ps[0], "project": json.loads(Path(ps[0]).read_text("utf-8"))})
+                prj = json.loads(Path(ps[0]).read_text("utf-8"))
+                _recent_add(ps[0], prj)
+                return self._json({"path": ps[0], "project": prj})
             if path == "/api/save_project":
                 p = d.get("path")
                 if not p:
@@ -513,6 +566,7 @@ class Handler(BaseHTTPRequestHandler):
                         return self._json({"cancelled": True})
                     p = ps[0]
                 Path(p).write_text(json.dumps(d["project"], ensure_ascii=False, indent=2), "utf-8")
+                _recent_add(p, d["project"])
                 return self._json({"path": p})
             if path == "/api/render":
                 proj = Project(d["project"], d.get("path"))
@@ -520,7 +574,11 @@ class Handler(BaseHTTPRequestHandler):
 
                 def job_fn(job):
                     return proj.render(out, job_progress(job), lambda: job.cancel)
-                return self._json({"id": start_job(job_fn).id})
+                jb = start_job(job_fn)
+                jb.name = d.get("name") or os.path.basename(out)
+                if d.get("path"):
+                    _recent_add(d["path"], d["project"], rendered=out)
+                return self._json({"id": jb.id})
             if path == "/api/cancel":
                 j = JOBS.get(d.get("id", ""))
                 if j:
@@ -549,6 +607,28 @@ class Handler(BaseHTTPRequestHandler):
                 for sc in scenes:
                     sc["type"] = "vector"
                 return self._json({"scenes": scenes})
+            if path == "/api/voice_save":
+                from . import voices as V
+                upd = {}
+                for k in ("gemini_key", "gemini_model", "type_defaults"):
+                    if k in d and not (k == "gemini_key" and not d[k]):
+                        upd[k] = d[k]
+                V.save(upd)
+                if d.get("delete_profile"):
+                    V.delete_profile(d["delete_profile"])
+                if d.get("profile_name"):
+                    V.save_profile(d["profile_name"], d.get("profile") or {})
+                return self._json(V.public())
+            if path == "/api/voice_clear_key":
+                from . import voices as V
+                V.save({"gemini_key": ""})
+                return self._json(V.public())
+            if path == "/api/voice_test":
+                from . import audio as AU
+                txt = d.get("text") or "Hola, así suena esta voz en tus videos."
+                eng = d.get("engine") or "edge"
+                a, _, dur = AU.synthesize(txt, eng, d.get("voice") or "", int(d.get("rate") or 0), d.get("model") or "", d.get("style") or "")
+                return self._json({"file": os.path.basename(a) if a else None, "duration": dur})
             if path == "/api/update_config":
                 from . import updater
                 updater.save_config({k: d[k] for k in ("check_updates", "auto_update", "update_repo", "update_token") if k in d})

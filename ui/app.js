@@ -55,9 +55,11 @@ function renderEmpty(){
   const E=$("#empty");const ty=S.schema.types;
   E.innerHTML=`<h1>¿Qué video vamos a hacer hoy?</h1><p>Elige un tipo para empezar desde cero, o abre un ejemplo ya armado para ver cómo queda.</p>
   <div class="grid">${S.schema.order.map(k=>`<div class="tcard" data-add="${k}"><div class="ic">${icon(ty[k].icon,22)}</div><b>${esc(ty[k].label)}</b><span>${esc(ty[k].desc)}</span></div>`).join("")}</div>
-  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button></div>`;
+  <div style="margin-top:26px;display:flex;gap:10px"><button class="btn primary" data-act="examples">✨ Ver ejemplos de cada tipo</button><button class="btn" data-act="autoclip">Sacar clips de un video largo</button><button class="btn" data-act="voices">🎙 Voces y perfiles</button></div>
+  <div id="dash" style="margin-top:8px"></div>`;
   E.querySelectorAll("[data-add]").forEach(e=>e.onclick=()=>addScene(e.dataset.add));
   E.querySelectorAll("[data-act]").forEach(e=>e.onclick=()=>act(e.dataset.act));
+  startDash();
 }
 
 // ------------------------------------------------------------------ formulario
@@ -215,6 +217,120 @@ async function checkUpdates(manual){
     else if(manual){toast(u.error?u.error:"Ya tienes la última versión ("+u.current+")",!!u.error)}
     return u}catch(e){if(manual)toast("No se pudo comprobar: "+e.message,1)}}
 
+// ------------------------------------------------------------------ voces
+const ENGINES=[["edge","Edge (gratis, internet)"],["gemini","Gemini (IA, necesita API key)"],["sapi","Local (voces de Windows, sin internet)"],["silencio","Sin voz"]];
+const TOKQ=()=>"k="+encodeURIComponent(window.VS_TOKEN);
+async function voicePicker(box,st,onch){
+  /* st: {engine,voice,model,style,rate}; box: contenedor */
+  box.innerHTML=`<div class="fld"><label>Motor de voz</label><select class="inp" id="vp_e">${ENGINES.map(e=>`<option value="${e[0]}">${esc(e[1])}</option>`).join("")}</select></div>
+  <div id="vp_body"></div>`;
+  const body=box.querySelector("#vp_body"),sel=box.querySelector("#vp_e");sel.value=st.engine||"edge";
+  let cat=null,gen=0;
+  const draw=async()=>{
+    const my=++gen;
+    st.engine=sel.value;onch&&onch();
+    if(st.engine==="silencio"){body.innerHTML=`<div class="hint">El video se genera sin voz (tiempos estimados).</div>`;return}
+    body.innerHTML=`<div class="hint">Cargando voces…</div>`;
+    try{cat=await jget("/api/voices?engine="+st.engine)}catch(e){if(my===gen)body.innerHTML=`<div class="hint">${esc(e.message)}</div>`;return}
+    if(my!==gen)return;
+    const gem=st.engine==="gemini";
+    if(gem&&!cat.config.has_key)body.innerHTML=`<div class="hint" style="color:#fbbf24">Falta la API key de Gemini: pégala en la sección «Gemini» de esta ventana.</div>`;else body.innerHTML="";
+    const w=document.createElement("div");
+    w.innerHTML=`${gem?`<div class="fld"><label>Modelo de audio${cat.gemini&&cat.gemini.live?" (lista real de tu cuenta)":""}</label><select class="inp" id="vp_m">${(cat.gemini?cat.gemini.models:[]).map(m=>`<option>${esc(m)}</option>`).join("")}</select></div>`:""}
+    <div class="fld"><label>Voz — escribe para buscar (${cat.voices.length})</label><input class="inp" id="vp_q" placeholder="Buscar: es-MX, Dalia, cálida, femenina…"><select class="inp" id="vp_v" size="7" style="margin-top:6px"></select></div>
+    ${gem?`<div class="fld"><label>Estilo o tono (opcional) — ej.: «Di con voz cálida y pausada»</label><input class="inp" id="vp_s" value="${esc(st.style||"")}"></div>`:""}
+    <div class="fld"><label>Velocidad (%)</label><input class="inp" id="vp_r" type="number" value="${st.rate||0}"></div>
+    <div class="frow"><button class="btn small" id="vp_t">▶ Probar voz</button><span class="hint" id="vp_st" style="align-self:center"></span></div>`;
+    body.appendChild(w);
+    const q=w.querySelector("#vp_q"),vs=w.querySelector("#vp_v");
+    const fillV=()=>{const t=q.value.trim().toLowerCase();vs.innerHTML="";
+      cat.voices.filter(v=>!t||(v.label+" "+v.locale+" "+v.gender).toLowerCase().includes(t)).slice(0,400).forEach(v=>{const o=document.createElement("option");o.value=v.id;o.textContent=v.label;if(v.id===st.voice)o.selected=true;vs.appendChild(o)});
+      if(!vs.value&&vs.options.length&&!st.voice){}};
+    fillV();q.oninput=fillV;
+    vs.onchange=()=>{st.voice=vs.value;onch&&onch()};
+    if(!st.voice&&cat.voices.length){st.voice=cat.voices[0].id;vs.value=st.voice}
+    const m=w.querySelector("#vp_m");if(m){if(st.model&&[...m.options].some(o=>o.value===st.model))m.value=st.model;st.model=m.value;m.onchange=()=>{st.model=m.value;onch&&onch()}}
+    const sty=w.querySelector("#vp_s");if(sty)sty.oninput=()=>{st.style=sty.value;onch&&onch()};
+    w.querySelector("#vp_r").oninput=e=>{st.rate=+e.target.value||0;onch&&onch()};
+    w.querySelector("#vp_t").onclick=async()=>{const stt=w.querySelector("#vp_st");stt.textContent="Generando…";
+      try{const r=await jpost("/api/voice_test",{engine:st.engine,voice:st.voice,model:st.model,style:st.style,rate:st.rate});
+        stt.textContent="";const a=new Audio("/api/voice_audio?f="+encodeURIComponent(r.file)+"&"+TOKQ());a.play()}catch(e){stt.textContent="";toast(e.message,1)}};
+  };
+  sel.onchange=()=>{st.voice="";st.model="";draw()};
+  await draw();
+}
+const PROJ_VOICE=()=>{const s=S.project.settings;return {engine:s.tts_engine||"edge",voice:s.voice||"",model:s.voice_model||"",style:s.voice_style||"",rate:s.tts_rate||0}};
+function applyProjVoice(v){const s=S.project.settings;s.tts_engine=v.engine;s.voice=v.voice;s.voice_model=v.model;s.voice_style=v.style;s.tts_rate=v.rate;markDirty()}
+
+async function voicesModal(){
+  const c=modal(`<div class="mh">🎙 Voces<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb" id="vb"></div><div class="mf"><button class="btn primary" data-close>Listo</button></div>`,"md");
+  const b=c.querySelector("#vb");
+  let cfg=await jget("/api/voice_config");
+  const draw=async()=>{
+    cfg=await jget("/api/voice_config");
+    const names=Object.keys(cfg.profiles);const st=S.project.settings;
+    b.innerHTML=`<div class="sec">Voz de este proyecto</div><div id="vpk"></div>
+    <div class="fld"><label>Perfil de voz del proyecto (tiene prioridad sobre lo de arriba)</label><select class="inp" id="vprof"><option value="">— ninguno —</option>${names.map(n=>`<option ${st.voice_profile===n?"selected":""}>${esc(n)}</option>`).join("")}</select></div>
+    <div class="sec">Guardar como perfil</div>
+    <div class="frow"><input class="inp" id="pname2" placeholder="Nombre del perfil (ej.: Narrador serio)"><button class="btn" id="psave">Guardar</button></div>
+    <div class="hint">Guarda el motor, voz, modelo, estilo y velocidad de arriba.</div>
+    <div class="sec">Mis perfiles</div>
+    ${names.length?names.map(n=>{const p=cfg.profiles[n];return `<div class="frow" style="align-items:center;margin:4px 0"><div style="flex:1"><b>${esc(n)}</b> <span class="hint">${esc(p.engine)} · ${esc(p.voice)}${p.model?" · "+esc(p.model):""}</span></div><button class="btn small" data-use="${esc(n)}">Usar aquí</button><button class="btn small danger" data-del="${esc(n)}">Borrar</button></div>`}).join(""):`<div class="hint">Aún no tienes perfiles.</div>`}
+    <div class="sec">Perfil por defecto según el tipo de video</div>
+    ${["map","vector","broll","clip"].map(t=>`<div class="fld"><label>${esc((S.schema.types[t]||{label:t}).label)}</label><select class="inp" data-type="${t}"><option value="">— voz de los ajustes —</option>${names.map(n=>`<option ${cfg.type_defaults[t]===n?"selected":""}>${esc(n)}</option>`).join("")}</select></div>`).join("")}
+    <div class="sec">Gemini (API key)</div>
+    <div class="fld"><label>API key de Google AI Studio ${cfg.has_key?`<span class="hint">(guardada ${esc(cfg.key_hint)})</span>`:""}</label><div class="frow"><input class="inp" id="gkey" type="password" placeholder="${cfg.has_key?"•••• (escribe para reemplazar)":"Pega aquí tu API key"}"><button class="btn" id="gsave">Guardar</button>${cfg.has_key?`<button class="btn danger" id="gclear">Quitar</button>`:""}</div>
+    <div class="hint">Se guarda solo en este equipo (cache/voices.json) y nunca va dentro de tus proyectos.</div></div>`;
+    await voicePicker(b.querySelector("#vpk"),PROJ_VOICE_ST,()=>applyProjVoice(PROJ_VOICE_ST));
+    b.querySelector("#vprof").onchange=e=>{S.project.settings.voice_profile=e.target.value||undefined;if(!e.target.value)delete S.project.settings.voice_profile;markDirty()};
+    b.querySelector("#psave").onclick=async()=>{const n=b.querySelector("#pname2").value.trim();if(!n)return toast("Ponle nombre al perfil",1);
+      try{await jpost("/api/voice_save",{profile_name:n,profile:PROJ_VOICE_ST});toast("Perfil guardado");draw()}catch(e){toast(e.message,1)}};
+    b.querySelectorAll("[data-del]").forEach(x=>x.onclick=async()=>{if(!confirm("¿Borrar el perfil «"+x.dataset.del+"»?"))return;await jpost("/api/voice_save",{delete_profile:x.dataset.del});draw()});
+    b.querySelectorAll("[data-use]").forEach(x=>x.onclick=()=>{S.project.settings.voice_profile=x.dataset.use;markDirty();toast("Perfil «"+x.dataset.use+"» activo en este proyecto");draw()});
+    b.querySelectorAll("[data-type]").forEach(x=>x.onchange=async()=>{const td={...cfg.type_defaults};if(x.value)td[x.dataset.type]=x.value;else delete td[x.dataset.type];await jpost("/api/voice_save",{type_defaults:td});cfg.type_defaults=td;toast("Guardado")});
+    b.querySelector("#gsave").onclick=async()=>{const k=b.querySelector("#gkey").value.trim();if(!k)return;await jpost("/api/voice_save",{gemini_key:k});toast("API key guardada");draw()};
+    const gc=b.querySelector("#gclear");if(gc)gc.onclick=async()=>{await jpost("/api/voice_clear_key",{});draw()};
+  };
+  window.PROJ_VOICE_ST=PROJ_VOICE();
+  await draw();
+}
+
+// al abrir un JSON: elegir qué voz usar
+async function voicePromptModal(){
+  if(!S.project.scenes.some(s=>s.narration))return;
+  const cfg=await jget("/api/voice_config");const names=Object.keys(cfg.profiles);const st=S.project.settings;
+  const c=modal(`<div class="mh">¿Con qué voz quieres este proyecto?<span class="sp"></span><button class="x" data-close>✕</button></div>
+  <div class="mb"><div class="hint">El proyecto trae ${S.project.scenes.filter(s=>s.narration).length} narraciones. Elige cómo generar la voz:</div>
+  <div class="fld"><label>Motor</label><select class="inp" id="vq_e">${ENGINES.map(e=>`<option value="${e[0]}" ${(st.tts_engine||"edge")===e[0]?"selected":""}>${esc(e[1])}</option>`).join("")}</select></div>
+  <div class="fld"><label>Perfil de voz</label><select class="inp" id="vq_p"><option value="">— voz de los ajustes —</option>${names.map(n=>`<option ${st.voice_profile===n?"selected":""}>${esc(n)}</option>`).join("")}</select></div>
+  <div class="hint" id="vq_w"></div></div>
+  <div class="mf"><button class="btn" data-close>Dejar como viene</button><button class="btn" id="vq_more">Más opciones…</button><button class="btn primary" id="vq_ok">Aplicar</button></div>`,"sm");
+  const upd=()=>{const e=c.querySelector("#vq_e").value,p=c.querySelector("#vq_p").value;c.querySelector("#vq_w").textContent=(e==="gemini"||(p&&cfg.profiles[p]&&cfg.profiles[p].engine==="gemini"))&&!cfg.has_key?"⚠ Gemini necesita tu API key (botón «Más opciones…»).":""};
+  c.querySelector("#vq_e").onchange=upd;c.querySelector("#vq_p").onchange=upd;upd();
+  c.querySelector("#vq_ok").onclick=()=>{const e=c.querySelector("#vq_e").value,p=c.querySelector("#vq_p").value;st.tts_engine=e;if(p)st.voice_profile=p;else delete st.voice_profile;markDirty();closeModal();toast("Voz aplicada al proyecto")};
+  c.querySelector("#vq_more").onclick=()=>{closeModal();voicesModal()};
+}
+
+// ------------------------------------------------------------------ panel de inicio (trabajos y recientes)
+let dashTimer=null;
+const ago=ts=>{const m=Math.round((Date.now()/1000-ts)/60);return m<1?"ahora":m<60?m+" min":m<1440?Math.round(m/60)+" h":Math.round(m/1440)+" d"};
+async function renderDash(){
+  const box=$("#dash");if(!box)return;
+  try{const [j,r]=await Promise.all([jget("/api/jobs"),jget("/api/recent")]);
+    const act=j.jobs.filter(x=>x.state==="running"),done=j.jobs.filter(x=>x.state!=="running").slice(0,6);
+    box.innerHTML=`<div class="dcols"><div><div class="sec">En curso ${act.length?`(${act.length})`:""}</div>
+      ${act.length?act.map(x=>`<div class="dcard"><b>${esc(x.name||"Trabajo")}</b><div class="bar"><i style="width:${Math.round(x.frac*100)}%"></i></div><span class="hint">${esc(x.stage)} · ${Math.round(x.frac*100)}% · ${fmtT(x.elapsed)}</span> <button class="btn small danger" data-cancel="${x.id}">Cancelar</button></div>`).join(""):`<div class="hint">Nada renderizándose ahora mismo.</div>`}
+      ${done.length?`<div class="sec">Terminados hace poco</div>`+done.map(x=>`<div class="dcard"><b>${esc(x.name||"Trabajo")}</b> <span class="hint">${x.state==="done"?"✔ listo":x.state==="error"?"✖ "+esc(x.error||"error"):"cancelado"} · hace ${ago(Date.now()/1000-x.elapsed)}</span>${x.out?` <button class="btn small" data-reveal="${esc(x.out)}">Mostrar</button>`:""}</div>`).join(""):""}
+      <div class="dcard dim"><b>🏭 Máquina de videos</b><div class="hint">Próximamente: una carpeta de entrada donde dejas proyectos (.json) y se renderizan solos, con su voz y perfil, hasta quedar guardados.</div></div></div>
+      <div><div class="sec">Proyectos recientes</div>
+      ${r.recent.length?r.recent.slice(0,10).map(x=>`<div class="dcard clk" data-open="${esc(x.path)}"><b>${esc(x.name)}</b><div class="hint">${x.scenes} escenas · ${esc((x.types||[]).join(", "))} · editado hace ${ago(x.ts)}${x.last_render?" · exportado":""}</div></div>`).join(""):`<div class="hint">Aquí aparecerán tus proyectos guardados o abiertos.</div>`}</div></div>`;
+    box.querySelectorAll("[data-open]").forEach(e=>e.onclick=async()=>{if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Abrir otro proyecto?"))return;try{const p=await jpost("/api/open_project",{path:e.dataset.open});loadProject(p.project,p.path);voicePromptModal()}catch(er){toast(er.message,1)}});
+    box.querySelectorAll("[data-cancel]").forEach(e=>e.onclick=()=>jpost("/api/cancel",{id:e.dataset.cancel}));
+    box.querySelectorAll("[data-reveal]").forEach(e=>e.onclick=()=>jpost("/api/reveal",{path:e.dataset.reveal}));
+  }catch(e){}
+}
+function startDash(){clearInterval(dashTimer);renderDash();dashTimer=setInterval(()=>{if($("#empty").hidden){clearInterval(dashTimer);return}renderDash()},3000)}
+
 function aiModal(){
   const c=modal(`<div class="mh">Animación con IA<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb">
   <p class="hint">Pega tu guion y una IA lo convierte en escenas animadas con los personajes y fondos del programa. Con una clave gratuita de Gemini se hace aquí mismo; si prefieres otra IA, copia las instrucciones, pégalas junto a tu guion y pega abajo el JSON que te devuelva.</p>
@@ -247,7 +363,7 @@ async function exportModal(){
   <div class="mf"><button class="btn" id="cancel" data-close>Cerrar</button><button class="btn primary" id="go">Renderizar</button></div>`,"md");
   c.querySelector("#pk").onclick=async()=>{try{const r=await jpost("/api/pick",{kind:"save",filter:"mp4",initial:c.querySelector("#o").value});if(r.paths.length)c.querySelector("#o").value=r.paths[0]}catch(e){toast(e.message,1)}};
   c.querySelector("#go").onclick=async()=>{const go=c.querySelector("#go"),cancel=c.querySelector("#cancel");go.disabled=true;c.dataset.lock=1;c.querySelector("#bar").hidden=false;
-    out=c.querySelector("#o").value;const {id}=await jpost("/api/render",{project:S.project,path:S.path,out});
+    out=c.querySelector("#o").value;const {id}=await jpost("/api/render",{project:S.project,path:S.path,out,name:S.name});
     cancel.textContent="Cancelar render";cancel.onclick=async()=>{await jpost("/api/cancel",{id})};
     const j=await poll(id,j=>{c.querySelector("#bar i").style.width=(j.frac*100)+"%";c.querySelector("#st").textContent=`${j.stage} · ${Math.round(j.frac*100)}% · ${fmtT(j.elapsed)}`});
     delete c.dataset.lock;
@@ -259,12 +375,12 @@ async function exportModal(){
 async function saveProject(){
   try{const r=await jpost("/api/save_project",{project:S.project,path:S.path,suggest:S.name+".json"});
     if(r.path){S.path=r.path;markDirty(false);toast("Proyecto guardado")}}catch(e){toast(e.message,1)}}
-async function openProject(){try{const r=await jpost("/api/open_project",{});if(r.project)loadProject(r.project,r.path)}catch(e){toast(e.message,1)}}
+async function openProject(){try{const r=await jpost("/api/open_project",{});if(r.project){loadProject(r.project,r.path);voicePromptModal()}}catch(e){toast(e.message,1)}}
 
 function act(a){
   if(a==="new"){if(S.dirty&&!confirm("Hay cambios sin guardar. ¿Empezar un proyecto nuevo?"))return;loadProject({settings:{theme:"oscuro"},scenes:[]},null)}
   else if(a==="home"){if(S.dirty&&!confirm("Volver al menú principal. Los cambios sin guardar se perderán. ¿Continuar?"))return;loadProject({settings:{...S.project.settings},scenes:[]},null)}
-  else if(a==="update")checkUpdates(true);
+  else if(a==="update")checkUpdates(true);else if(a==="voices")voicesModal();
   else if(a==="open")openProject();else if(a==="save")saveProject();else if(a==="examples")examplesModal();
   else if(a==="settings")settingsModal();else if(a==="export")exportModal();else if(a==="add")addModal();
   else if(a==="script")scriptModal();else if(a==="ai")aiModal();else if(a==="autoclip")autoclipModal()}

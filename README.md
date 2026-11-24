@@ -55,6 +55,15 @@ Una escena de mapa en modo `route` admite (ver el ejemplo «Mapa: expedición es
   `react` + `rfrom` + `rdist` + `react_mood` + `react_shrink` + `react_fade`: los personajes reaccionan al impacto.
 - Nuevos elementos: `molecula`, `burbuja_villano`, `luz`, `humo`.
 
+### Voces, Gemini y perfiles (v2.3)
+Botón **🎙 Voces**: motor (Edge, **Gemini**, voces locales de Windows o sin voz), lista de voces con buscador, botón **Probar voz**, modelo de audio de Gemini (solo modelos TTS; con tu API key se lee la lista real de tu cuenta), estilo/tono y velocidad.
+- **API key de Gemini**: se guarda solo en tu PC (`cache/voices.json`), nunca dentro de los proyectos.
+- **Perfiles**: guarda una combinación (motor + voz + modelo + estilo + velocidad) con un nombre y úsala en un proyecto (`"voice_profile": "Narrador serio"` en los ajustes del proyecto o de una escena) o como **perfil por defecto de cada tipo de video** (mapa, vectores, B-roll, clip).
+- Orden de prioridad por escena: perfil de la escena › voz de la escena › perfil del proyecto › perfil del tipo › ajustes del proyecto. «Sin voz» en el proyecto apaga todo (vista previa y proyectos mudos).
+- Al **abrir un proyecto .json** con narraciones aparece un selector de motor y perfil.
+- **Inicio**: panel con trabajos en curso (progreso, cancelar), terminados y proyectos recientes.
+- Los tiempos por palabra de Gemini son estimados (el servicio no los entrega); Edge sí da tiempos exactos.
+
 ## Formato del proyecto (JSON)
 Mira `examples/*.json`. Las rutas relativas se buscan junto al archivo del proyecto.
 `settings` admite: `theme` (neon, oscuro, retro, papel, esmeralda), `tts_engine` (`edge`, `sapi`, `silencio`), `voice`,
