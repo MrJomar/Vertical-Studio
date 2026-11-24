@@ -9,6 +9,7 @@ import math
 import random
 
 import numpy as np
+from PIL import ImageFilter
 from PIL import Image, ImageDraw
 
 from .core import get_font, parse_color, text_layer
@@ -329,18 +330,30 @@ def a_persona(w, p):
                    fill=_shade(skin, 0.9) + (255,))
     # ojos con brillo, cejas, mejillas y boca
     cheek = _canvas(W, H)
+    yv = max(0.0, min(1.0, float(p.get("value", 1.0)))) if mood == "yawn" else 0.0
     for sx in (-1, 1):
         ex = cx + sx * W * s * 0.115
-        hd.ellipse([ex - W * s * 0.04, H * s * 0.375, ex + W * s * 0.04, H * s * 0.455], fill=(255, 255, 255, 255))
-        hd.ellipse([ex - W * s * 0.027, H * s * 0.39, ex + W * s * 0.027, H * s * 0.452], fill=(35, 25, 25, 255))
-        hd.ellipse([ex - W * s * 0.014, H * s * 0.395, ex + W * s * 0.004, H * s * 0.415], fill=(255, 255, 255, 255))
-        hd.arc([ex - W * s * 0.05, H * s * 0.33, ex + W * s * 0.05, H * s * 0.40], 200, 340, fill=_shade(hair, 0.9) + (255,),
+        if yv > 0.3:                                            # ojos cerrados con fuerza (bostezo)
+            hd.arc([ex - W * s * 0.05, H * s * 0.385, ex + W * s * 0.05, H * s * 0.455], 15, 165, fill=(40, 28, 26, 255), width=max(2, int(W * 0.014 * s)))
+            if yv > 0.75:                                       # lagrimita
+                hd.ellipse([ex + sx * W * s * 0.045 - W * s * 0.011, H * s * 0.45, ex + sx * W * s * 0.045 + W * s * 0.011, H * s * 0.49], fill=(170, 220, 255, 230))
+        else:
+            hd.ellipse([ex - W * s * 0.04, H * s * 0.375, ex + W * s * 0.04, H * s * 0.455], fill=(255, 255, 255, 255))
+            hd.ellipse([ex - W * s * 0.027, H * s * 0.39, ex + W * s * 0.027, H * s * 0.452], fill=(35, 25, 25, 255))
+            hd.ellipse([ex - W * s * 0.014, H * s * 0.395, ex + W * s * 0.004, H * s * 0.415], fill=(255, 255, 255, 255))
+        hd.arc([ex - W * s * 0.05, H * s * (0.33 - 0.022 * yv), ex + W * s * 0.05, H * s * (0.40 - 0.022 * yv)], 200, 340, fill=_shade(hair, 0.9) + (255,),
                width=max(2, int(W * 0.014 * s)))
         ImageDraw.Draw(cheek).ellipse([ex + sx * W * s * 0.03 - W * s * 0.04, H * s * 0.46,
                                        ex + sx * W * s * 0.03 + W * s * 0.04, H * s * 0.51], fill=(255, 110, 110, 70))
     big.alpha_composite(cheek)
     hd = ImageDraw.Draw(big)
-    if mood == "happy":
+    if mood == "yawn":                                          # boca que se abre con value: óvalo oscuro con lengua
+        rx, ry = W * s * (0.04 + 0.05 * yv), H * s * (0.012 + 0.062 * yv)
+        my = H * s * (0.515 + 0.012 * yv)
+        hd.ellipse([cx - rx, my - ry, cx + rx, my + ry], fill=(105, 28, 38, 255), outline=(70, 20, 28, 255), width=max(2, int(W * 0.008 * s)))
+        if yv > 0.35:
+            hd.chord([cx - rx * 0.62, my + ry * 0.05, cx + rx * 0.62, my + ry * 0.98], 0, 180, fill=(205, 85, 100, 255))
+    elif mood == "happy":
         hd.arc([cx - W * s * 0.1, H * s * 0.44, cx + W * s * 0.1, H * s * 0.56], 20, 160, fill=(130, 40, 45, 255),
                width=max(2, int(W * 0.016 * s)))
     else:
@@ -1672,13 +1685,203 @@ def a_nota(w, p):
     return _fin(big, W, H)
 
 
+
+def a_pulmones(w, p):
+    """Pulmones con tráquea y bronquios. value 0-1: qué tan inflados están."""
+    W, H = int(w), int(w * 0.95)
+    v = max(0.0, min(1.0, float(p.get("value", 0.5))))
+    S = SS
+    Ws, Hs = W * S, H * S
+    col = _c(p.get("color"), (238, 132, 152))
+    out = _canvas(W, H)
+    k = 0.93 + 0.08 * v
+    def lobe(sx):
+        cx0 = 0.5 + sx * 0.235
+        pts = [(cx0 - sx * 0.19 * k, 0.40), (cx0 - sx * 0.10 * k, 0.20), (cx0 + sx * 0.02, 0.17), (cx0 + sx * 0.12 * k, 0.30),
+               (cx0 + sx * 0.20 * k, 0.55), (cx0 + sx * 0.18 * k, 0.80 + 0.02 * v), (cx0 + sx * 0.08 * k, 0.93 + 0.01 * v),
+               (cx0 - sx * 0.12 * k, 0.92 + 0.01 * v), (cx0 - sx * 0.215 * k, 0.76), (cx0 - sx * 0.23 * k, 0.55)]
+        return _sm([(x * Ws, y * Hs) for x, y in pts], 10)
+    # tráquea con anillos
+    tr = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(tr).rounded_rectangle([Ws * 0.455, Hs * 0.0, Ws * 0.545, Hs * 0.42], radius=Ws * 0.04, fill=255)
+    out.alpha_composite(_grad(tr, (250, 214, 220), (214, 160, 176), 0.0, 0.42))
+    dd = ImageDraw.Draw(out)
+    for i in range(7):
+        y = Hs * (0.04 + 0.052 * i)
+        dd.arc([Ws * 0.455, y - Hs * 0.02, Ws * 0.545, y + Hs * 0.02], 0, 180, fill=(170, 110, 128, 255), width=max(2, int(S * 1.6)))
+    for sx in (-1, 1):
+        pts = lobe(sx)
+        m = Image.new("L", (Ws, Hs), 0)
+        ImageDraw.Draw(m).polygon(pts, fill=255)
+        li = _grad(m, _shade(col, 1.14), _shade(col, 0.72), 0.15, 0.95)
+        # bronquios (ramas claras) dentro del pulmón
+        d2 = ImageDraw.Draw(li)
+        bx0, by0 = Ws * 0.5, Hs * 0.40
+        for (ex, ey, wd) in ((0.5 + sx * 0.12, 0.52, 7), (0.5 + sx * 0.20, 0.62, 5), (0.5 + sx * 0.15, 0.74, 5), (0.5 + sx * 0.25, 0.46, 4), (0.5 + sx * 0.19, 0.84, 4)):
+            pth = [tuple(map(float, q)) for q in _bez((bx0, by0), (Ws * (0.5 + sx * 0.05), Hs * ey), (Ws * ex, Hs * ey), 14)]
+            d2.line(pth, fill=(255, 226, 232, 210), width=max(2, int(S * wd * 0.8)), joint="curve")
+        li.putalpha(m)
+        out.alpha_composite(li)
+        ImageDraw.Draw(out).line(pts + [pts[0]], fill=_shade(col, 0.5) + (255,), width=int(S * 2.6), joint="curve")
+        hl = Image.new("L", (Ws, Hs), 0)
+        ImageDraw.Draw(hl).ellipse([Ws * (0.5 + sx * 0.33 - 0.05), Hs * 0.3, Ws * (0.5 + sx * 0.33 + 0.05), Hs * 0.52], fill=110)
+        hl = Image.fromarray((np.asarray(hl.filter(ImageFilter.GaussianBlur(Ws * 0.02)), np.float32) * (np.asarray(m, np.float32) / 255)).astype(np.uint8), "L")
+        out.alpha_composite(Image.merge("RGBA", (*Image.new("RGB", (Ws, Hs), (255, 235, 240)).split(), hl)))
+    return _fin(out, W, H)
+
+
+def a_aire(w, p):
+    """Corrientes de aire (viento) con remolinos. color azul claro por defecto."""
+    W, H = int(w), int(w * 0.5)
+    S = SS
+    Ws, Hs = W * S, H * S
+    col = _c(p.get("color"), (190, 232, 255))
+    out = _canvas(W, H)
+    dr = ImageDraw.Draw(out)
+    rows = ((0.30, 0.0, 0.96, 0.17), (0.60, 0.06, 0.9, 0.15), (0.88, 0.0, 0.78, 0.15))
+    for (y, x0, x1, curl) in rows:
+        n = 40
+        pts = []
+        for i in range(n + 1):
+            t = i / n
+            pts.append(((x0 + (x1 - x0) * t) * Ws, (y + 0.05 * math.sin(t * 6.283 * 1.2)) * Hs))
+        # remolino al final
+        cx_, cy_ = pts[-1][0], pts[-1][1] - curl * Hs
+        for i in range(1, 26):
+            a = math.radians(90 + i * 14)
+            r_ = curl * Hs * (1 - i / 34)
+            pts.append((cx_ + math.cos(a) * r_ + 0.0, cy_ + math.sin(a) * r_))
+        for i in range(len(pts) - 1):
+            t = i / len(pts)
+            wd = max(2, int(S * (3 + 12 * math.sin(math.pi * min(1.0, t * 1.15)) * 0.9)))
+            al = int(255 * (0.35 + 0.65 * math.sin(math.pi * min(1.0, t * 1.05))))
+            dr.line([pts[i], pts[i + 1]], fill=col + (al,), width=wd)
+            dr.ellipse([pts[i + 1][0] - wd / 2, pts[i + 1][1] - wd / 2, pts[i + 1][0] + wd / 2, pts[i + 1][1] + wd / 2], fill=col + (al,))
+    return _fin(out, W, H)
+
+
+def a_perro(w, p):
+    """Perro sentado de frente (orejas caídas). mood: normal | yawn (ojos cerrados, boca abierta con lengua)."""
+    W, H = int(w), int(w * 1.1)
+    S = SS
+    Ws, Hs = W * S, H * S
+    fur = _c(p.get("color"), (212, 158, 96))
+    dark = _shade(fur, 0.62)
+    yawn = p.get("mood") == "yawn"
+    out = _canvas(W, H)
+    dr = ImageDraw.Draw(out)
+    line = _shade(fur, 0.45) + (255,)
+    lw = max(2, int(S * 2.4))
+    # cola (atrás)
+    dr.arc([Ws * 0.66, Hs * 0.62, Ws * 0.98, Hs * 0.98], 250, 40, fill=dark + (255,), width=int(Ws * 0.06))
+    # cuerpo sentado
+    body = Image.new("L", (Ws, Hs), 0)
+    ImageDraw.Draw(body).ellipse([Ws * 0.2, Hs * 0.5, Ws * 0.8, Hs * 1.04], fill=255)
+    out.alpha_composite(_grad(body, _shade(fur, 1.08), _shade(fur, 0.74), 0.5, 1.0))
+    dr = ImageDraw.Draw(out)
+    dr.ellipse([Ws * 0.36, Hs * 0.62, Ws * 0.64, Hs * 0.98], fill=(250, 232, 205, 255))      # pecho claro
+    for sx in (-1, 1):                                                                      # patas delanteras
+        px = Ws * (0.5 + sx * 0.12)
+        dr.rounded_rectangle([px - Ws * 0.055, Hs * 0.74, px + Ws * 0.055, Hs * 0.98], radius=Ws * 0.05, fill=_shade(fur, 1.05) + (255,), outline=line, width=lw)
+        dr.ellipse([px - Ws * 0.07, Hs * 0.92, px + Ws * 0.07, Hs * 1.0], fill=(250, 232, 205, 255), outline=line, width=lw)
+    # orejas caídas (detrás de la cabeza)
+    for sx in (-1, 1):
+        ex = Ws * (0.5 + sx * 0.27)
+        dr.polygon(_sm([(Ws * 0.5 + sx * Ws * 0.19, Hs * 0.16), (ex + sx * Ws * 0.06, Hs * 0.2), (ex + sx * Ws * 0.09, Hs * 0.40),
+                        (ex + sx * Ws * 0.03, Hs * 0.5), (ex - sx * Ws * 0.03, Hs * 0.38)], 8), fill=dark + (255,), outline=line)
+    # cabeza
+    hd = int(Ws * 0.56)
+    head = sphere(int(hd / S), fur, spec=0.12, dark=0.62, light=(-0.35, -0.5)).resize((int(hd / S) * S // S, int(hd / S * 0.92)))
+    hs = _canvas(W, H)
+    hs.alpha_composite(head.resize((hd, int(hd * 0.92)), Image.LANCZOS), (int(Ws * 0.5 - hd / 2), int(Hs * 0.13)))
+    out.alpha_composite(hs)
+    dr = ImageDraw.Draw(out)
+    # hocico claro
+    my0 = Hs * 0.38
+    dr.ellipse([Ws * 0.36, my0, Ws * 0.64, my0 + Hs * 0.2], fill=(250, 232, 205, 255), outline=_shade(fur, 0.7) + (255,), width=max(2, int(S * 1.5)))
+    dr.ellipse([Ws * 0.455, my0 + Hs * 0.005, Ws * 0.545, my0 + Hs * 0.06], fill=(40, 28, 26, 255))                # nariz
+    dr.ellipse([Ws * 0.47, my0 + Hs * 0.012, Ws * 0.50, my0 + Hs * 0.025], fill=(255, 255, 255, 190))
+    dr.line([Ws * 0.5, my0 + Hs * 0.06, Ws * 0.5, my0 + Hs * 0.09], fill=(60, 40, 36, 255), width=max(2, int(S * 1.8)))
+    if yawn:
+        dr.ellipse([Ws * 0.425, my0 + Hs * 0.075, Ws * 0.575, my0 + Hs * 0.2], fill=(105, 28, 38, 255), outline=(70, 20, 28, 255), width=max(2, int(S * 1.6)))
+        dr.chord([Ws * 0.44, my0 + Hs * 0.12, Ws * 0.56, my0 + Hs * 0.2], 0, 180, fill=(232, 110, 128, 255))
+        for sx in (-1, 1):                                                                  # colmillos
+            dr.polygon([(Ws * (0.5 + sx * 0.05), my0 + Hs * 0.082), (Ws * (0.5 + sx * 0.075), my0 + Hs * 0.082), (Ws * (0.5 + sx * 0.062), my0 + Hs * 0.12)], fill=(252, 250, 240, 255))
+    else:
+        dr.arc([Ws * 0.44, my0 + Hs * 0.06, Ws * 0.5, my0 + Hs * 0.12], 10, 170, fill=(60, 40, 36, 255), width=max(2, int(S * 1.8)))
+        dr.arc([Ws * 0.5, my0 + Hs * 0.06, Ws * 0.56, my0 + Hs * 0.12], 10, 170, fill=(60, 40, 36, 255), width=max(2, int(S * 1.8)))
+    # ojos y cejas
+    for sx in (-1, 1):
+        ex, ey = Ws * (0.5 + sx * 0.12), Hs * 0.3
+        if yawn:
+            dr.arc([ex - Ws * 0.045, ey - Hs * 0.02, ex + Ws * 0.045, ey + Hs * 0.035], 15, 165, fill=(40, 28, 26, 255), width=max(2, int(S * 2.4)))
+        else:
+            dr.ellipse([ex - Ws * 0.042, ey - Hs * 0.04, ex + Ws * 0.042, ey + Hs * 0.04], fill=(255, 255, 255, 255), outline=line, width=max(1, int(S * 1.2)))
+            dr.ellipse([ex - Ws * 0.026, ey - Hs * 0.026, ex + Ws * 0.026, ey + Hs * 0.03], fill=(40, 28, 26, 255))
+            dr.ellipse([ex - Ws * 0.016, ey - Hs * 0.022, ex - Ws * 0.002, ey - Hs * 0.006], fill=(255, 255, 255, 255))
+        dr.arc([ex - Ws * 0.055, ey - Hs * 0.085, ex + Ws * 0.055, ey - Hs * 0.03], 200, 340, fill=dark + (255,), width=max(2, int(S * 2.2)))
+    return _fin(out, W, H)
+
+
+def a_bebe(w, p):
+    """Bebé dentro de una burbuja de útero (líquido amniótico). value 0-1: apertura del bostezo."""
+    W = H = int(w)
+    S = SS
+    Ws = W * S
+    yv = max(0.0, min(1.0, float(p.get("value", 1.0))))
+    skin = _c(p.get("skin"), (250, 200, 176))
+    out = _canvas(W, H)
+    dr = ImageDraw.Draw(out)
+    bub = Image.new("L", (Ws, Ws), 0)
+    ImageDraw.Draw(bub).ellipse([Ws * 0.02, Ws * 0.02, Ws * 0.98, Ws * 0.98], fill=255)
+    out.alpha_composite(_grad(bub, (255, 188, 190), (214, 112, 140), 0.0, 1.0))
+    glow = Image.new("L", (Ws, Ws), 0)
+    ImageDraw.Draw(glow).ellipse([Ws * 0.25, Ws * 0.2, Ws * 0.75, Ws * 0.7], fill=170)
+    glow = Image.fromarray((np.asarray(glow.filter(ImageFilter.GaussianBlur(Ws * 0.09)), np.float32) * (np.asarray(bub, np.float32) / 255)).astype(np.uint8), "L")
+    out.alpha_composite(Image.merge("RGBA", (*Image.new("RGB", (Ws, Ws), (255, 232, 210)).split(), glow)))
+    inner = _canvas(W, H)
+    dr = ImageDraw.Draw(inner)
+    # hombros / cuerpo y manitas
+    dr.ellipse([Ws * 0.2, Ws * 0.66, Ws * 0.8, Ws * 1.1], fill=_shade(skin, 0.95) + (255,), outline=_shade(skin, 0.7) + (255,), width=int(S * 2.4))
+    cx = Ws / 2
+    hd = int(Ws * 0.46)
+    head = sphere(int(hd / S), skin, spec=0.2, dark=0.7, light=(-0.35, -0.5)).resize((hd, hd), Image.LANCZOS)
+    inner.alpha_composite(head, (int(cx - hd / 2), int(Ws * 0.2)))
+    dr = ImageDraw.Draw(inner)
+    hy = Ws * 0.2 + hd * 0.5
+    dr.arc([cx - hd * 0.12, Ws * 0.2, cx + hd * 0.12, Ws * 0.2 + hd * 0.16], 200, 340, fill=_shade(skin, 0.55) + (255,), width=int(S * 2.2))   # un rizo
+    cheek = _canvas(W, H)
+    dc = ImageDraw.Draw(cheek)
+    for sx in (-1, 1):
+        ex = cx + sx * hd * 0.2
+        dr.arc([ex - hd * 0.09, hy - hd * 0.06, ex + hd * 0.09, hy + hd * 0.08], 15, 165, fill=(70, 40, 36, 255), width=max(2, int(S * 2.4)))
+        dc.ellipse([ex + sx * hd * 0.1 - hd * 0.09, hy + hd * 0.1, ex + sx * hd * 0.1 + hd * 0.09, hy + hd * 0.24], fill=(255, 120, 120, 80))
+        hx = cx + sx * hd * 0.5                                                         # manita junto a la cara
+        dr.ellipse([hx - hd * 0.1, hy + hd * 0.28, hx + hd * 0.1, hy + hd * 0.48], fill=_shade(skin, 1.03) + (255,), outline=_shade(skin, 0.65) + (255,), width=max(2, int(S * 2)))
+    inner.alpha_composite(cheek)
+    dr = ImageDraw.Draw(inner)
+    rx, ry = hd * (0.05 + 0.08 * yv), hd * (0.025 + 0.1 * yv)
+    my = hy + hd * 0.26
+    dr.ellipse([cx - rx, my - ry, cx + rx, my + ry], fill=(160, 56, 70, 255), outline=(110, 36, 50, 255), width=max(2, int(S * 1.6)))
+    # cordón umbilical
+    cord = [tuple(map(float, q)) for q in _bez((cx, Ws * 0.98), (cx - Ws * 0.18, Ws * 0.82), (cx - Ws * 0.28, Ws * 0.6), 30)]
+    for i in range(len(cord) - 1):
+        dr.line([cord[i], cord[i + 1]], fill=(246, 214, 222, 255) if (i // 3) % 2 == 0 else (226, 170, 190, 255), width=int(S * 5))
+    # recorta todo lo de dentro con la burbuja
+    ia = np.asarray(inner.getchannel("A"), np.float32) * (np.asarray(bub, np.float32) / 255.0)
+    inner.putalpha(Image.fromarray(ia.astype(np.uint8), "L"))
+    out.alpha_composite(inner)
+    ImageDraw.Draw(out).ellipse([Ws * 0.02, Ws * 0.02, Ws * 0.98, Ws * 0.98], outline=(255, 255, 255, 190), width=int(S * 3))
+    return _fin(out, W, H)
+
+
 ASSETS = {
     "esfera": (a_esfera, 1.0, "Bola con carita (personaje base)", "color, mood: neutral|happy|angry|sad|scared|none"),
     "villano": (a_villano, 1.0, "Bolita azul enmascarada con capa y brazos", "color, cape"),
     "bacteria_mala": (a_bacteria_mala, 1.0, "Bacteria morada con picos y cara de enojo", "color, mood"),
     "bacteria_buena": (a_bacteria_buena, 0.38, "Bacilo amarillo sonriente", "color"),
     "burbuja": (a_burbuja, 1.0, "Burbuja translúcida", "color"),
-    "persona": (a_persona, 1.15, "Persona de busto con volumen (cada copia con var distinto cambia piel, peinado y ropa)", "skin, hair, shirt, var, style: corto|largo|rizado|moño|calvo|flequillo|gorro, mood: happy|neutral"),
+    "persona": (a_persona, 1.15, "(mood yawn + value 0-1 = bostezo animable) Persona de busto con volumen (cada copia con var distinto cambia piel, peinado y ropa)", "skin, hair, shirt, var, style: corto|largo|rizado|moño|calvo|flequillo|gorro, mood: happy|neutral"),
     "medidor": (a_medidor, 0.66, "Medidor semicircular tipo pH", "value (0-14), label"),
     "puerta": (a_puerta, 1.6, "Puerta de madera", "color"),
     "cartel": (a_cartel, 0.78, "Cartel colgante rojo con texto", "text, color"),
@@ -1715,6 +1918,10 @@ ASSETS = {
     "nervio": (a_nervio, 1.6, "Nervio amarillo vertical con vainas", "color, pinch (0-1: punto aplastado), glow"),
     "pierna": (a_pierna, 1.05, "Pierna sentada translúcida con arteria, vena y nervio", "color, nerve (0-1)"),
     "piel": (a_piel, 1.1, "Corte de piel con pelo, folículo, músculo erector y nervio. value 0 (relajada) → 1 (piel de gallina): el pelo se levanta y sale el bultito", "value (0-1); anima con value_from/value_to y value_step 0.02"),
+    "pulmones": (a_pulmones, 0.95, "Pulmones con tráquea y bronquios", "value (0-1 inflado), color"),
+    "aire": (a_aire, 0.5, "Corrientes de aire (viento) con remolinos", "color"),
+    "perro": (a_perro, 1.1, "Perro sentado de frente", "color, mood: normal|yawn"),
+    "bebe": (a_bebe, 1.0, "Bebé en burbuja de útero; value = apertura del bostezo", "value (0-1), skin"),
     "peludo": (a_peludo, 1.0, "Ancestro peludo: busto de homínido con pelaje, ceja marcada y cara clara", "erizado (0-1, pelo de punta), mood: neutral|happy|angry|sad|scared, color"),
     "termometro": (a_termometro, 2.3, "Termómetro vertical de azul (frío) a rojo (calor)", "value (0-1)"),
     "audifonos": (a_audifonos, 0.98, "Audífonos de diadema", "color"),
