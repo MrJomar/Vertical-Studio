@@ -608,6 +608,15 @@ class VectorScene(Scene):
             elif layout == "line":
                 f = k / max(1, n - 1)
                 px, py = sp[0] + (sp[2] - sp[0]) * f, sp[1] + (sp[3] - sp[1]) * f
+            elif layout == "crowd":      # multitud: filas con profundidad (atrás más chicas y arriba), se solapan
+                nrows = max(2, int(L.get("rows", round(math.sqrt(n / 1.6)))))
+                cols_c = math.ceil(n / nrows)
+                r_, c_ = divmod(k, cols_c)
+                dep = r_ / max(1, nrows - 1)
+                px = sp[0] + (sp[2] - sp[0]) * ((c_ + (0.5 if r_ % 2 else 0.0) + rnd.uniform(-0.15, 0.15)) / max(1.0, cols_c - 0.5))
+                py = sp[1] + (sp[3] - sp[1]) * dep + rnd.uniform(-0.008, 0.008)
+                out.append((px, py, rnd.random() * 6.28, 0.74 + 0.46 * dep + rnd.uniform(-0.03, 0.03)))
+                continue
             else:
                 px, py = rnd.uniform(sp[0], sp[2]), rnd.uniform(sp[1], sp[3])
             out.append((px, py, rnd.random() * 6.28, rnd.uniform(0.75, 1.25)))
@@ -663,6 +672,10 @@ class VectorScene(Scene):
                     y += math.sin(wob * 1.6 + ph) * c.h * 0.012 * amp
                     x += math.sin(wob * 1.1 + ph * 2) * c.w * 0.006 * amp
                     rot += math.sin(wob * 1.3 + ph) * 3 * amp
+                elif a == "bob":         # respiración / balanceo suave (público, personajes quietos)
+                    y -= (0.5 + 0.5 * math.sin(wob * 2.4 + ph * 3)) * c.h * 0.010 * amp
+                    sc *= 1 + 0.012 * amp * math.sin(wob * 2.4 + ph * 3 + 1.2)
+                    rot += math.sin(wob * 1.3 + ph) * 1.2 * amp
                 elif a == "bounce":
                     y -= abs(math.sin(wob * 3.2 + ph)) * c.h * 0.04 * amp
                 elif a == "shake":
@@ -784,8 +797,8 @@ Formato de cada escena (responde SOLO un arreglo JSON, sin texto extra):
 
 Cada capa: {{"asset":"nombre","x":0-1,"y":0-1 (centro, fracción del alto/ancho),"w":0.05-1 (ancho como fracción del ancho de pantalla),
  "at":"palabra de la narración que lo hace aparecer" (o segundos), "out":"palabra o segundos en que desaparece" (opcional),
- "anim":"pop+float" (entradas: pop, fade, grow, slide_left, slide_right, slide_up, slide_down, drop; movimiento continuo: float, bounce, shake, pulse, latido (corazón: con "bpm" y "bpm_fin"; suena solo con sfx auto), spin, wobble, drift, fall, rise, blink),
- "count":N con "spread":[x0,y0,x1,y1] y "layout":"random|grid|line" para enjambres/multitudes, "rot":grados,"flip":true,"z":orden (mayor = encima),
+ "anim":"pop+float" (entradas: pop, fade, grow, slide_left, slide_right, slide_up, slide_down, drop; movimiento continuo: float, bob (respirar), bounce, shake, pulse, latido (corazón: con "bpm" y "bpm_fin"; suena solo con sfx auto), spin, wobble, drift, fall, rise, blink),
+ "count":N con "spread":[x0,y0,x1,y1] y "layout":"random|grid|line|crowd" (crowd = multitud en filas con profundidad; "rows":N) para enjambres/multitudes, "rot":grados,"flip":true,"z":orden (mayor = encima),
  más los parámetros propios del elemento}}.
 Para el medidor puedes animar la aguja con "value_from", "value_to" y "value_dur".
 

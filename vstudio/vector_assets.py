@@ -250,33 +250,102 @@ def a_burbuja(w, p):
 
 
 def a_persona(w, p):
+    """Persona de busto con volumen: cabeza esférica sombreada, peinados variados, mejillas, cejas y brillo de pelo."""
     W, H = int(w), int(w * 1.15)
     v = int(p.get("var", 0))
     rnd = random.Random(v * 7919 + 13)
     skins = [(247, 214, 186), (232, 180, 140), (198, 134, 96), (141, 90, 62), (96, 62, 44)]
-    hairs = [(40, 28, 22), (90, 56, 30), (220, 176, 70), (170, 60, 40), (25, 25, 30), (150, 150, 160)]
-    shirts = [(214, 60, 90), (60, 140, 220), (120, 190, 80), (240, 160, 40), (150, 80, 200), (40, 170, 160)]
+    hairs = [(40, 28, 22), (90, 56, 30), (220, 176, 70), (170, 60, 40), (25, 25, 30), (150, 150, 160), (120, 60, 160)]
+    shirts = [(214, 60, 90), (60, 140, 220), (120, 190, 80), (240, 160, 40), (150, 80, 200), (40, 170, 160), (230, 90, 50)]
     skin = _c(p.get("skin"), rnd.choice(skins))
     hair = _c(p.get("hair"), rnd.choice(hairs))
     shirt = _c(p.get("shirt"), rnd.choice(shirts))
+    style = p.get("style") or rnd.choice(["corto", "largo", "rizado", "moño", "calvo", "flequillo", "gorro"])
+    mood = p.get("mood") or rnd.choice(["happy", "happy", "happy", "neutral"])
+    s = SS
     big = _canvas(W, H)
     dr = ImageDraw.Draw(big)
-    s = SS
     cx = W * s / 2
-    dr.rounded_rectangle([cx - W * s * 0.46, H * s * 0.58, cx + W * s * 0.46, H * s * 1.2], radius=W * s * 0.25,
-                         fill=shirt + (255,))
-    dr.rectangle([cx - W * s * 0.09, H * s * 0.5, cx + W * s * 0.09, H * s * 0.64], fill=_shade(skin, 0.9) + (255,))
-    long_hair = rnd.random() < 0.5
-    if long_hair:
-        dr.rounded_rectangle([cx - W * s * 0.34, H * s * 0.1, cx + W * s * 0.34, H * s * 0.62], radius=W * s * 0.2,
-                             fill=hair + (255,))
-    dr.ellipse([cx - W * s * 0.27, H * s * 0.18, cx + W * s * 0.27, H * s * 0.62], fill=skin + (255,))
-    dr.chord([cx - W * s * 0.3, H * s * 0.1, cx + W * s * 0.3, H * s * 0.5], 180, 360, fill=hair + (255,))
+
+    # torso con degradado vertical y hombros redondeados
+    tw, th = int(W * s * 0.92), int(H * s * 0.62)
+    gy = np.linspace(1.12, 0.7, th, dtype=np.float32)[:, None]
+    gx = 1.0 - 0.22 * np.abs(np.linspace(-1, 1, tw, dtype=np.float32))[None, :] ** 2
+    arr = np.clip(np.array(shirt, np.float32)[None, None, :] * (gy * gx)[..., None], 0, 255)
+    torso = Image.fromarray(np.dstack([arr, np.full((th, tw), 255, np.float32)]).astype(np.uint8), "RGBA")
+    tm = Image.new("L", (tw, th), 0)
+    ImageDraw.Draw(tm).rounded_rectangle([0, 0, tw, th * 2], radius=int(tw * 0.28), fill=255)
+    torso.putalpha(tm)
+    big.alpha_composite(torso, (int(cx - tw / 2), int(H * s * 0.58)))
+    # cuello y cuello de la camisa
+    dr.rectangle([cx - W * s * 0.09, H * s * 0.5, cx + W * s * 0.09, H * s * 0.66], fill=_shade(skin, 0.82) + (255,))
+    dr.pieslice([cx - W * s * 0.16, H * s * 0.56, cx + W * s * 0.16, H * s * 0.76], 0, 180, fill=_shade(skin, 0.78) + (255,))
+
+    # pelo de atrás
+    if style == "largo":
+        dr.rounded_rectangle([cx - W * s * 0.31, H * s * 0.14, cx + W * s * 0.31, H * s * 0.7], radius=W * s * 0.3,
+                             fill=_shade(hair, 0.85) + (255,))
+    elif style == "moño":
+        dr.ellipse([cx - W * s * 0.12, H * s * 0.02, cx + W * s * 0.12, H * s * 0.2], fill=_shade(hair, 0.9) + (255,))
+    elif style == "rizado":
+        for ang in range(0, 360, 36):
+            a = math.radians(ang)
+            ccx, ccy = cx + math.cos(a) * W * s * 0.3, H * s * 0.38 + math.sin(a) * H * s * 0.24
+            dr.ellipse([ccx - W * s * 0.1, ccy - W * s * 0.1, ccx + W * s * 0.1, ccy + W * s * 0.1],
+                       fill=_shade(hair, 0.9) + (255,))
+
+    # cabeza esférica con volumen
+    hw, hh = int(W * s * 0.56), int(H * s * 0.5)
+    head = sphere(hw, skin, spec=0.25, dark=0.62, light=(-0.35, -0.5)).resize((hw, hh), Image.LANCZOS)
+    big.alpha_composite(head, (int(cx - hw / 2), int(H * s * 0.15)))
+    hd = ImageDraw.Draw(big)
+
+    # pelo delantero
+    hcy = H * s * 0.4
+    if style in ("corto", "moño", "gorro", "flequillo"):
+        hd.chord([cx - W * s * 0.3, H * s * 0.1, cx + W * s * 0.3, H * s * 0.52], 180, 360, fill=hair + (255,))
+        hd.arc([cx - W * s * 0.22, H * s * 0.13, cx + W * s * 0.02, H * s * 0.3], 200, 280,
+               fill=_shade(hair, 1.6) + (255,), width=max(2, int(W * 0.018 * s)))
+    if style == "flequillo":
+        hd.chord([cx - W * s * 0.29, H * s * 0.15, cx + W * s * 0.29, H * s * 0.42], 180, 360, fill=hair + (255,))
+    if style == "largo":
+        hd.chord([cx - W * s * 0.3, H * s * 0.1, cx + W * s * 0.3, H * s * 0.5], 180, 360, fill=hair + (255,))
+        hd.arc([cx - W * s * 0.2, H * s * 0.14, cx, H * s * 0.3], 200, 280, fill=_shade(hair, 1.6) + (255,),
+               width=max(2, int(W * 0.018 * s)))
+    if style == "rizado":
+        for k in range(7):
+            a = math.radians(200 + k * 23)
+            ccx, ccy = cx + math.cos(a) * W * s * 0.22, H * s * 0.32 + math.sin(a) * H * s * 0.16
+            hd.ellipse([ccx - W * s * 0.075, ccy - W * s * 0.075, ccx + W * s * 0.075, ccy + W * s * 0.075], fill=hair + (255,))
+    if style == "gorro":
+        gc = shirts[(v * 3 + 1) % len(shirts)]
+        hd.chord([cx - W * s * 0.31, H * s * 0.08, cx + W * s * 0.31, H * s * 0.5], 180, 360, fill=gc + (255,))
+        hd.rounded_rectangle([cx - W * s * 0.31, H * s * 0.27, cx + W * s * 0.31, H * s * 0.33], radius=W * s * 0.03,
+                             fill=_shade(gc, 0.75) + (255,))
+        hd.ellipse([cx - W * s * 0.05, H * s * 0.03, cx + W * s * 0.05, H * s * 0.13], fill=(250, 250, 250, 255))
+    # orejas
     for sx in (-1, 1):
-        dr.ellipse([cx + sx * W * s * 0.11 - W * s * 0.03, H * s * 0.38, cx + sx * W * s * 0.11 + W * s * 0.03,
-                    H * s * 0.43], fill=(40, 30, 30, 255))
-    dr.arc([cx - W * s * 0.1, H * s * 0.4, cx + W * s * 0.1, H * s * 0.54], 20, 160, fill=(120, 40, 40, 255),
-           width=max(2, int(W * 0.012 * s)))
+        hd.ellipse([cx + sx * W * s * 0.28 - W * s * 0.04, H * s * 0.38, cx + sx * W * s * 0.28 + W * s * 0.04, H * s * 0.48],
+                   fill=_shade(skin, 0.9) + (255,))
+    # ojos con brillo, cejas, mejillas y boca
+    cheek = _canvas(W, H)
+    for sx in (-1, 1):
+        ex = cx + sx * W * s * 0.115
+        hd.ellipse([ex - W * s * 0.04, H * s * 0.375, ex + W * s * 0.04, H * s * 0.455], fill=(255, 255, 255, 255))
+        hd.ellipse([ex - W * s * 0.027, H * s * 0.39, ex + W * s * 0.027, H * s * 0.452], fill=(35, 25, 25, 255))
+        hd.ellipse([ex - W * s * 0.014, H * s * 0.395, ex + W * s * 0.004, H * s * 0.415], fill=(255, 255, 255, 255))
+        hd.arc([ex - W * s * 0.05, H * s * 0.33, ex + W * s * 0.05, H * s * 0.40], 200, 340, fill=_shade(hair, 0.9) + (255,),
+               width=max(2, int(W * 0.014 * s)))
+        ImageDraw.Draw(cheek).ellipse([ex + sx * W * s * 0.03 - W * s * 0.04, H * s * 0.46,
+                                       ex + sx * W * s * 0.03 + W * s * 0.04, H * s * 0.51], fill=(255, 110, 110, 70))
+    big.alpha_composite(cheek)
+    hd = ImageDraw.Draw(big)
+    if mood == "happy":
+        hd.arc([cx - W * s * 0.1, H * s * 0.44, cx + W * s * 0.1, H * s * 0.56], 20, 160, fill=(130, 40, 45, 255),
+               width=max(2, int(W * 0.016 * s)))
+    else:
+        hd.line([cx - W * s * 0.06, H * s * 0.52, cx + W * s * 0.06, H * s * 0.52], fill=(130, 40, 45, 255),
+                width=max(2, int(W * 0.014 * s)))
     return _fin(big, W, H)
 
 
@@ -300,8 +369,11 @@ def a_medidor(w, p):
     out = np.zeros((H, W, 4), np.float32)
     # marco metálico
     m = np.clip(R - r, 0, 1) * top
-    metal = 135 + 100 * np.clip(np.cos(np.radians(ang - 120)), -1, 1) - 60 * np.clip((r / R - 0.9) * 10, 0, 1)
-    out[..., :3] = metal[..., None]
+    rn = r / R
+    metal = 150 + 95 * np.clip(np.cos(np.radians(ang - 125)), -1, 1)            # luz desde arriba-izquierda
+    metal = metal - 55 * np.clip((rn - 0.9) * 12, 0, 1) - 45 * np.exp(-((rn - 0.875) / 0.014) ** 2)   # ranura interior
+    metal = metal + 55 * np.exp(-((rn - 0.975) / 0.012) ** 2)                      # bisel brillante exterior
+    out[..., :3] = (metal[..., None] * np.array([0.96, 1.0, 1.08], np.float32)[None, None, :])
     out[..., 3] = m * 255
     # cara oscura
     f = np.clip(R * 0.86 - r, 0, 1) * top
@@ -329,6 +401,17 @@ def a_medidor(w, p):
     dr.line([cx * s, cy * s, nx, ny], fill=(235, 235, 240, 255), width=int(W * 0.012 * s))
     dr.ellipse([cx * s - W * 0.035 * s, cy * s - W * 0.035 * s, cx * s + W * 0.035 * s, cy * s + W * 0.035 * s],
                fill=(220, 220, 228, 255), outline=(90, 90, 100, 255), width=int(W * 0.008 * s))
+    # marcas de la escala y reflejo de cristal sobre la cara
+    for k in range(15):
+        aa = math.radians(180 - k * 180 / 14)
+        r0, r1 = R * (0.77 if k % 7 else 0.74), R * 0.80
+        dr.line([cx * s + r0 * s * math.cos(aa), cy * s - r0 * s * math.sin(aa), cx * s + r1 * s * math.cos(aa),
+                 cy * s - r1 * s * math.sin(aa)], fill=(235, 235, 245, 200), width=max(2, int(W * 0.006 * s)))
+    gl = _canvas(W, H)
+    gd = ImageDraw.Draw(gl)
+    gd.pieslice([(cx - R * 0.84) * s, (cy - R * 0.84) * s, (cx + R * 0.84) * s, (cy + R * 0.84) * s], 195, 345, fill=(255, 255, 255, 46))
+    gd.ellipse([(cx - R * 0.9) * s, (cy - R * 0.62) * s, (cx + R * 0.9) * s, (cy + R * 1.2) * s], fill=(0, 0, 0, 0))
+    big.alpha_composite(gl)
     im.alpha_composite(_fin(big, W, H))
     lab = p.get("label", f"pH {val:g}")
     t1 = text_layer(lab, "bold", int(W * 0.115), fill=(150, 255, 160), stroke=2, stroke_fill=(10, 60, 20), max_w=W)
@@ -443,24 +526,70 @@ def a_pastilla(w, p):
 
 
 def a_pez(w, p):
+    """Pescado con volumen: lomo oscuro, flancos plateados, vientre claro, escamas, aletas translúcidas y ojo con iris."""
+    from PIL import ImageFilter
     W, H = int(w), int(w * 0.56)
     body = _c(p.get("color"), (150, 170, 185))
-    big = _canvas(W, H)
-    dr = ImageDraw.Draw(big)
     s = SS
-    dr.polygon([(W * s * 0.8, H * s * 0.5), (W * s, H * s * 0.08), (W * s, H * s * 0.92)], fill=_shade(body, 0.7) + (255,))
-    dr.polygon([(W * s * 0.3, H * s * 0.25), (W * s * 0.5, H * s * 0.0), (W * s * 0.62, H * s * 0.3)],
-               fill=_shade(body, 0.65) + (255,))
-    dr.ellipse([0, H * s * 0.2, W * s * 0.86, H * s * 0.8], fill=_shade(body, 0.55) + (255,))
-    dr.chord([0, H * s * 0.2, W * s * 0.86, H * s * 0.8], 0, 180, fill=_shade(body, 1.12) + (255,))
-    dr.chord([W * s * 0.02, H * s * 0.2, W * s * 0.86, H * s * 0.62], 180, 360, fill=_shade(body, 0.5) + (255,))
-    dr.ellipse([W * s * 0.1, H * s * 0.3, W * s * 0.8, H * s * 0.66], fill=body + (255,))
-    for i in range(5):
-        x = W * s * (0.2 + i * 0.11)
-        dr.arc([x, H * s * 0.34, x + W * s * 0.1, H * s * 0.52], 270, 90, fill=_shade(body, 0.8) + (255,), width=3)
-    dr.arc([W * s * 0.22, H * s * 0.3, W * s * 0.34, H * s * 0.7], 270, 90, fill=_shade(body, 0.6) + (255,), width=5)
-    dr.ellipse([W * s * 0.07, H * s * 0.36, W * s * 0.13, H * s * 0.45], fill=(250, 250, 250, 255), outline=(20, 20, 20, 255), width=3)
-    dr.ellipse([W * s * 0.085, H * s * 0.385, W * s * 0.115, H * s * 0.43], fill=(10, 10, 10, 255))
+    BW, BH = W * s, H * s
+    # silueta del cuerpo (máscara)
+    mk = Image.new("L", (BW, BH), 0)
+    md = ImageDraw.Draw(mk)
+    md.ellipse([0, BH * 0.2, BW * 0.86, BH * 0.8], fill=255)
+    md.polygon([(BW * 0.72, BH * 0.36), (BW * 0.86, BH * 0.28), (BW * 0.86, BH * 0.72), (BW * 0.72, BH * 0.64)], fill=255)
+    mask = np.asarray(mk, np.float32) / 255.0
+    yy = (np.arange(BH, dtype=np.float32)[:, None] - BH * 0.2) / (BH * 0.6)          # 0 lomo → 1 vientre
+    xx = np.arange(BW, dtype=np.float32)[None, :] / (BW * 0.86)
+    yy = np.clip(yy, 0, 1)
+    dorso = np.array(_shade(body, 0.42), np.float32)
+    flanco = np.array(_shade(body, 1.05), np.float32)
+    vientre = np.array([232, 240, 246], np.float32)
+    t1 = np.clip(yy / 0.45, 0, 1)[..., None]
+    t2 = np.clip((yy - 0.55) / 0.35, 0, 1)[..., None]
+    col = dorso * (1 - t1) + flanco * t1
+    col = col * (1 - t2) + vientre * t2
+    col = col * (0.9 + 0.2 * np.clip(1 - xx, 0, 1))[..., None]       # más claro hacia la cabeza
+    band = np.exp(-((yy - 0.42) / 0.06) ** 2)[..., None] * 70           # franja de brillo especular
+    col = np.clip(col + band, 0, 255)
+    im = Image.fromarray(np.dstack([col, mask * 255]).astype(np.uint8), "RGBA")
+    big = _canvas(W, H)
+    # aletas translúcidas con rayos
+    fin = Image.new("RGBA", big.size, (0, 0, 0, 0))
+    fd = ImageDraw.Draw(fin)
+    fc = _shade(body, 0.62) + (235,)
+    fd.polygon([(BW * 0.78, BH * 0.5), (BW, BH * 0.06), (BW * 0.97, BH * 0.5), (BW, BH * 0.94)], fill=fc)
+    fd.polygon([(BW * 0.28, BH * 0.26), (BW * 0.46, BH * 0.0), (BW * 0.64, BH * 0.3)], fill=_shade(body, 0.55) + (240,))
+    fd.polygon([(BW * 0.4, BH * 0.72), (BW * 0.52, BH * 0.95), (BW * 0.6, BH * 0.7)], fill=_shade(body, 0.6) + (230,))
+    for k in range(6):
+        f = k / 5
+        fd.line([(BW * 0.8, BH * 0.5), (BW * 0.99, BH * (0.1 + 0.8 * f))], fill=_shade(body, 0.4) + (150,), width=max(2, int(BW * 0.003)))
+    big.alpha_composite(fin)
+    big.alpha_composite(im)
+    # escamas: arcos suaves dentro del cuerpo
+    sc = Image.new("RGBA", big.size, (0, 0, 0, 0))
+    sd = ImageDraw.Draw(sc)
+    r = BW * 0.045
+    row = 0
+    y = BH * 0.3
+    while y < BH * 0.72:
+        x = BW * 0.2 + (r if row % 2 else 0)
+        while x < BW * 0.76:
+            sd.arc([x - r, y - r, x + r, y + r], 300, 60, fill=(255, 255, 255, 70), width=max(2, int(r * 0.12)))
+            x += r * 2
+        y += r * 0.9
+        row += 1
+    sc.putalpha(Image.fromarray((np.asarray(sc.getchannel("A"), np.float32) * mask).astype(np.uint8)))
+    big.alpha_composite(sc)
+    bd = ImageDraw.Draw(big)
+    bd.arc([BW * 0.24, BH * 0.3, BW * 0.38, BH * 0.7], 280, 80, fill=_shade(body, 0.5) + (255,), width=max(3, int(BW * 0.008)))
+    bd.line([(BW * 0.15, BH * 0.5), (BW * 0.76, BH * 0.46)], fill=_shade(body, 0.7) + (120,), width=max(2, int(BW * 0.004)))
+    # ojo con iris dorado y brillo
+    ex, ey, er = BW * 0.1, BH * 0.42, BW * 0.036
+    bd.ellipse([ex - er * 1.25, ey - er * 1.25, ex + er * 1.25, ey + er * 1.25], fill=(20, 24, 30, 255))
+    bd.ellipse([ex - er, ey - er, ex + er, ey + er], fill=(238, 190, 70, 255))
+    bd.ellipse([ex - er * 0.62, ey - er * 0.62, ex + er * 0.62, ey + er * 0.62], fill=(8, 8, 10, 255))
+    bd.ellipse([ex - er * 0.45, ey - er * 0.7, ex - er * 0.05, ey - er * 0.3], fill=(255, 255, 255, 255))
+    bd.arc([BW * 0.06, BH * 0.5, BW * 0.12, BH * 0.58], 20, 160, fill=_shade(body, 0.4) + (255,), width=max(2, int(BW * 0.004)))
     return _fin(big, W, H)
 
 
@@ -497,19 +626,31 @@ def a_gato(w, p):
 
 
 def a_hielo(w, p):
-    """Cama de cubos de hielo (borde inferior)."""
-    W, H = int(w), int(w * 0.22)
+    """Cama de cubos de hielo translúcidos con bordes brillantes y destellos (borde inferior)."""
+    W, H = int(w), int(w * 0.3)
     rnd = random.Random(5)
-    big = _canvas(W, H)
-    dr = ImageDraw.Draw(big)
     s = SS
-    dr.rectangle([0, H * s * 0.3, W * s, H * s], fill=(190, 225, 245, 255))
-    x = -20
-    while x < W * s:
-        sz = rnd.randint(int(H * s * 0.25), int(H * s * 0.45))
-        y = H * s * rnd.uniform(0.0, 0.5)
-        dr.rounded_rectangle([x, y, x + sz, y + sz], radius=sz * 0.18, fill=(210, 238, 252, 235), outline=(255, 255, 255, 200), width=3)
-        x += sz * rnd.uniform(0.6, 0.9)
+    big = _canvas(W, H)
+    base = ImageDraw.Draw(big)
+    base.rectangle([0, H * s * 0.45, W * s, H * s], fill=(150, 198, 226, 255))
+    for layer, (lo, hi, y0, y1, tint) in enumerate(((0.22, 0.38, 0.12, 0.5, (170, 212, 236)), (0.28, 0.5, 0.0, 0.46, (205, 233, 249)))):
+        x = -rnd.randint(0, 40)
+        while x < W * s:
+            sz = rnd.randint(int(H * s * lo), int(H * s * hi))
+            y = H * s * rnd.uniform(y0, y1)
+            cub = Image.new("RGBA", (sz + 6, sz + 6), (0, 0, 0, 0))
+            cd = ImageDraw.Draw(cub)
+            cd.rounded_rectangle([3, 3, sz + 2, sz + 2], radius=sz * 0.2, fill=tint + (225,), outline=(255, 255, 255, 235), width=max(2, int(sz * 0.05)))
+            cd.polygon([(sz * 0.14, sz * 0.14), (sz * 0.62, sz * 0.14), (sz * 0.14, sz * 0.62)], fill=(255, 255, 255, 120))      # brillo diagonal
+            cd.line([(sz * 0.7, sz * 0.88), (sz * 0.9, sz * 0.68)], fill=(120, 170, 215, 160), width=max(2, int(sz * 0.05)))
+            cub = cub.rotate(rnd.uniform(-18, 18), Image.BICUBIC, expand=True)
+            big.alpha_composite(cub, (int(x), int(y)))
+            x += sz * rnd.uniform(0.55, 0.85)
+    sp = ImageDraw.Draw(big)
+    for _ in range(max(6, W // 60)):
+        cx, cy, r = rnd.uniform(0, W * s), rnd.uniform(H * s * 0.1, H * s * 0.8), rnd.uniform(H * s * 0.02, H * s * 0.05)
+        sp.polygon([(cx, cy - r * 2), (cx + r * 0.4, cy - r * 0.4), (cx + r * 2, cy), (cx + r * 0.4, cy + r * 0.4),
+                    (cx, cy + r * 2), (cx - r * 0.4, cy + r * 0.4), (cx - r * 2, cy), (cx - r * 0.4, cy - r * 0.4)], fill=(255, 255, 255, 240))
     return _fin(big, W, H)
 
 
@@ -1135,7 +1276,7 @@ ASSETS = {
     "bacteria_mala": (a_bacteria_mala, 1.0, "Bacteria morada con picos y cara de enojo", "color, mood"),
     "bacteria_buena": (a_bacteria_buena, 0.38, "Bacilo amarillo sonriente", "color"),
     "burbuja": (a_burbuja, 1.0, "Burbuja translúcida", "color"),
-    "persona": (a_persona, 1.15, "Persona de busto (cada copia con var distinto cambia piel, pelo y ropa)", "skin, hair, shirt, var"),
+    "persona": (a_persona, 1.15, "Persona de busto con volumen (cada copia con var distinto cambia piel, peinado y ropa)", "skin, hair, shirt, var, style: corto|largo|rizado|moño|calvo|flequillo|gorro, mood: happy|neutral"),
     "medidor": (a_medidor, 0.66, "Medidor semicircular tipo pH", "value (0-14), label"),
     "puerta": (a_puerta, 1.6, "Puerta de madera", "color"),
     "cartel": (a_cartel, 0.78, "Cartel colgante rojo con texto", "text, color"),
@@ -1145,7 +1286,7 @@ ASSETS = {
     "pastilla": (a_pastilla, 0.42, "Pastilla roja y blanca", ""),
     "pez": (a_pez, 0.5, "Pescado plateado", "color"),
     "gato": (a_gato, 1.15, "Gato naranja sentado", "color"),
-    "hielo": (a_hielo, 0.22, "Cama de hielo (poner al borde inferior)", ""),
+    "hielo": (a_hielo, 0.3, "Cama de hielo (poner al borde inferior)", ""),
     "olor": (a_nube_olor, 1.3, "Ondas verdes de olor", "color"),
     "corazon": (a_corazon, 1.0, "Corazón", "color"),
     "estrella": (a_estrella, 1.0, "Estrella", "color"),

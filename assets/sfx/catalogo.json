@@ -2,7 +2,7 @@
  "click.wav": {
   "tag": "click",
   "uso": "aparece un texto, un pin o un detalle pequeño",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.021,
   "hit": 0.002,
   "rms_db": -15.5,
@@ -13,7 +13,7 @@
  "click_2.wav": {
   "tag": "click",
   "uso": "aparece un texto, un pin o un detalle pequeño",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.02,
   "hit": 0.003,
   "rms_db": -16.0,
@@ -24,7 +24,7 @@
  "click_3.wav": {
   "tag": "click",
   "uso": "aparece un texto, un pin o un detalle pequeño",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.021,
   "hit": 0.002,
   "rms_db": -15.2,
@@ -35,7 +35,7 @@
  "ding.wav": {
   "tag": "ding",
   "uso": "acierto, dato clave, aviso",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 1.0,
   "hit": 0.004,
   "rms_db": -13.7,
@@ -46,7 +46,7 @@
  "ding_2.wav": {
   "tag": "ding",
   "uso": "acierto, dato clave, aviso",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 1.0,
   "hit": 0.004,
   "rms_db": -13.8,
@@ -57,7 +57,7 @@
  "ding_3.wav": {
   "tag": "ding",
   "uso": "acierto, dato clave, aviso",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 1.0,
   "hit": 0.004,
   "rms_db": -13.8,
@@ -68,7 +68,7 @@
  "impacto.wav": {
   "tag": "impacto",
   "uso": "susto, dato fuerte, golpe dramático",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 1.1,
   "hit": 0.043,
   "rms_db": -9.2,
@@ -79,7 +79,7 @@
  "impacto_2.wav": {
   "tag": "impacto",
   "uso": "susto, dato fuerte, golpe dramático",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 1.1,
   "hit": 0.074,
   "rms_db": -9.2,
@@ -90,7 +90,7 @@
  "impacto_3.wav": {
   "tag": "impacto",
   "uso": "susto, dato fuerte, golpe dramático",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 1.1,
   "hit": 0.052,
   "rms_db": -9.1,
@@ -101,7 +101,7 @@
  "latido.wav": {
   "tag": "latido",
   "uso": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
-  "mtime": 1795503684,
+  "mtime": 1795531099,
   "dur": 0.466,
   "hit": 0.008,
   "rms_db": -10.4,
@@ -112,7 +112,7 @@
  "latido_2.wav": {
   "tag": "latido",
   "uso": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
-  "mtime": 1795503684,
+  "mtime": 1795531099,
   "dur": 0.467,
   "hit": 0.007,
   "rms_db": -10.4,
@@ -123,7 +123,7 @@
  "latido_3.wav": {
   "tag": "latido",
   "uso": "corazón: un latido (lub-dub); con dur/bpm/bpm_fin se repite acelerando",
-  "mtime": 1795503684,
+  "mtime": 1795531099,
   "dur": 0.465,
   "hit": 0.017,
   "rms_db": -10.5,
@@ -134,7 +134,7 @@
  "pop.wav": {
   "tag": "pop",
   "uso": "aparece una pieza o elemento",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.122,
   "hit": 0.003,
   "rms_db": -15.3,
@@ -145,7 +145,7 @@
  "pop_2.wav": {
   "tag": "pop",
   "uso": "aparece una pieza o elemento",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.128,
   "hit": 0.003,
   "rms_db": -14.3,
@@ -156,7 +156,7 @@
  "pop_3.wav": {
   "tag": "pop",
   "uso": "aparece una pieza o elemento",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.122,
   "hit": 0.003,
   "rms_db": -15.3,
@@ -167,7 +167,7 @@
  "splash.wav": {
   "tag": "splash",
   "uso": "agua, líquido, golpe de color",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.578,
   "hit": 0.017,
   "rms_db": -21.3,
@@ -178,7 +178,7 @@
  "splash_2.wav": {
   "tag": "splash",
   "uso": "agua, líquido, golpe de color",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.56,
   "hit": 0.01,
   "rms_db": -19.5,
@@ -189,7 +189,7 @@
  "splash_3.wav": {
   "tag": "splash",
   "uso": "agua, líquido, golpe de color",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.584,
   "hit": 0.012,
   "rms_db": -19.2,
@@ -200,7 +200,7 @@
  "subida.wav": {
   "tag": "subida",
   "uso": "tensión que crece antes de una revelación",
-  "mtime": 1795502650,
+  "mtime": 1795531099,
   "dur": 1.108,
   "hit": 1.065,
   "rms_db": -19.6,
@@ -211,7 +211,7 @@
  "subida_2.wav": {
   "tag": "subida",
   "uso": "tensión que crece antes de una revelación",
-  "mtime": 1795502650,
+  "mtime": 1795531099,
   "dur": 1.072,
   "hit": 1.02,
   "rms_db": -20.1,
@@ -222,7 +222,7 @@
  "subida_3.wav": {
   "tag": "subida",
   "uso": "tensión que crece antes de una revelación",
-  "mtime": 1795502650,
+  "mtime": 1795531099,
   "dur": 1.093,
   "hit": 1.037,
   "rms_db": -19.3,
@@ -233,7 +233,7 @@
  "tic.wav": {
   "tag": "tic",
   "uso": "reloj, cuenta atrás, tensión",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.045,
   "hit": 0.002,
   "rms_db": -13.8,
@@ -244,7 +244,7 @@
  "tic_2.wav": {
   "tag": "tic",
   "uso": "reloj, cuenta atrás, tensión",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.045,
   "hit": 0.002,
   "rms_db": -13.9,
@@ -255,7 +255,7 @@
  "tic_3.wav": {
   "tag": "tic",
   "uso": "reloj, cuenta atrás, tensión",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.045,
   "hit": 0.003,
   "rms_db": -13.9,
@@ -266,7 +266,7 @@
  "whoosh.wav": {
   "tag": "whoosh",
   "uso": "transición entre escenas, cámara que se mueve rápido",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.567,
   "hit": 0.35,
   "rms_db": -17.0,
@@ -277,7 +277,7 @@
  "whoosh_2.wav": {
   "tag": "whoosh",
   "uso": "transición entre escenas, cámara que se mueve rápido",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.58,
   "hit": 0.384,
   "rms_db": -15.7,
@@ -288,7 +288,7 @@
  "whoosh_3.wav": {
   "tag": "whoosh",
   "uso": "transición entre escenas, cámara que se mueve rápido",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.582,
   "hit": 0.422,
   "rms_db": -16.0,
@@ -299,7 +299,7 @@
  "whoosh_corto.wav": {
   "tag": "whoosh_corto",
   "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.29,
   "hit": 0.191,
   "rms_db": -16.6,
@@ -310,7 +310,7 @@
  "whoosh_corto_2.wav": {
   "tag": "whoosh_corto",
   "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.297,
   "hit": 0.199,
   "rms_db": -15.6,
@@ -321,7 +321,7 @@
  "whoosh_corto_3.wav": {
   "tag": "whoosh_corto",
   "uso": "cambios de plano rápidos, elementos que cruzan la pantalla",
-  "mtime": 1795502649,
+  "mtime": 1795531099,
   "dur": 0.292,
   "hit": 0.164,
   "rms_db": -16.6,
