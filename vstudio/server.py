@@ -371,6 +371,19 @@ def _presets() -> dict:
 
 
 # ----------------------------------------------------------------------------- HTTP
+def _default_out_dir() -> Path:
+    """Carpeta predeterminada de los renders: C:\\Vertical Studio\\Videos (si no se puede crear, Videos\\VerticalStudio del usuario)."""
+    for d in (Path(r"C:\Vertical Studio\Videos") if os.name == "nt" else None, Path.home() / "Videos" / "VerticalStudio"):
+        if d is None:
+            continue
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+            return d
+        except OSError:
+            continue
+    return Path.home()
+
+
 def _send_file(h: BaseHTTPRequestHandler, path: Path, ctype: str | None = None):
     size = path.stat().st_size
     ctype = ctype or mimetypes.guess_type(str(path))[0] or "application/octet-stream"
@@ -530,8 +543,7 @@ class Handler(BaseHTTPRequestHandler):
                                    {"Cache-Control": "max-age=300"})
             if path == "/api/default_out":
                 name = re.sub(r"[^\w\- ]", "", (q.get("name") or ["video"])[0]).strip() or "video"
-                d = Path.home() / "Videos" / "VerticalStudio"
-                d.mkdir(parents=True, exist_ok=True)
+                d = _default_out_dir()
                 return self._json({"path": str(d / f"{name}_{time.strftime('%Y%m%d_%H%M')}.mp4")})
             if path == "/api/video":
                 p = Path((q.get("path") or [""])[0])
