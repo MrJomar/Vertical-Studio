@@ -1496,50 +1496,97 @@ def a_piel(w, p):
 
 
 def a_peludo(w, p):
-    """Ancestro peludo: bola de pelaje con cara. erizado 0 (pelo caído) → 1 (pelo de punta, se ve más grande)."""
+    """Ancestro peludo: busto de homínido con pelaje, ceja marcada, cara clara y hombros anchos.
+    erizado 0 (pelo caído) → 1 (pelo de punta). mood: neutral|happy|angry."""
     d = int(w)
     er = max(0.0, min(1.0, float(p.get("erizado", 0))))
     fur = _c(p.get("color"), (128, 80, 44))
+    skin = (226, 182, 144)
+    mood = p.get("mood", "neutral")
     S = SS
+    D = d * S
+    rnd = random.Random(int(p.get("var", 0)) + 11)
+    im = Image.new("RGBA", (d, d), (0, 0, 0, 0))
     big = _canvas(d, d)
     dr = ImageDraw.Draw(big)
-    c = d * S / 2
-    r0 = c * (0.62 - 0.07 * er)
-    rnd = random.Random(int(p.get("var", 0)) + 11)
-    for ring, (n, grow, shade_k) in enumerate(((34, 1.18, 0.72), (38, 1.0, 1.0))):     # dos capas de mechones: fondo oscuro y frente claro
+    line = _shade(fur, 0.45) + (255,)
+
+    def tufts(cx, cy, rx, ry, a0, a1, n, L, col, hw, layer_k):
         for i in range(n):
-            a = 2 * math.pi * (i + 0.5 * ring) / n + rnd.uniform(-0.05, 0.05)
-            L = r0 + c * (0.17 + 0.22 * er) * grow * rnd.uniform(0.8, 1.0)
-            ta = a + (1 - er) * (0.34 if ring else -0.3)
-            hw = 0.16 + 0.06 * (1 - er)
-            k = rnd.uniform(0.9, 1.15) * shade_k
-            mid = (c + (r0 + (L - r0) * 0.55) * math.cos((a + ta) / 2 + (0.12 if i % 2 else -0.12) * (1 - er)),
-                   c + (r0 + (L - r0) * 0.55) * math.sin((a + ta) / 2 + (0.12 if i % 2 else -0.12) * (1 - er)))
-            dr.polygon([(c + r0 * 0.78 * math.cos(a - hw), c + r0 * 0.78 * math.sin(a - hw)),
-                        (mid[0] + 0.02 * c * math.cos(a + 1.57), mid[1] + 0.02 * c * math.sin(a + 1.57)),
-                        (c + L * math.cos(ta), c + L * math.sin(ta)),
-                        (mid[0] - 0.02 * c * math.cos(a + 1.57), mid[1] - 0.02 * c * math.sin(a + 1.57)),
-                        (c + r0 * 0.78 * math.cos(a + hw), c + r0 * 0.78 * math.sin(a + hw))],
-                       fill=_shade(fur, k) + (255,), outline=_shade(fur, 0.5) + (255,))
-    for sx in (-1, 1):                                           # orejas
-        ex_, ey_, er_ = c + sx * r0 * 0.93, c + r0 * 0.1, r0 * 0.2
-        dr.ellipse([ex_ - er_, ey_ - er_, ex_ + er_, ey_ + er_], fill=(238, 196, 156, 255), outline=_shade(fur, 0.55) + (255,), width=max(2, int(r0 * 0.03)))
-        dr.ellipse([ex_ - er_ * 0.55, ey_ - er_ * 0.55, ex_ + er_ * 0.55, ey_ + er_ * 0.55], fill=(205, 150, 120, 255))
-    im = _fin(big, d, d)
-    bd = int(r0 * 2 / S)
-    body = sphere(bd, fur, spec=0.1, dark=0.5, light=(-0.4, -0.45))
-    b2 = _canvas(bd, bd)
-    d2 = ImageDraw.Draw(b2)
-    r = bd * S / 2
-    for _ in range(60):                                          # trazos de pelo sobre el cuerpo
-        x, y = rnd.uniform(0.1, 1.9) * r, rnd.uniform(0.1, 1.9) * r
-        if (x - r) ** 2 + (y - r) ** 2 > (r * 0.92) ** 2:
+            ang = math.radians(a0 + (a1 - a0) * (i + 0.5) / n) + rnd.uniform(-0.04, 0.04)
+            nx, ny = math.cos(ang), math.sin(ang)
+            bx, by = cx + rx * nx, cy + ry * ny
+            tx, ty = -ny, nx
+            dx, dy = nx * (0.55 + 0.45 * er), ny * (0.55 + 0.45 * er) + (1 - er) * 0.95   # caído: tira hacia abajo; erizado: hacia fuera
+            dn = math.hypot(dx, dy) or 1
+            dx, dy = dx / dn, dy / dn
+            ln = L * rnd.uniform(0.8, 1.15) * layer_k
+            tip = (bx + dx * ln, by + dy * ln)
+            mid = (bx + dx * ln * 0.5 + tx * ln * 0.12 * (1 if i % 2 else -1), by + dy * ln * 0.5 + ty * ln * 0.12 * (1 if i % 2 else -1))
+            k = rnd.uniform(0.88, 1.12)
+            dr.polygon([(bx - tx * hw, by - ty * hw), mid, tip, (mid[0] + tx * hw * 0.35, mid[1] + ty * hw * 0.35), (bx + tx * hw, by + ty * hw)],
+                       fill=_shade(col, k) + (255,), outline=line)
+
+    # ---- torso (hombros anchos) con mechones en el contorno
+    tcx, tcy, trx, try_ = D * 0.5, D * 1.02, D * 0.43, D * 0.40
+    L1 = D * (0.07 + 0.06 * er)
+    tufts(tcx, tcy, trx, try_, 188, 352, 16, L1 * 1.2, _shade(fur, 0.72), D * 0.035, 1.0)
+    dr.ellipse([tcx - trx, tcy - try_, tcx + trx, tcy + try_], fill=fur + (255,), outline=line, width=max(2, int(S * 2)))
+    tufts(tcx, tcy, trx * 0.97, try_ * 0.97, 196, 344, 14, L1, fur, D * 0.03, 0.85)
+    # ---- cabeza con mechones (arriba y a los lados)
+    hcx, hcy, hr = D * 0.5, D * 0.40, D * 0.255
+    L2 = D * (0.085 + 0.075 * er)
+    tufts(hcx, hcy, hr, hr, 150, 390, 24, L2 * 1.15, _shade(fur, 0.7), D * 0.034, 1.0)
+    im.alpha_composite(_fin(big, d, d))
+    hd = int(hr * 2 / S)
+    head = sphere(hd, fur, spec=0.08, dark=0.55, light=(-0.4, -0.5))
+    layer = _canvas(hd, hd)
+    d2 = ImageDraw.Draw(layer)
+    r = hd * S / 2
+    for _ in range(70):                                         # trazos de pelo sobre la cabeza
+        x, y = rnd.uniform(0.0, 2.0) * r, rnd.uniform(0.0, 0.85) * r
+        if (x - r) ** 2 + (y - r) ** 2 > (r * 0.95) ** 2:
             continue
-        d2.line([x, y, x + rnd.uniform(-0.1, 0.1) * r, y + 0.16 * r], fill=_shade(fur, rnd.choice((0.7, 1.3))) + (150,), width=max(2, int(r * 0.03)))
-    d2.ellipse([r * 0.36, r * 0.5, r * 1.64, r * 1.66], fill=(238, 196, 156, 255), outline=_shade((238, 196, 156), 0.7) + (255,), width=max(2, int(r * 0.02)))
-    _face(d2, r, r * 1.12, r * 0.6, p.get("mood", "neutral"))
-    body.alpha_composite(_fin(b2, bd, bd))
-    im.alpha_composite(body, (int((d - bd) / 2), int((d - bd) / 2)))
+        d2.line([x, y, x + rnd.uniform(-0.12, 0.12) * r, y + 0.2 * r], fill=_shade(fur, rnd.choice((0.65, 1.3))) + (170,), width=max(2, int(r * 0.03)))
+    # cara clara (óvalo) con brillo suave
+    fx0, fy0, fx1, fy1 = r * 0.30, r * 0.62, r * 1.70, r * 1.84
+    d2.ellipse([fx0, fy0, fx1, fy1], fill=skin + (255,), outline=_shade(skin, 0.62) + (255,), width=max(2, int(r * 0.025)))
+    # ceja marcada (arco grueso y oscuro) y ojos hundidos
+    brow = _shade(fur, 0.42) + (255,)
+    ey = r * 1.10
+    for sx in (-1, 1):
+        ex = r + sx * r * 0.36
+        tilt = (0.16 if mood == "angry" else 0.0) * r
+        d2.line([(ex - sx * r * 0.34, ey - r * 0.22 - (tilt if sx == -1 else tilt) * (-1 if sx == 1 else -1) * 0.0),
+                 (ex, ey - r * 0.27 + tilt * 0.0), (ex + sx * r * 0.30, ey - r * 0.17 - (tilt if mood == "angry" else 0) * 0)],
+                fill=brow, width=int(r * 0.15), joint="curve")
+        d2.ellipse([ex - r * 0.15, ey - r * 0.11, ex + r * 0.15, ey + r * 0.11], fill=(255, 255, 255, 255), outline=_shade(skin, 0.5) + (255,), width=max(1, int(r * 0.012)))
+        d2.ellipse([ex - r * 0.075, ey - r * 0.075, ex + r * 0.075, ey + r * 0.075], fill=(30, 20, 18, 255))
+        d2.ellipse([ex - r * 0.03, ey - r * 0.055, ex + r * 0.012, ey - r * 0.015], fill=(255, 255, 255, 255))
+    # nariz ancha
+    d2.ellipse([r - r * 0.2, r * 1.28, r + r * 0.2, r * 1.52], fill=_shade(skin, 0.88) + (255,))
+    for sx in (-1, 1):
+        d2.ellipse([r + sx * r * 0.09 - r * 0.04, r * 1.40, r + sx * r * 0.09 + r * 0.04, r * 1.47], fill=_shade(skin, 0.45) + (255,))
+    # boca
+    my = r * 1.62
+    if mood == "happy":
+        d2.arc([r - r * 0.30, my - r * 0.20, r + r * 0.30, my + r * 0.16], 15, 165, fill=_shade(skin, 0.4) + (255,), width=int(r * 0.05))
+    elif mood == "angry":
+        d2.rounded_rectangle([r - r * 0.26, my - r * 0.04, r + r * 0.26, my + r * 0.15], radius=r * 0.06, fill=(90, 28, 30, 255), outline=_shade(skin, 0.4) + (255,), width=max(2, int(r * 0.02)))
+        for k in range(4):
+            tx_ = r - r * 0.2 + k * r * 0.133
+            d2.polygon([(tx_, my - r * 0.03), (tx_ + r * 0.1, my - r * 0.03), (tx_ + r * 0.05, my + r * 0.06)], fill=(250, 246, 235, 255))
+    else:
+        d2.line([(r - r * 0.2, my), (r + r * 0.2, my)], fill=_shade(skin, 0.4) + (255,), width=int(r * 0.05))
+    head.alpha_composite(_fin(layer, hd, hd))
+    # orejas
+    ear = _canvas(d, d)
+    de = ImageDraw.Draw(ear)
+    for sx in (-1, 1):
+        ex_, ey_ = hcx + sx * hr * 0.97, hcy + hr * 0.12
+        de.ellipse([ex_ - hr * 0.17, ey_ - hr * 0.2, ex_ + hr * 0.17, ey_ + hr * 0.2], fill=skin + (255,), outline=_shade(skin, 0.6) + (255,), width=max(2, int(S * 2)))
+    im.alpha_composite(_fin(ear, d, d))
+    im.alpha_composite(head, (int(hcx / S - hd / 2), int(hcy / S - hd / 2)))
     return im
 
 
@@ -1668,7 +1715,7 @@ ASSETS = {
     "nervio": (a_nervio, 1.6, "Nervio amarillo vertical con vainas", "color, pinch (0-1: punto aplastado), glow"),
     "pierna": (a_pierna, 1.05, "Pierna sentada translúcida con arteria, vena y nervio", "color, nerve (0-1)"),
     "piel": (a_piel, 1.1, "Corte de piel con pelo, folículo, músculo erector y nervio. value 0 (relajada) → 1 (piel de gallina): el pelo se levanta y sale el bultito", "value (0-1); anima con value_from/value_to y value_step 0.02"),
-    "peludo": (a_peludo, 1.0, "Ancestro peludo: bola de pelaje con cara", "erizado (0-1, pelo de punta), mood: neutral|happy|angry|sad|scared, color"),
+    "peludo": (a_peludo, 1.0, "Ancestro peludo: busto de homínido con pelaje, ceja marcada y cara clara", "erizado (0-1, pelo de punta), mood: neutral|happy|angry|sad|scared, color"),
     "termometro": (a_termometro, 2.3, "Termómetro vertical de azul (frío) a rojo (calor)", "value (0-1)"),
     "audifonos": (a_audifonos, 0.98, "Audífonos de diadema", "color"),
     "nota": (a_nota, 1.3, "Nota musical brillante", "color, double (true = dos notas unidas)"),

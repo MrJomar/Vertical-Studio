@@ -317,11 +317,11 @@ class CaptionTrack:
             for i in line:
                 col = self.hl if i == active else self.fill
                 if self.style in ("caja", "suave"):
-                    a_ = 255 if i == active else (150 if self.style == "suave" else 170)
+                    a_ = 255 if i == active else (210 if self.style == "suave" else 190)
                     if i == active:
                         d.rounded_rectangle([x - 8, y + lh * 0.1, x + widths[i] + 8, y + lh * 0.98], radius=10,
                                             outline=(120, 170, 255, 255), width=3, fill=(40, 70, 160, 70))
-                    d.text((x + 2, y + 3), g[i][0], font=font, fill=(0, 0, 0, 110))
+                    d.text((x + 2, y + 3), g[i][0], font=font, fill=(0, 0, 0, 175))
                     d.text((x, y), g[i][0], font=font, fill=((255, 255, 255) if i == active else (235, 235, 245)) + (a_,))
                     x += widths[i] + space
                     continue
