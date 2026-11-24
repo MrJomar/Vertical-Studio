@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" fill="none">
+<defs>
+<radialGradient id="gr_aura_lat" cx="50%" cy="50%" r="52%">
+<stop offset="0%" stop-color="#9be7ff" stop-opacity="0.34" />
+<stop offset="65%" stop-color="#6cc7eb" stop-opacity="0.1" />
+<stop offset="100%" stop-color="#4ba3c7" stop-opacity="0" />
+</radialGradient>
+<linearGradient id="gr_piel_lat" x1="15%" y1="5%" x2="88%" y2="95%">
+<stop offset="0%" stop-color="#dcf7ff" stop-opacity="0.72" />
+<stop offset="48%" stop-color="#96e3ff" stop-opacity="0.58" />
+<stop offset="82%" stop-color="#64c3e8" stop-opacity="0.65" />
+<stop offset="100%" stop-color="#49a6c7" stop-opacity="0.75" />
+</linearGradient>
+<linearGradient id="gr_hueso_lat" x1="20%" y1="5%" x2="85%" y2="95%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.86" />
+<stop offset="55%" stop-color="#d2f2ff" stop-opacity="0.72" />
+<stop offset="100%" stop-color="#8dd0eb" stop-opacity="0.8" />
+</linearGradient>
+<linearGradient id="gr_reflejo_lat" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.48" />
+<stop offset="65%" stop-color="#ffffff" stop-opacity="0.14" />
+<stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+</linearGradient>
+<linearGradient id="gr_vena_lat" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#7cd4ff" />
+<stop offset="50%" stop-color="#2989d8" />
+<stop offset="100%" stop-color="#195c9e" />
+</linearGradient>
+<linearGradient id="gr_arteria_lat" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ff8fa3" />
+<stop offset="50%" stop-color="#e63956" />
+<stop offset="100%" stop-color="#a81d37" />
+</linearGradient>
+<linearGradient id="gr_nervio_lat" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fff48f" />
+<stop offset="55%" stop-color="#ffd02b" />
+<stop offset="100%" stop-color="#e09e00" />
+</linearGradient>
+<filter id="flt_sombra_interior_lat" x="-15%" y="-15%" width="130%" height="130%">
+<feFlood flood-color="#2c6e8a" flood-opacity="0.34" result="flood" />
+<feComposite in="flood" in2="SourceAlpha" operator="in" result="mask" />
+<feGaussianBlur in="mask" stdDeviation="5" result="blur" />
+<feOffset dx="0" dy="4" result="offsetBlur" />
+<feComposite in="offsetBlur" in2="SourceAlpha" operator="out" result="innerShadow" />
+<feMerge>
+<feMergeNode in="SourceGraphic" />
+<feMergeNode in="innerShadow" />
+</feMerge>
+</filter>
+<filter id="flt_sombra_vasos_lat" x="-20%" y="-20%" width="140%" height="140%">
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur" />
+<feOffset dx="0" dy="2.5" result="offset" />
+<feFlood flood-color="#1f536b" flood-opacity="0.32" result="color" />
+<feComposite in="color" in2="offset" operator="in" result="shadow" />
+<feMerge>
+<feMergeNode in="shadow" />
+<feMergeNode in="SourceGraphic" />
+</feMerge>
+</filter>
+</defs>
+<g id="aura">
+<ellipse cx="152" cy="304" rx="118" ry="268" fill="url(#gr_aura_lat)" />
+</g>
+<g id="pierna" filter="url(#flt_sombra_interior_lat)">
+<!-- Dedos posteriores escalonados del pie (vista lateral) -->
+<path d="M 218 552 C 228 554, 236 549, 236 542 C 236 536, 228 533, 218 535"
+fill="#6ec8ea" fill-opacity="0.72" stroke="#e6f8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 226 554 C 238 556, 246 550, 246 543 C 246 536, 238 532, 226 534"
+fill="#7bd2f0" fill-opacity="0.74" stroke="#e6f8ff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 234 556 C 247 558, 256 551, 256 544 C 256 536, 247 532, 235 534"
+fill="#8adbf5" fill-opacity="0.76" stroke="#e6f8ff" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 241 558 C 255 560, 265 552, 265 544 C 265 536, 255 531, 242 533"
+fill="#96e3ff" fill-opacity="0.78" stroke="#e6f8ff" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" />
+<!-- Silueta anatómica lateral completa: muslo ancho, rodilla marcada adelante, pantorrilla curva atrás, tobillo delgado, talón y pie -->
+<path d="M 68 32
+C 110 28, 156 28, 196 34
+C 202 88, 196 144, 184 196
+C 180 214, 188 228, 190 242
+C 192 256, 182 268, 178 282
+C 175 318, 174 364, 172 412
+C 170 444, 172 468, 182 486
+C 196 504, 222 516, 250 526
+C 266 532, 274 540, 272 552
+C 270 562, 254 566, 236 565
+C 212 564, 188 560, 166 554
+C 144 548, 124 550, 104 558
+C 84 566, 62 564, 52 550
+C 42 536, 46 516, 62 498
+C 78 480, 92 462, 94 436
+C 96 414, 86 394, 78 368
+C 68 336, 66 302, 78 272
+C 86 252, 88 234, 82 214
+C 66 164, 58 102, 68 32 Z"
+fill="url(#gr_piel_lat)" stroke="#e6f8ff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+<!-- Sombra interior suave en la cara posterior (isquiotibiales, hueco poplíteo, pantorrilla y arco plantar) -->
+<path d="M 66 44
+C 58 106, 66 164, 82 214
+C 88 234, 86 252, 78 272
+C 66 302, 68 336, 78 368
+C 86 394, 96 414, 94 436
+C 92 462, 78 480, 62 498
+C 48 514, 44 534, 54 548
+C 64 562, 86 564, 106 556
+C 126 548, 146 546, 168 552
+C 190 558, 214 562, 240 563
+C 214 565, 188 561, 166 555
+C 144 549, 124 551, 104 559
+C 84 567, 62 565, 52 551
+C 42 537, 46 517, 62 499
+C 78 481, 92 463, 94 437
+C 96 415, 86 395, 78 369
+C 68 337, 66 303, 78 273
+C 86 253, 88 235, 82 215
+C 66 165, 58 105, 66 44 Z"
+fill="#3785a6" fill-opacity="0.28" />
+<!-- Estructura ósea sutil: fémur, rótula en la rodilla, tibia/peroné y maléolo del tobillo -->
+<g opacity="0.82">
+<!-- Fémur -->
+<path d="M 118 34
+C 122 96, 130 156, 138 206
+C 142 222, 164 222, 166 206
+C 162 154, 158 94, 156 34 Z"
+fill="url(#gr_hueso_lat)" stroke="#8ecfe8" stroke-width="3" stroke-linejoin="round" />
+<!-- Rótula marcada -->
+<ellipse cx="176" cy="242" rx="9" ry="14" transform="rotate(-6 176 242)"
+fill="url(#gr_hueso_lat)" stroke="#7cc2de" stroke-width="3" />
+<!-- Tibia y peroné -->
+<path d="M 134 262
+C 136 324, 136 392, 132 458
+C 130 474, 154 474, 156 458
+C 158 392, 160 324, 162 262 Z"
+fill="url(#gr_hueso_lat)" stroke="#8ecfe8" stroke-width="3" stroke-linejoin="round" />
+<!-- Maléolo del tobillo -->
+<circle cx="136" cy="472" r="13" fill="url(#gr_hueso_lat)" stroke="#7cc2de" stroke-width="2.8" />
+</g>
+<!-- Pliegue poplíteo detrás de la rodilla y detalle de uña del dedo gordo -->
+<path d="M 92 238 C 102 242, 114 242, 124 238" stroke="#7ecae8" stroke-width="3.5" stroke-linecap="round" opacity="0.65" />
+<path d="M 250 537 C 258 537, 265 540, 267 545 C 261 547, 253 545, 250 542 Z"
+fill="#ffffff" fill-opacity="0.5" />
+<!-- Reflejo discreto en el borde anterior (muslo, rodilla, espinilla y empeine) -->
+<path d="M 184 44
+C 188 94, 182 146, 172 194
+C 170 212, 178 226, 180 242
+C 180 256, 172 268, 168 282
+C 164 318, 164 364, 162 412
+C 160 444, 162 468, 174 488
+C 188 506, 212 518, 240 528
+C 210 522, 184 510, 168 492
+C 156 472, 154 446, 156 414
+C 158 366, 158 320, 162 284
+C 166 270, 174 258, 174 242
+C 172 226, 164 212, 166 194
+C 176 146, 182 94, 180 44 Z"
+fill="url(#gr_reflejo_lat)" />
+</g>
+<g id="vasos" filter="url(#flt_sombra_vasos_lat)">
+<!-- Arteria femoral -> poplítea -> tibial / dorsal del pie (roja) -->
+<path d="M 148 34
+C 146 94, 134 156, 122 214
+C 116 242, 120 268, 126 302
+C 132 344, 136 394, 144 444
+C 150 478, 166 502, 198 522
+C 220 534, 240 542, 256 546"
+stroke="url(#gr_arteria_lat)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" />
+
+<!-- Vena safena mayor / femoral y arco dorsal del pie (azul) -->
+<path d="M 162 34
+C 160 96, 150 158, 138 216
+C 132 244, 136 272, 142 306
+C 148 348, 152 396, 158 446
+C 164 476, 180 498, 212 516
+C 232 528, 248 534, 262 540"
+stroke="url(#gr_vena_lat)" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round" />
+
+<!-- Brillos especulares sobre arteria y vena -->
+<path d="M 149 42 C 147 98, 135 158, 123 214 C 117 242, 121 268, 127 302 C 133 344, 137 394, 145 444 C 151 476, 167 500, 198 520"
+stroke="#ffd6de" stroke-width="1.8" stroke-linecap="round" opacity="0.72" />
+<path d="M 163 42 C 161 100, 151 160, 139 216 C 133 244, 137 272, 143 306 C 149 348, 153 396, 159 446 C 165 474, 181 496, 212 514"
+stroke="#d6f0ff" stroke-width="1.9" stroke-linecap="round" opacity="0.75" />
+</g>
+<g id="nervio" filter="url(#flt_sombra_vasos_lat)">
+<!-- Nervio ciático -> tibial / peroneo bajando por toda la pierna hasta el pie -->
+<path d="M 104 34
+C 104 96, 106 158, 108 218
+C 109 250, 106 284, 110 326
+C 114 368, 118 412, 122 454
+C 126 484, 144 506, 178 524
+C 204 538, 228 544, 252 548"
+stroke="url(#gr_nervio_lat)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" />
+
+
+<!-- Brillo amarillo claro sobre el nervio -->
+<path d="M 104 42 C 104 100, 106 160, 108 218 C 109 250, 106 284, 110 326 C 114 368, 118 412, 122 454 C 126 482, 144 504, 178 522"
+stroke="#fffbe0" stroke-width="1.6" stroke-linecap="round" opacity="0.88" />
+</g>
+</svg>

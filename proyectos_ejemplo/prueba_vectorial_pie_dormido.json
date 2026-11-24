@@ -90,10 +90,10 @@
    "layers": [
     {
      "asset": "svg",
-     "file": "pierna",
+     "file": "pierna_xray",
      "x": 0.5,
-     "y": 0.68,
-     "w": 0.92,
+     "y": 0.7,
+     "w": 0.5,
      "anim": "fade",
      "z": 2
     },
@@ -101,8 +101,8 @@
      "asset": "svg",
      "file": "cerebro",
      "x": 0.5,
-     "y": 0.28,
-     "w": 0.55,
+     "y": 0.22,
+     "w": 0.5,
      "at": "cerebro",
      "anim": "pop+float",
      "z": 4
@@ -307,7 +307,7 @@
    "layers": [
     {
      "asset": "svg",
-     "file": "pie",
+     "file": "pie_xray",
      "x": 0.5,
      "y": 0.56,
      "w": 0.95,
@@ -474,7 +474,7 @@
    "layers": [
     {
      "asset": "svg",
-     "file": "pie",
+     "file": "pie_xray",
      "x": 0.5,
      "y": 0.58,
      "w": 0.9,
@@ -556,10 +556,10 @@
    "layers": [
     {
      "asset": "svg",
-     "file": "pierna",
+     "file": "pierna_xray",
      "x": 0.5,
-     "y": 0.62,
-     "w": 0.8,
+     "y": 0.7,
+     "w": 0.5,
      "anim": "slide_up",
      "z": 2
     },
@@ -634,7 +634,7 @@
    "layers": [
     {
      "asset": "svg",
-     "file": "pie",
+     "file": "pie_xray",
      "x": 0.5,
      "y": 0.56,
      "w": 0.9,

@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+<defs>
+<radialGradient id="gr_aura_pie" cx="50%" cy="54%" r="50%">
+<stop offset="0%" stop-color="#9be7ff" stop-opacity="0.34" />
+<stop offset="65%" stop-color="#6cc7eb" stop-opacity="0.1" />
+<stop offset="100%" stop-color="#4ba3c7" stop-opacity="0" />
+</radialGradient>
+<linearGradient id="gr_piel_pie" x1="15%" y1="10%" x2="88%" y2="90%">
+<stop offset="0%" stop-color="#dcf7ff" stop-opacity="0.72" />
+<stop offset="48%" stop-color="#96e3ff" stop-opacity="0.58" />
+<stop offset="82%" stop-color="#64c3e8" stop-opacity="0.65" />
+<stop offset="100%" stop-color="#49a6c7" stop-opacity="0.75" />
+</linearGradient>
+<linearGradient id="gr_hueso_tobillo" x1="20%" y1="10%" x2="85%" y2="90%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+<stop offset="55%" stop-color="#d2f2ff" stop-opacity="0.75" />
+<stop offset="100%" stop-color="#8dd0eb" stop-opacity="0.82" />
+</linearGradient>
+<linearGradient id="gr_reflejo_pie" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.48" />
+<stop offset="65%" stop-color="#ffffff" stop-opacity="0.14" />
+<stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+</linearGradient>
+<linearGradient id="gr_vena_pie" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#7cd4ff" />
+<stop offset="50%" stop-color="#2989d8" />
+<stop offset="100%" stop-color="#195c9e" />
+</linearGradient>
+<linearGradient id="gr_arteria_pie" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ff8fa3" />
+<stop offset="50%" stop-color="#e63956" />
+<stop offset="100%" stop-color="#a81d37" />
+</linearGradient>
+<linearGradient id="gr_nervio_pie" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fff48f" />
+<stop offset="55%" stop-color="#ffd02b" />
+<stop offset="100%" stop-color="#e09e00" />
+</linearGradient>
+<filter id="flt_sombra_interior_pie" x="-15%" y="-15%" width="130%" height="130%">
+<feFlood flood-color="#2c6e8a" flood-opacity="0.34" result="flood" />
+<feComposite in="flood" in2="SourceAlpha" operator="in" result="mask" />
+<feGaussianBlur in="mask" stdDeviation="5" result="blur" />
+<feOffset dx="0" dy="4" result="offsetBlur" />
+<feComposite in="offsetBlur" in2="SourceAlpha" operator="out" result="innerShadow" />
+<feMerge>
+<feMergeNode in="SourceGraphic" />
+<feMergeNode in="innerShadow" />
+</feMerge>
+</filter>
+<filter id="flt_sombra_conductos" x="-20%" y="-20%" width="140%" height="140%">
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="blur" />
+<feOffset dx="0" dy="2.5" result="offset" />
+<feFlood flood-color="#1f536b" flood-opacity="0.32" result="color" />
+<feComposite in="color" in2="offset" operator="in" result="shadow" />
+<feMerge>
+<feMergeNode in="shadow" />
+<feMergeNode in="SourceGraphic" />
+</feMerge>
+</filter>
+<clipPath id="clip_pie_perfil">
+<path d="M 102 76
+C 134 74, 168 74, 198 78
+C 198 118, 204 152, 222 178
+C 242 206, 276 226, 314 242
+C 334 250, 352 260, 356 276
+C 360 292, 344 304, 322 306
+C 294 308, 264 306, 236 300
+C 202 292, 174 290, 144 302
+C 118 312, 86 312, 66 294
+C 46 276, 48 244, 66 220
+C 84 196, 98 168, 100 132
+C 101 112, 102 92, 102 76 Z" />
+</clipPath>
+</defs>
+<g id="aura">
+<ellipse cx="204" cy="214" rx="172" ry="132" fill="url(#gr_aura_pie)" />
+</g>
+<g id="pie" filter="url(#flt_sombra_interior_pie)">
+<!-- Dedos posteriores escalonados (5º, 4º, 3º y 2º dedo visibles en perspectiva de perfil) -->
+<path d="M 294 296 C 306 298, 316 292, 316 283 C 316 275, 306 271, 294 273"
+fill="#6ec8ea" fill-opacity="0.72" stroke="#e6f8ff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 304 299 C 318 301, 329 294, 329 284 C 329 275, 318 270, 304 272"
+fill="#7bd2f0" fill-opacity="0.74" stroke="#e6f8ff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 314 302 C 330 304, 342 296, 342 285 C 342 275, 330 270, 315 272"
+fill="#8adbf5" fill-opacity="0.76" stroke="#e6f8ff" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 322 304 C 340 306, 353 297, 353 285 C 353 274, 340 268, 324 271"
+fill="#96e3ff" fill-opacity="0.78" stroke="#e6f8ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+<!-- Cuerpo principal del tobillo y pie de perfil (incluyendo el dedo gordo / hallux en primer plano) -->
+<path d="M 102 76
+C 134 74, 168 74, 198 78
+C 198 118, 204 152, 222 178
+C 242 206, 276 226, 314 242
+C 338 252, 362 262, 364 282
+C 366 300, 346 310, 322 310
+C 294 310, 266 306, 236 298
+C 202 288, 172 288, 144 302
+C 118 314, 84 314, 64 294
+C 44 274, 48 242, 66 218
+C 84 194, 98 168, 100 132
+C 101 112, 102 92, 102 76 Z"
+fill="url(#gr_piel_pie)" stroke="#e6f8ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+<!-- Sombra interior suave en el arco plantar, talón y planta -->
+<path d="M 56 266
+C 70 302, 112 312, 146 298
+C 176 285, 204 285, 238 295
+C 272 304, 314 308, 354 296
+C 344 308, 322 310, 294 308
+C 264 306, 236 298, 206 290
+C 176 286, 148 298, 122 308
+C 92 314, 62 300, 56 266 Z"
+fill="#3785a6" fill-opacity="0.28" />
+<!-- Huesos visibles dentro del tobillo y tarso (extremo distal de tibia/peroné, maléolo, astrágalo y calcáneo) -->
+<g opacity="0.88">
+<!-- Tibia / Peroné distal -->
+<path d="M 122 78
+C 122 114, 120 148, 114 174
+C 110 190, 124 202, 144 200
+C 164 198, 176 186, 174 170
+C 170 144, 170 114, 172 78 Z"
+fill="url(#gr_hueso_tobillo)" stroke="#8ecfe8" stroke-width="3.5" stroke-linejoin="round" />
+<!-- Protuberancia redondeada del maléolo del tobillo -->
+<circle cx="146" cy="184" r="18" fill="url(#gr_hueso_tobillo)" stroke="#7cc2de" stroke-width="3.2" />
+<ellipse cx="141" cy="179" rx="7" ry="5" transform="rotate(-20 141 179)" fill="#ffffff" fill-opacity="0.65" />
+<!-- Calcáneo (hueso del talón) -->
+<path d="M 94 224
+C 76 234, 66 254, 74 274
+C 82 292, 108 296, 132 284
+C 150 274, 158 254, 148 236
+C 138 220, 112 214, 94 224 Z"
+fill="url(#gr_hueso_tobillo)" stroke="#8ecfe8" stroke-width="3.2" opacity="0.72" />
+</g>
+<!-- Detalle sutil de uña y pliegue del dedo gordo -->
+<path d="M 336 266 C 346 266, 355 270, 357 276 C 350 278, 340 276, 336 272 Z"
+fill="#ffffff" fill-opacity="0.48" />
+<path d="M 310 276 C 312 284, 310 292, 306 298" stroke="#7ecae8" stroke-width="3" stroke-linecap="round" opacity="0.65" />
+<!-- Reflejo discreto siguiendo la curvatura superior del empeine y tobillo -->
+<path d="M 188 92
+C 190 128, 198 158, 216 184
+C 236 212, 270 232, 308 248
+C 272 238, 236 220, 212 192
+C 192 166, 184 134, 184 92 Z"
+fill="url(#gr_reflejo_pie)" />
+</g>
+<g id="vasos" filter="url(#flt_sombra_conductos)">
+<!-- Arteria tibial / pedia dorsal y plantar (roja) -->
+<path d="M 158 78
+C 158 118, 162 154, 178 184
+C 196 216, 232 238, 272 256
+C 298 268, 322 276, 342 282"
+stroke="url(#gr_arteria_pie)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+
+<!-- Vena safena / dorsal del pie y arco venoso (azul) -->
+<path d="M 174 78
+C 174 116, 180 150, 198 178
+C 218 208, 252 230, 290 248
+C 312 258, 330 266, 348 274"
+stroke="url(#gr_vena_pie)" stroke-width="6.8" stroke-linecap="round" stroke-linejoin="round" />
+
+<!-- Brillos especulares sobre arteria y vena -->
+<path d="M 159 86 C 159 122, 164 156, 180 184 C 198 214, 232 236, 272 254 C 296 266, 318 274, 338 280"
+stroke="#ffd6de" stroke-width="2" stroke-linecap="round" opacity="0.72" />
+<path d="M 175 86 C 175 120, 181 152, 199 178 C 219 206, 252 228, 290 246 C 310 256, 328 264, 344 272"
+stroke="#d6f0ff" stroke-width="2.1" stroke-linecap="round" opacity="0.75" />
+</g>
+<g id="nervio" filter="url(#flt_sombra_conductos)">
+<!-- Nervio peroneo superficial / tibial recorriendo el tobillo, empeine y planta -->
+<path d="M 140 78
+C 140 120, 144 158, 162 192
+C 182 226, 218 248, 258 266
+C 286 278, 314 284, 338 288"
+stroke="url(#gr_nervio_pie)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round" />
+
+<!-- Pequeña rama dorsal superior -->
+<path d="M 218 246 C 244 252, 270 258, 296 264"
+stroke="url(#gr_nervio_pie)" stroke-width="2.8" stroke-linecap="round" />
+<!-- Brillo amarillo claro sobre el nervio -->
+<path d="M 140 86 C 140 124, 145 160, 163 192 C 183 224, 218 246, 258 264 C 284 276, 312 282, 334 286"
+stroke="#fffbe0" stroke-width="1.8" stroke-linecap="round" opacity="0.88" />
+</g>
+</svg>
