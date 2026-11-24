@@ -100,18 +100,47 @@ class Scene:
             vz = V.resolve(s, st, self.type, warn=lambda m: m not in self.warnings and self.warnings.append(m))
             self.audio, self.words, adur = A.synthesize(
                 narr, vz["engine"], vz["voice"] or A.DEFAULT_VOICE_ES, vz["rate"], vz["model"], vz["style"])
+        if adur > 0 and self.audio and self.words and not user_audio:
+            self._tighten(adur)
+            adur = self._adur
         if adur > 0:
-            pad = 0.0 if getattr(self, "_master", False) else float(ctx.settings.get("scene_pad", 0.5))
-            if pad and self.words and ctx.settings.get("trim_silences", True):
-                try:     # la voz suele traer 0.2–0.5 s de silencio al final: la escena acaba cuando termina la última palabra
-                    last_end = max(float(w[2]) for w in self.words)
-                    if 0.2 < last_end < adur - 0.12:
-                        adur = last_end + 0.08
-                except (TypeError, ValueError, IndexError):
-                    pass
+            pad = float(ctx.settings.get("scene_pad", 0.5))
+            if getattr(self, "_master", False) and not getattr(self, "_tight", False):
+                pad = 0.0
             self.duration = max(min_dur, adur + pad)
         else:
             self.duration = min_dur or self.default_duration()
+
+    def _tighten(self, adur: float) -> None:
+        """Acorta el silencio del principio y del final de la voz y, si el proyecto lo pide, la acelera
+        (ajustes: voice_speed 1.0–1.3, trim_silences). Funciona con cualquier motor de voz."""
+        st = self.ctx.settings
+        speed = max(0.8, min(1.4, float(st.get("voice_speed", 1.0) or 1.0)))
+        trim = bool(st.get("trim_silences", True))
+        self._adur = adur
+        try:
+            ws = [(w[0], float(w[1]), float(w[2])) for w in self.words]
+            first, last = min(w[1] for w in ws), max(w[2] for w in ws)
+        except (TypeError, ValueError, IndexError):
+            return
+        lead = max(0.0, first - 0.06) if trim else 0.0
+        end = min(adur, last + 0.10) if trim else adur
+        if end - lead < 0.3 or (lead < 0.04 and adur - end < 0.06 and abs(speed - 1.0) < 0.01):
+            return
+        dst = CACHE_DIR / "tts" / (hash_key("tight", self.audio, round(lead, 2), round(end, 2), round(speed, 3)) + ".wav")
+        try:
+            if not dst.exists():
+                run_quiet([ffmpeg_bin(), "-y", "-v", "error", "-ss", f"{lead:.3f}", "-t", f"{end - lead:.3f}", "-i", str(self.audio),
+                           "-filter:a", f"atempo={speed:.3f}" if abs(speed - 1.0) > 0.01 else "anull", "-ac", "1", "-ar", "24000", str(dst)])
+            nd = probe_duration(dst)
+            if nd <= 0.2:
+                return
+        except Exception:
+            return
+        self.audio = str(dst)
+        self.words = [(w, max(0.0, (a - lead) / speed), max(0.0, (b - lead) / speed)) for (w, a, b) in ws]
+        self._adur = nd
+        self._tight = True
 
     def default_duration(self) -> float:
         return 4.0

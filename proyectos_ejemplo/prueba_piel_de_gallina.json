@@ -5,7 +5,8 @@
   "caption_style": "suave",
   "sfx": "auto",
   "sfx_volume": 0.5,
-  "tts_rate": 8,
+  "voice_speed": 1.08,
+  "trim_silences": true,
   "scene_pad": 0.15,
   "transition_seconds": 0.35
  },

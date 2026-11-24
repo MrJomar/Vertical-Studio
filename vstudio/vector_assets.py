@@ -1051,135 +1051,96 @@ def a_reloj(w, p):
     return _fin(big, d, d)
 
 
+def _laberinto(gw, gh, seed, steps=2000):
+    """Patrón de Turing (Gray-Scott) en forma de laberinto: se parece mucho a las circunvoluciones del cerebro. Devuelve 0..1."""
+    rng = np.random.default_rng(seed)
+    U = np.ones((gh, gw), np.float32)
+    V = np.zeros((gh, gw), np.float32)
+    for _ in range(40):                                   # semillas
+        y, x = rng.integers(8, gh - 8), rng.integers(8, gw - 8)
+        V[y - 3:y + 3, x - 3:x + 3] = 1.0
+        U[y - 3:y + 3, x - 3:x + 3] = 0.5
+    V += rng.random((gh, gw)).astype(np.float32) * 0.02
+    Fk, kk, du, dv = 0.037, 0.0600, 0.16, 0.08
+
+    def lap(Z):
+        return (np.roll(Z, 1, 0) + np.roll(Z, -1, 0) + np.roll(Z, 1, 1) + np.roll(Z, -1, 1) - 4 * Z)
+    for _ in range(steps):
+        uvv = U * V * V
+        U += du * lap(U) - uvv + Fk * (1 - U)
+        V += dv * lap(V) + uvv - (Fk + kk) * V
+    V = (V - V.min()) / max(1e-6, (V.max() - V.min()))
+    return V
+
+
 def a_cerebro(w, p):
-    """Cerebro de perfil (frente a la izquierda): lóbulos con tinte propio, surcos con relieve, cerebelo rayado y tronco."""
+    """Cerebro de perfil (frente a la izquierda): circunvoluciones tipo laberinto, lóbulos con tinte, cerebelo y tronco."""
     from PIL import ImageFilter
     W, H = int(w), int(w * 0.85)
     S = SS
     col = _c(p.get("color"), (240, 150, 172))
-    rnd = random.Random(int(p.get("seed", 5)))
     Ws, Hs = W * S, H * S
     P = lambda pts: [(x * Ws, y * Hs) for x, y in pts]
-    outline = _sm(P([(0.07, 0.52), (0.045, 0.40), (0.07, 0.26), (0.16, 0.13), (0.30, 0.05), (0.47, 0.025), (0.65, 0.04),
-                     (0.81, 0.11), (0.92, 0.23), (0.955, 0.38), (0.925, 0.52), (0.84, 0.60), (0.72, 0.62), (0.62, 0.60),
-                     (0.55, 0.64), (0.47, 0.72), (0.36, 0.745), (0.25, 0.71), (0.19, 0.63), (0.12, 0.59), (0.07, 0.52)]), 10)
+    outline = _sm(P([(0.07, 0.50), (0.045, 0.38), (0.075, 0.25), (0.17, 0.12), (0.31, 0.045), (0.48, 0.02), (0.66, 0.04),
+                     (0.82, 0.11), (0.93, 0.23), (0.96, 0.38), (0.93, 0.52), (0.85, 0.60), (0.73, 0.62), (0.62, 0.60),
+                     (0.55, 0.65), (0.47, 0.73), (0.36, 0.75), (0.25, 0.71), (0.18, 0.63), (0.11, 0.58), (0.07, 0.50)]), 10)
     mask = Image.new("L", (Ws, Hs), 0)
     ImageDraw.Draw(mask).polygon(outline, fill=255)
     out = _canvas(W, H)
-    # tronco encefálico
+    dk_line = _shade(col, 0.5) + (255,)
+    # tronco encefálico (fino, inclinado hacia atrás)
     stem = Image.new("L", (Ws, Hs), 0)
-    ImageDraw.Draw(stem).polygon(_sm(P([(0.44, 0.60), (0.57, 0.60), (0.585, 0.80), (0.60, 0.99), (0.50, 0.99), (0.46, 0.82)]), 8), fill=255)
-    out.alpha_composite(_grad(stem, _shade(col, 0.86), _shade(col, 0.62), 0.6, 1.0))
-    # cerebelo (detrás, abajo-derecha) con rayas
+    ImageDraw.Draw(stem).polygon(_sm(P([(0.47, 0.62), (0.56, 0.62), (0.585, 0.80), (0.62, 0.985), (0.545, 0.985), (0.50, 0.80)]), 8), fill=255)
+    out.alpha_composite(_grad(stem, _shade(col, 0.88), _shade(col, 0.64), 0.6, 1.0))
+    ImageDraw.Draw(out).line(_sm(P([(0.47, 0.64), (0.50, 0.80), (0.545, 0.985)]), 8), fill=dk_line, width=int(S * 2.4), joint="curve")
+    ImageDraw.Draw(out).line(_sm(P([(0.56, 0.64), (0.585, 0.80), (0.62, 0.985)]), 8), fill=dk_line, width=int(S * 2.4), joint="curve")
+    # cerebelo: metido bajo el lóbulo occipital, con láminas finas
     cb = Image.new("L", (Ws, Hs), 0)
-    ImageDraw.Draw(cb).ellipse([Ws * 0.60, Hs * 0.56, Ws * 0.94, Hs * 0.86], fill=255)
-    cbi = _grad(cb, _shade(col, 0.82), _shade(col, 0.58), 0.56, 0.86)
+    ImageDraw.Draw(cb).ellipse([Ws * 0.58, Hs * 0.56, Ws * 0.90, Hs * 0.84], fill=255)
+    cbi = _grad(cb, _shade(col, 0.84), _shade(col, 0.56), 0.56, 0.84)
     dcb = ImageDraw.Draw(cbi)
-    for k in range(7):
-        y = Hs * (0.60 + 0.035 * k)
-        dcb.arc([Ws * (0.58 + 0.02 * k), y - Hs * 0.10, Ws * 0.99, y + Hs * 0.30], 195, 330, fill=_shade(col, 0.45) + (200,), width=max(2, int(S * 2.2)))
+    for k in range(9):
+        y0 = Hs * (0.575 + 0.027 * k)
+        dcb.arc([Ws * (0.55 + 0.012 * k), y0 - Hs * 0.16, Ws * 0.94, y0 + Hs * 0.32], 200, 335, fill=_shade(col, 0.42) + (190,), width=max(2, int(S * 1.8)))
     cbi.putalpha(cb)
     out.alpha_composite(cbi)
-    # lóbulos: tintes distintos por región
-    base = _grad(mask, _shade(col, 1.10), _shade(col, 0.74), 0.0, 0.78)
-    arr = np.array(base).astype(np.float32)
+    ImageDraw.Draw(out).arc([Ws * 0.58, Hs * 0.56, Ws * 0.90, Hs * 0.84], 330, 120, fill=dk_line, width=int(S * 2.6))
+    # circunvoluciones: patrón de Turing recortado por la forma
+    gwid = 200
+    pat = _laberinto(gwid, int(gwid * Hs / Ws), int(p.get("seed", 5)))
+    pim = Image.fromarray((pat * 255).astype(np.uint8), "L").resize((Ws, Hs), Image.BICUBIC).filter(ImageFilter.GaussianBlur(Ws * 0.0025))
+    r = np.asarray(pim, np.float32) / 255.0
+    r = np.clip((r - 0.16) / 0.20, 0, 1)
+    r = r * r * (3 - 2 * r)                                # 0 = surco, 1 = cresta
+    lo, hi = np.array(_shade(col, 0.66), np.float32), np.array(_shade(col, 1.10), np.float32)
+    rgb = lo[None, None, :] * (1 - r[..., None]) + hi[None, None, :] * r[..., None]
+    # tinte suave por lóbulo
     yy, xx = np.mgrid[0:Hs, 0:Ws].astype(np.float32)
     xn, yn = xx / Ws, yy / Hs
-    cs = 0.49 + 0.20 * (0.30 - yn)                              # surco central (inclinado)
-    syl_y = 0.50 + 0.14 * (xn - 0.15)                           # surco lateral (sube hacia atrás)
-    occ = xn > 0.77
-    zones = {
-        "front": (xn < cs) & ~((yn > syl_y) & (xn < 0.62)),
-        "par": (xn >= cs) & (xn <= 0.77) & ~((yn > syl_y) & (xn < 0.62)),
-        "occ": occ & ~((yn > syl_y) & (xn < 0.62)),
-        "temp": (yn > syl_y) & (xn < 0.66),
-    }
-    tints = {"front": (1.0, 1.0, 1.0), "par": (1.0, 0.93, 0.90), "occ": (0.93, 0.90, 1.03), "temp": (1.04, 0.93, 0.84)}
-    amt = 1.0 if p.get("lobulos", True) not in (False, 0, "0", "no") else 0.0
+    cs = 0.49 + 0.20 * (0.30 - yn)
+    syl_y = 0.50 + 0.14 * (xn - 0.15)
+    tem = ((yn > syl_y) & (xn < 0.66)).astype(np.uint8) * 255
+    occ = ((xn > 0.77) & ~((yn > syl_y) & (xn < 0.62))).astype(np.uint8) * 255
+    par = ((xn >= cs) & (xn <= 0.77) & ~((yn > syl_y) & (xn < 0.62))).astype(np.uint8) * 255
     mult = np.ones((Hs, Ws, 3), np.float32)
-    for z, m in zones.items():
-        mm = Image.fromarray((m * 255).astype(np.uint8), "L").filter(ImageFilter.GaussianBlur(Ws * 0.03))
-        mf = (np.asarray(mm, np.float32) / 255.0)[..., None]
-        mult += mf * (np.array(tints[z], np.float32) * amt + (1 - amt) - 1.0)
-    arr[..., :3] *= mult
-    base = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA")
-    # oscurecer hacia el borde (volumen)
-    inner = np.asarray(mask.filter(ImageFilter.GaussianBlur(Ws * 0.045)), np.float32) / 255.0
-    sh = (0.62 + 0.38 * np.clip(inner * 1.35, 0, 1))[..., None]
-    a2 = np.array(base).astype(np.float32)
-    a2[..., :3] *= sh
-    base = Image.fromarray(np.clip(a2, 0, 255).astype(np.uint8), "RGBA")
-    # surcos: contornos ondulados concéntricos, cortados a trozos (parecen circunvoluciones)
-    safe = np.asarray(mask.filter(ImageFilter.MinFilter(int(Ws * 0.045) | 1)), np.uint8) > 128
-    groove = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
-    light = Image.new("RGBA", (Ws, Hs), (0, 0, 0, 0))
-    dg, dl = ImageDraw.Draw(groove), ImageDraw.Draw(light)
-    gw = max(2, int(Ws * 0.0125))
-    dkc, lic = _shade(col, 0.55), _shade(col, 1.25)
-
-    def inside(x, y):
-        xi, yi = int(x), int(y)
-        return 0 <= xi < Ws and 0 <= yi < Hs and safe[yi, xi]
-    ocx, ocy = 0.50 * Ws, 0.40 * Hs
-    O = np.array(outline)
-    N = len(O)
-    for ring, sc_ in enumerate((0.90, 0.74, 0.58, 0.43, 0.29)):
-        fr = (5, 6, 5, 4, 3)[ring] + rnd.choice((0, 1))
-        ph = rnd.uniform(0, 6.283)
-        amp = 0.034
-        pts = []
-        for i in range(N):
-            th = i / N * 6.283
-            d = O[i] - (ocx, ocy)
-            wob = 1 + amp * math.sin(th * fr + ph) * 2.6
-            pts.append((ocx + d[0] * sc_ * wob, ocy + d[1] * sc_ * wob))
-        i = 0
-        while i < N:
-            seg = rnd.randint(24, 60)
-            run = [q for q in pts[i:i + seg] if inside(*q)]
-            if len(run) >= 8 and len(run) == len(pts[i:i + seg]):
-                dl.line([(a_ + gw * 0.5, b_ + gw * 0.7) for a_, b_ in run], fill=lic + (140,), width=gw, joint="curve")
-                dg.line(run, fill=dkc + (210,), width=gw, joint="curve")
-                for a_, b_ in (run[0], run[-1]):
-                    dg.ellipse([a_ - gw / 2, b_ - gw / 2, a_ + gw / 2, b_ + gw / 2], fill=dkc + (210,))
-            i += seg + rnd.randint(3, 9)
-    occ_ = np.zeros((Hs, Ws), np.uint8)
-    for _k in range(60):                                  # trazos cortos en S entre los anillos
-        x, y = rnd.uniform(0.1, 0.9) * Ws, rnd.uniform(0.07, 0.66) * Hs
-        if not inside(x, y):
-            continue
-        ang = math.atan2(y - ocy, x - ocx) + 1.5708 + rnd.uniform(-0.4, 0.4)
-        pts = []
-        for k in range(6):
-            pts.append((x, y))
-            ang += 0.9 * math.sin(k * 1.3 + _k)
-            x, y = x + Ws * 0.022 * math.cos(ang), y + Ws * 0.022 * math.sin(ang)
-            if not inside(x, y):
-                break
-        if len(pts) < 4 or occ_[int(pts[0][1]), int(pts[0][0])]:
-            continue
-        r_ = int(Ws * 0.05)
-        occ_[max(0, int(pts[0][1]) - r_):int(pts[0][1]) + r_, max(0, int(pts[0][0]) - r_):int(pts[0][0]) + r_] = 1
-        sp = _sm(pts, 5)
-        dl.line([(a_ + gw * 0.5, b_ + gw * 0.7) for a_, b_ in sp], fill=lic + (120,), width=int(gw * 0.8), joint="curve")
-        dg.line(sp, fill=dkc + (170,), width=int(gw * 0.8), joint="curve")
-    base.alpha_composite(light)
-    base.alpha_composite(groove)
-    # surco central y lateral: curvas suaves que no llegan al borde
-    dd = ImageDraw.Draw(base)
-    sc = _sm([((0.50 + 0.20 * (0.30 - (0.10 + 0.07 * i)) + 0.018 * math.sin(i * 1.7)) * Ws, (0.10 + 0.07 * i) * Hs) for i in range(7)], 8)
-    dd.line(sc, fill=_shade(col, 0.44) + (225,), width=int(gw * 1.3), joint="curve")
-    sl = _sm([(0.15 * Ws, 0.54 * Hs), (0.28 * Ws, 0.51 * Hs), (0.42 * Ws, 0.54 * Hs), (0.56 * Ws, 0.575 * Hs)], 10)
-    dd.line(sl, fill=_shade(col, 0.44) + (225,), width=int(gw * 1.3), joint="curve")
-    # brillo suave arriba-izquierda
-    gl = Image.new("L", (Ws, Hs), 0)
-    ImageDraw.Draw(gl).ellipse([Ws * 0.14, Hs * 0.05, Ws * 0.52, Hs * 0.26], fill=120)
-    gl = gl.filter(ImageFilter.GaussianBlur(Ws * 0.035))
-    gl = Image.fromarray((np.asarray(gl, np.float32) * (np.asarray(mask, np.float32) / 255.0)).astype(np.uint8), "L")
-    base.alpha_composite(Image.merge("RGBA", (*Image.new("RGB", (Ws, Hs), (255, 236, 240)).split(), gl)))
-    base.putalpha(mask)
+    for m, t in ((tem, (1.05, 0.92, 0.84)), (occ, (0.93, 0.90, 1.04)), (par, (1.0, 0.94, 0.92))):
+        mf = np.asarray(Image.fromarray(m, "L").filter(ImageFilter.GaussianBlur(Ws * 0.03)), np.float32)[..., None] / 255.0
+        mult += mf * (np.array(t, np.float32) - 1.0)
+    rgb *= mult
+    # volumen: más oscuro hacia el borde y luz arriba-izquierda
+    inner = np.asarray(mask.filter(ImageFilter.GaussianBlur(Ws * 0.05)), np.float32) / 255.0
+    rgb *= (0.55 + 0.45 * np.clip(inner * 1.4, 0, 1))[..., None]
+    light = np.exp(-(((xn - 0.30) / 0.30) ** 2 + ((yn - 0.18) / 0.20) ** 2))[..., None]
+    rgb = rgb + (255 - rgb) * 0.16 * light
+    base = Image.fromarray(np.dstack([np.clip(rgb, 0, 255), np.asarray(mask, np.float32)]).astype(np.uint8), "RGBA")
     out.alpha_composite(base)
-    ImageDraw.Draw(out).line(outline + [outline[0]], fill=_shade(col, 0.5) + (255,), width=int(S * 3), joint="curve")
+    # surco lateral (fisura de Silvio): curva fina que se afina
+    dd = ImageDraw.Draw(out)
+    sl = _sm(P([(0.16, 0.555), (0.28, 0.525), (0.41, 0.545), (0.55, 0.585)]), 10)
+    for i in range(len(sl) - 1):
+        wdt = max(1, int(S * (4.2 - 3.4 * i / len(sl))))
+        dd.line([sl[i], sl[i + 1]], fill=_shade(col, 0.40) + (235,), width=wdt)
+    dd.line(outline + [outline[0]], fill=dk_line, width=int(S * 3), joint="curve")
     return _fin(out, W, H)
 
 

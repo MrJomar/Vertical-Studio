@@ -22,7 +22,7 @@ DEFAULT_SETTINGS = {
     "width": 1080, "height": 1920, "fps": 30,
     "encoder": "auto", "quality": "alta",
     "theme": "oscuro", "theme_colors": {},
-    "tts_engine": "edge", "voice": "es-MX-JorgeNeural", "tts_rate": 0, "scene_pad": 0.5,
+    "tts_engine": "edge", "voice": "es-MX-JorgeNeural", "tts_rate": 0, "voice_speed": 1.0, "trim_silences": True, "scene_pad": 0.5,
     "transition": "fade", "transition_seconds": 0.3,
     "map_style": "satelite", "map_tile_url": "", "map_attribution": True,
     "sfx": "manual", "sfx_volume": 0.5, "music": "", "music_volume": 0.12, "duck_music": True,
