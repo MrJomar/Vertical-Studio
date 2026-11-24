@@ -473,7 +473,13 @@ class Handler(BaseHTTPRequestHandler):
                                    "result": j.result, "elapsed": time.time() - j.started})
             if path == "/api/ai_prompt":
                 from .vector import ai_prompt
-                return self._json({"prompt": ai_prompt()})
+                return self._json({"prompt": ai_prompt((q.get("style") or [""])[0])})
+            if path == "/api/styles":
+                from . import styles as ST
+                return self._json({"styles": ST.list_styles((q.get("tipo") or [None])[0])})
+            if path == "/api/script_prompt":
+                from . import styles as ST
+                return self._json({"prompt": ST.script_prompt((q.get("style") or [""])[0], (q.get("tema") or [""])[0], (q.get("canal") or [""])[0])})
             if path == "/api/voices":
                 from . import voices as V
                 eng = (q.get("engine") or ["edge"])[0]
@@ -592,7 +598,7 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/vector_ai":
                 from .vector import ai_prompt
                 import urllib.request as ur
-                prompt = ai_prompt() + "\nGUION:\n" + d.get("script", "")
+                prompt = ai_prompt(d.get("style", "")) + "\nGUION:\n" + d.get("script", "")
                 body = json.dumps({"contents": [{"parts": [{"text": prompt}]}],
                                    "generationConfig": {"responseMimeType": "application/json"}}).encode()
                 model = d.get("model") or "gemini-2.5-flash"

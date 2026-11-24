@@ -713,7 +713,7 @@ class VectorScene(Scene):
 
 
 # ----------------------------------------------------------------------------- instrucciones para IA
-def ai_prompt() -> str:
+def ai_prompt(style: str = "") -> str:
     lib = "\n".join(f"- {k}: {d[2]}. Parámetros: {d[3] or '—'}" for k, d in ASSETS.items())
     return f"""Eres director de animación para videos educativos verticales de YouTube Shorts en español. Convierte el guion que te daré en una lista de ESCENAS en JSON. Cada escena dura unas 2-6 s y cubre una o dos frases del guion.
 
@@ -744,4 +744,4 @@ Reglas: usa "at" con palabras EXACTAS de la narración para sincronizar la apari
 
 Elementos disponibles:
 {lib}
-"""
+""" + (__import__("vstudio.styles", fromlist=["x"]).style_block(style) if style else "")

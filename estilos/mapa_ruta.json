@@ -1,0 +1,23 @@
+{
+  "id": "mapa_ruta",
+  "nombre": "Mapa satelital con ruta (documental)",
+  "tipo": "map",
+  "version": 1,
+  "duracion_total_s": [60, 100],
+  "escena_s": [3, 6],
+  "palabras_por_frase": [8, 14],
+  "estructura": ["gancho", "paradas", "dato_rojo", "obstaculo", "cierre"],
+  "subtitulos": {"estilo": "suave", "posicion": "abajo", "palabras_por_grupo": [2, 4]},
+  "defaults_escena": {"provider": "natural", "follow": true, "grade": "vivo", "tilt": 0.15, "fx": "polvo_luz"},
+  "voz": {"tipo_video": "map", "ritmo": 1.0, "tono": "documental, sereno, con peso en las cifras"},
+  "reglas_guion": [
+    "Abre con la cifra o la proeza (por ejemplo: 30,000 km sin atajos).",
+    "Ruta de 5 a 7 paradas; una escena por parada con la cámara siguiendo la línea.",
+    "Un dato rojo (rótulo grande: años, km, grados) cada 2 o 3 escenas.",
+    "Etiqueta en el sitio exacto: país en negritas, ciudades con pin, mares y ríos en letra curva.",
+    "Resalta solo el país que se explica; el resto desaturado.",
+    "Incluye un obstáculo o giro a mitad del video (un tramo imposible, un cierre de frontera).",
+    "Cierra con el total (distancia, tiempo) y una frase que cambie cómo se ve la ruta."
+  ],
+  "recursos_visuales": ["ruta animada", "avatar en la punta", "foto en hexágono", "íconos de transporte", "flecha punteada a destino", "rótulo rojo de cifra", "inset de zoom", "marca de agua del canal"]
+}

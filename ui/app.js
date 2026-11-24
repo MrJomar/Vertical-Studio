@@ -334,20 +334,23 @@ function startDash(){clearInterval(dashTimer);renderDash();dashTimer=setInterval
 function aiModal(){
   const c=modal(`<div class="mh">Animación con IA<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb">
   <p class="hint">Pega tu guion y una IA lo convierte en escenas animadas con los personajes y fondos del programa. Con una clave gratuita de Gemini se hace aquí mismo; si prefieres otra IA, copia las instrucciones, pégalas junto a tu guion y pega abajo el JSON que te devuelva.</p>
+  <div class="fld"><label>Estilo</label><select id="stl"><option value="">(sin estilo)</option></select></div>
   <div class="fld"><label>Guion</label><textarea id="sc" rows="7" placeholder="¿Por qué huele a pescado? La culpable es la trimetilamina…"></textarea></div>
   <div class="fld"><label>Clave de Gemini (gratis en aistudio.google.com; se guarda solo en este equipo)</label><input type="text" id="gk"></div>
-  <div class="frow" style="margin:6px 0 14px"><button class="btn small" id="cp">Copiar instrucciones para otra IA</button></div>
+  <div class="frow" style="margin:6px 0 14px"><button class="btn small" id="cp">Copiar instrucciones para otra IA</button> <button class="btn small" id="cg">Copiar prompt para escribir el guion</button></div>
   <div class="fld"><label>…o pega aquí el JSON de escenas que devolvió otra IA</label><textarea id="js" rows="4" class="code" style="min-height:90px"></textarea></div>
   <div class="hint" id="st"></div></div>
   <div class="mf"><button class="btn" data-close>Cancelar</button><button class="btn" id="add">Añadir JSON pegado</button><button class="btn primary" id="go">Generar con Gemini</button></div>`,"md");
   const gk=c.querySelector("#gk");try{gk.value=localStorage.getItem("vs_gk")||""}catch(e){}
+  const stl=c.querySelector("#stl");jget("/api/styles?tipo=vector").then(r=>{(r.styles||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=x.nombre;stl.appendChild(o)});try{stl.value=localStorage.getItem("vs_stl")||(r.styles[0]||{}).id||""}catch(e){}}).catch(()=>{});
+  c.querySelector("#cg").onclick=async()=>{const r=await jget("/api/script_prompt?style="+encodeURIComponent(stl.value)+"&tema="+encodeURIComponent(c.querySelector("#sc").value.slice(0,300)));try{await navigator.clipboard.writeText(r.prompt);toast("Prompt de guion copiado")}catch(e){c.querySelector("#js").value=r.prompt}};
   const addScenes=(sc)=>{if(!Array.isArray(sc))sc=sc.scenes||[sc];sc.forEach(x=>x.type="vector");const first=S.project.scenes.length;S.project.scenes.push(...sc);S.durs={};S.sel=first;markDirty();closeModal();renderList();renderForm();refresh();toast(sc.length+" escenas añadidas")};
-  c.querySelector("#cp").onclick=async()=>{const r=await jget("/api/ai_prompt");try{await navigator.clipboard.writeText(r.prompt);toast("Instrucciones copiadas")}catch(e){c.querySelector("#js").value=r.prompt}};
+  c.querySelector("#cp").onclick=async()=>{const r=await jget("/api/ai_prompt?style="+encodeURIComponent(stl.value));try{await navigator.clipboard.writeText(r.prompt);toast("Instrucciones copiadas")}catch(e){c.querySelector("#js").value=r.prompt}};
   c.querySelector("#add").onclick=()=>{try{addScenes(JSON.parse(c.querySelector("#js").value))}catch(e){toast("JSON no válido: "+e.message,1)}};
   c.querySelector("#go").onclick=async()=>{const script=c.querySelector("#sc").value.trim(),key=gk.value.trim();if(!script||!key)return toast("Falta el guion o la clave",1);
     try{localStorage.setItem("vs_gk",key)}catch(e){}
     const go=c.querySelector("#go");go.disabled=true;c.querySelector("#st").textContent="Generando escenas… puede tardar un minuto";
-    try{const r=await jpost("/api/vector_ai",{script,key});addScenes(r.scenes)}catch(e){toast(e.message,1);go.disabled=false;c.querySelector("#st").textContent=""}}}
+    try{const r=await (()=>{try{localStorage.setItem("vs_stl",stl.value)}catch(e){}return jpost("/api/vector_ai",{script,key,style:stl.value})})();addScenes(r.scenes)}catch(e){toast(e.message,1);go.disabled=false;c.querySelector("#st").textContent=""}}}
 
 function addModal(){const ty=S.schema.types;
   const c=modal(`<div class="mh">Añadir escena<span class="sp"></span><button class="x" data-close>✕</button></div><div class="mb"><div class="grid">${S.schema.order.map(k=>`<div class="tcard" data-add="${k}"><div class="ic">${icon(ty[k].icon,22)}</div><b>${esc(ty[k].label)}</b><span>${esc(ty[k].desc)}</span></div>`).join("")}</div></div>`,"md");

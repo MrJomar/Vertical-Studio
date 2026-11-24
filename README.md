@@ -84,3 +84,7 @@ Se configura en **Ajustes → Actualizaciones** (activar/desactivar, repositorio
 Como el repositorio es **privado**, hace falta un token de solo lectura:
 GitHub → Settings → Developer settings → Fine-grained tokens → *Generate new token* → Repository access: solo `Vertical-Studio` → Permissions: **Contents: Read-only**. Pégalo en Ajustes. Se guarda solo en tu PC (`cache/config.json`, ignorado por git).
 Para publicar una versión nueva, sube `__version__` en `vstudio/__init__.py`.
+
+
+## Estilos de guion (v2.4)
+La carpeta `estilos/` guarda lo aprendido de los videos de referencia (estructura, ritmo, recursos) como `.json` (el programa lo usa) y `.md` (guía con ejemplo). En *Animación con IA* eliges un estilo: se añade al prompt de escenas y puedes copiar el **prompt para escribir el guion** en ese estilo. Estilos propios privados: `cache/estilos_privados/*.json` (el actualizador no los toca).

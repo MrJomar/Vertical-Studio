@@ -1,0 +1,23 @@
+{
+  "id": "vectorial_explicativo",
+  "nombre": "Vectorial explicativo (ciencia cotidiana)",
+  "tipo": "vector",
+  "version": 1,
+  "duracion_total_s": [40, 60],
+  "escena_s": [1.5, 3.5],
+  "palabras_por_frase": [6, 10],
+  "estructura": ["gancho", "mecanismo", "dato", "consecuencia", "accion"],
+  "subtitulos": {"estilo": "suave", "palabras_por_grupo": [2, 4]},
+  "defaults_escena": {"fx": "bokeh", "camera": "push"},
+  "voz": {"tipo_video": "vector", "ritmo": 1.05, "tono": "cercano, curioso, ritmo ágil"},
+  "reglas_guion": [
+    "La primera frase es una pregunta o dato incómodo; nada de saludo ni intro.",
+    "Frases de 6 a 10 palabras; cada frase es una escena distinta con otra imagen.",
+    "Cada idea abstracta se convierte en un personaje u objeto concreto (bacteria con cara, cerradura, villano con capa).",
+    "Alterna escalas: panorama (cocina, cuerpo entero) y acercamiento microscópico.",
+    "Un solo dato numérico por escena, con comparación o peor caso, en píldora grande.",
+    "Cita la fuente chica cuando haya estudio (Fuente: USDA, 2019).",
+    "Cierra con un consejo accionable y regresa a la imagen del inicio."
+  ],
+  "recursos_visuales": ["dato grande en píldora", "medidor", "reloj", "inset de acercamiento", "enjambres de personajes", "humo/bokeh ambiental"]
+}
